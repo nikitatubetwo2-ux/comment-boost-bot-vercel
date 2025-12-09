@@ -1,0 +1,21 @@
+{
+  "name": "comment-boost-bot-vercel",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "tsc",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "googleapis": "^144.0.0",
+    "groq-sdk": "^0.8.0",
+    "telegraf": "^4.16.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@vercel/node": "^3.2.0",
+    "typescript": "^5.7.2",
+    "vercel": "^39.0.0"
+  }
+}
