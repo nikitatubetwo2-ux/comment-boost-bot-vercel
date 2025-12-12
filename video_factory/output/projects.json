@@ -1,627 +1,403 @@
 {
-  "proj_1765542226_0": {
-    "id": "proj_1765542226_0",
-    "name": "Как одна неделя в октябре 1944 года изменила ход в",
-    "created_at": "2025-12-12T19:23:46.235061",
-    "topic": "Подробный анализ хронологии ключевого события, которое изменило ход войны\n\nХук: Рассекреченные документы открывают правду о ключевом событии Второй мировой",
-    "competitor_channel": "https://www.youtube.com/@WW2PowDiaries/videos",
-    "duration": "10-20 минут",
+  "proj_1765569660_2": {
+    "id": "proj_1765569660_2",
+    "name": "Тёмная правда о военнопленных, которых заставляли ",
+    "created_at": "2025-12-13T03:01:00.104876",
+    "topic": "Эмоциональное и шокирующее видео о судьбе военнопленных во время Второй мировой войны, которых заставляли участвовать в смертельных боях\n\nХук: Неизвестные факты о военнопленных, которых использовали как живые мишени",
+    "competitor_channel": "https://www.youtube.com/@WWII-Records",
+    "duration": "40-50 минут",
     "language": "Русский",
     "channel_style_id": "",
-    "sub_niche": "Таинственные военные преступления Второй мировой войны (спрос: 8, конкур: 3)",
-    "ai_style": "документальный, серьёзный",
-    "ai_image_style": "Create a thumbnail with a dramatic and unexpected scene from WW2, featuring a mix of American and German soldiers, with a bold and eye-catching font, and a color scheme that reflects the earthy tones of the war era.",
+    "sub_niche": "Жестокая расправа над военнопленными",
+    "ai_style": "Документальный, драматичный",
+    "ai_image_style": "cinematic, dramatic lighting, 8k, hyperrealistic",
     "ai_transitions": [
       "fade",
-      "zoom_in",
-      "zoom_out",
-      "pan"
+      "dissolve",
+      "crossfade"
     ],
-    "ai_effects": {},
-    "ai_music_mood": "dramatic, epic, orchestral",
-    "ai_voice": "Brian",
+    "ai_effects": {
+      "zoom": 1.05,
+      "pan": true
+    },
+    "ai_music_mood": "epic, dramatic",
+    "ai_voice": "Brian (мужской, нарратор)",
     "ai_voice_id": "nPczCjzI2devNBz1zQrb",
-    "script": "Рассекреченные документы открывают правду о ключевом событии Второй мировой войны, которое изменило ход истории. Это событие, о котором мы сегодня расскажем, является одним из самых значимых и спорных моментов в истории человечества. Битва за Сталинград, которая произошла с 1942 по 1943 год, является одним из सबसших сражений Второй мировой войны, и ее последствия былиfelt по всему миру.\n\nНо что на самом деле произошло во время этой битвы? Какие были причины и последствия этого события? И как оно изменило ход истории? Чтобы ответить на эти вопросы, нам нужно углубиться в историю и исследовать детали этого ключевого события.\n\n**ГЛАВА 1: Предыстория и причины битвы за Сталинград**\n\nЧтобы понять значение битвы за Сталинград, нам нужно вернуться в начало Второй мировой войны. В 1939 году Германия, возглавляемая Адольфом Гитлером, начала агрессивную экспансию в Европе. Германия вторглась в Польшу, что привело к объявлению войны Германии со стороны Франции и Великобритании. В 1941 году Германия начала операцию \"Барбаросса\", целью которой было завоевание Советского Союза.\n\nСоветский Союз, возглавляемый Иосифом Сталиным, был не готов к нападению. Красная армия была слаба и неорганизована, и она понесла тяжелые потери в первые месяцы войны. Однако Советский Союз имел огромные ресурсы и территорию, и он смог мобилизовать свою промышленность и население для войны.\n\nВ 1942 году Германия начала новое наступление на восточном фронте, целью которого было завоевание Кавказа и города Сталинград. Сталинград был ключевым городом, расположенным на Волге, и он был важным центром промышленности и транспорта. Если бы Германия смогла завоевать Сталинград, она бы получила контроль над Волгой и могла бы продолжить наступление на Кавказ.\n\nНо почему Сталинград был так важен для Советского Союза? Что было так особенного в этом городе, что сделало его ключевым объектом для обеих сторон? Может быть, это было потому, что Сталинград был символом советской власти и промышленности? Или может быть, это было потому, что город был расположен на стратегически важном месте, позволяющем контролировать Волгу и доступ к Кавказу?\n\n**ГЛАВА 2: Начало битвы и первые столкновения**\n\nВ августе 1942 года немецкая армия подошла к Сталинграду и начала окружать город. Советская армия, возглавляемая генералом Власовым, попыталась остановить немецкое наступление, но она была слаба и неорганизована. Немцы смогли прорвать советскую оборону и начать наступление на город.\n\nПервые столкновения были интенсивными и кровопролитными. Немцы использовали свою превосходящую технику и тактику, чтобы прорвать советскую оборону, но советские солдаты сражались храбро и упорно. Город был превращен в руины, и тысячи людей были убиты или ранены.\n\nНо что произошло с гражданским населением города? Как они пережили эту ужасную битву? Может быть, они были эвакуированы из города, или может быть, они были вынуждены оставаться в своих домах и ждать, пока битва закончится? Как они чувствовали себя, когда слышали звук артиллерии и увидели разрушения своего города?\n\nИ что же произошло с немецкими солдатами? Как они чувствовали себя, когда нападали на город и видели ужасы войны? Может быть, они были мотивированы желанием завоевать город и получить контроль над Волгой, или может быть, они просто выполняли приказы своих командиров. Как они относились к советским солдатам и гражданскому населению?\n\n**ГЛАВА 3: Советский контрнаступление и окружение немецкой армии**\n\nВ ноябре 1942 года Советский Союз начал контрнаступление под кодовым названием \"Уран\". Целью было окружение немецкой армии и отрезание ее от снабжения. Советская армия, возглавляемая генералом Жуковым, начала наступление с севера и юга, и смогла прорвать немецкую оборону.\n\nНемецкая армия была окружена, и она была вынуждена сражаться за выживание. Советская армия начала наступление на немецкие позиции, и смогла оттеснить их обратно. Немцы понесли тяжелые потери, и их армия начала разваливаться.\n\nНо что произошло с немецкими командирами? Как они реагировали на окружение своей армии? Может быть, они были шокированы и деморализованы, или может быть, они все еще верили в возможность победы. Как они общались со своими солдатами, и как они пытались организовать их для последней битвы?\n\nИ что же произошло с советскими солдатами? Как они чувствовали себя, когда окружили немецкую армию и начали наступление на их позиции? Может быть, они были рады и горды своей победой, или может быть, они были усталыми и деморализованными после месяцев сражений. Как они относились к немецким солдатам, и как они обращались с пленными?\n\n**КУЛЬМИНАЦИЯ**\n\nВ январе 1943 года советская армия начала последнее наступление на немецкие позиции. Немцы были окружены и отрезаны от снабжения, и они были вынуждены сдаваться. 31 января 1943 года немецкая армия капитулировала, и битва за Сталинград была окончена.\n\nНо что произошло после битвы? Как советские солдаты и гражданское население праздновали свою победу? Может быть, они были рады и горды своей победой, или может быть, они были усталыми и травмированными после месяцев сражений. Как они восстанавливали свой город и свою жизнь, и как они вспоминали о битве за Сталинград?\n\nИ что же произошло с немецкими солдатами, которые были взяты в плен? Как они были обращены советскими солдатами, и как они были содержаны в плену? Может быть, они были обращены хорошо и гуманно, или может быть, они были обращены жестоко и бесчеловечно. Как они чувствовали себя, когда были взяты в плен, и как они думали о своей будущем?\n\n**ЗАКЛЮЧЕНИЕ**\n\nБитва за Сталинград была одним из самых значимых событий Второй мировой войны. Она была ключевым моментом в истории человечества, и она изменила ход войны. Советский Союз вышел из битвы как победитель, и он стал одной из сверхдержав мира.\n\nНо что мы можем учиться из этой битвы? Как мы можем применять уроки, которые мы получили из этой истории, к нашей собственной жизни и нашему собственному миру? Может быть, мы можем учиться о важности единства и сотрудничества, или может быть, мы можем учиться о опасности агрессии и национализма. Как мы можем использовать эту историю, чтобы сделать наш мир лучше и более безопасным?\n\nИтак, мы призываем вас подписаться на наш канал и следить за нашими видео. Мы будем продолжать исследовать историю и делиться с вами своими знаниями и опытом. Мы будем говорить о самых значимых событиях и личностях истории, и мы будем учиться на их опыте. Спасибо за просмотр, и мы увидимся в следующем видео!",
+    "script": "[HOOK - 0:00-0:45]\nВ глубине человеческой истории есть моменты, которые заставляют кровь стынуть в жилах, и одно из самых темных и шокирующих явлений - это использование военнопленных как живых мишеней во время Второй мировой войны. Это было время, когда человечество было поставлено на грань выживания, и жестокость, с которой обращались с пленными, не имеет равных в истории. Мы часто говорим о героизме и жертвах, но мало кто знает о судьбе тех, кто был вынужден участвовать в смертельных боях против своей воли. Что заставляло людей соглашаться на такие ужасные эксперименты и практики? Каково было судьбе тех, кто был вынужден стать живыми мишенями? И какие уроки мы можем извлечь из этих трагических событий?\n\n[ГЛАВА 1: Тень войны - 0:45-10:00]\nВторая мировая война была временем непредвиденных масштабов разрушения, когда целые нации были втянуты в конфликт, который Claimed миллионы жизней. Среди хаоса и отчаяния военнопленные оказались в самой уязвимой позиции. Захваченные вражескими войсками, они были вынуждены терпеть условия, которые были далеки от гуманного обращения. От плохого питания до бесчеловечных условий содержания, каждый день был борьбой за выживание. Но мало кто знает, что некоторые из этих пленников были подвергнуты еще более ужасной судьбе - они были вынуждены участвовать в смертельных боях как живые мишени.\n\nКаково было пройти через такие испытания? Что чувствовал человек, когда его вели на полигон, зная, что его ждут пули и смерть? Были ли у них надежды на спасение, или они были обречены с самого начала? И что насчёт тех, кто организовывал эти бои? Что движет человеком, чтобы он мог так behandelt других людей? Эти вопросы будут преследовать нас на протяжении всего этого видео, и мы попытаемся найти ответы на них.\n\nГлава будет продолжена с описанием условий содержания военнопленных, рассказами выживших и анализом психологических факторов, которые влияли на поведение как заключенных, так и их захватчиков. Мы также рассмотрим исторический контекст того времени, чтобы понять, как такая трагедия могла произойти. Были ли какие-то предупреждающие знаки, которые были проигнорированы, или это был неизбежный результат войны? Как мы можем использовать эти знания, чтобы предотвратить подобные трагедии в будущем?\n\n[ГЛАВА 2: Живые мишени - 10:00-20:00]\nИспользование военнопленных как живых мишеней было одним из наиболее шокирующих аспектов Второй мировой войны. Это было время, когда люди были вынуждены сталкиваться с реальностью смерти каждый день, и когда сама жизнь стала ценной только как средство для достижения цели. Солдаты, которые были обучены следовать приказам, оказались в ситуации, когда они должны были выполнить приказы, которые противоречили всем их моральным принципам.\n\nЧто заставляло людей соглашаться на такие ужасные эксперименты и практики? Было ли это страхом, лояльностью или чем-то другим? И какие были последствия для тех, кто отказывался участвовать в этих боях? Были ли они подвергнуты наказанию, или они были в состоянии сохранить свою честь перед лицом невыносимых условий? Мы также рассмотрим психологическое воздействие на участников, как на тех, кто был вынужден участвовать в боях, так и на тех, кто наблюдал за ними.\n\nКакие эмоции испытывал человек, когда его вели на полигон, зная, что его ждут пули и смерть? Был ли он в состоянии сохранить свое достоинство, или он был сломлен страхом и отчаянием? И что насчёт тех, кто наблюдал за этими боями? Как они могли спокойно смотреть на смерть других людей, не испытывая никаких эмоций? Эти вопросы будут нас преследовать, и мы попытаемся найти ответы на них.\n\nГлава будет продолжена с описанием конкретных случаев использования военнопленных как живых мишеней, анализом мотивов тех, кто организовывал эти бои, и рассмотрением последствий для участников. Мы также рассмотрим роль лидеров и командиров, которые были ответственны за такие действия, и как они могли оправдать такие зверства.\n\n[ГЛАВА 3: Последствия войны - 20:00-30:00]\nВойна всегда оставляет после себя глубокие раны, не только физические, но и эмоциональные и психологические. Для тех, кто был вынужден участвовать в смертельных боях как живые мишени, последствия были особенно тяжелыми. Многие из них не смогли оправиться от травм, которые они пережили, и их жизни были навсегда изменены.\n\nЧто ждало этих людей после войны? Были ли они в состоянии вернуться к своей обычной жизни, или они были навсегда отмечены опытом, который они пережили? И какие были последствия для тех, кто организовывал эти бои? Были ли они привлечены к ответственности за свои действия, или они были в состоянии избежать наказания? Мы также рассмотрим роль международных организаций и трибуналов, которые были созданы для расследования и наказания военных преступлений.\n\nКакие уроки мы можем извлечь из этих трагических событий? Как мы можем использовать эти знания, чтобы предотвратить подобные трагедии в будущем? И какие шаги мы можем предпринять, чтобы обеспечить, что такие зверства никогда не повторятся? Эти вопросы будут нас преследовать, и мы попытаемся найти ответы на них.\n\nГлава будет продолжена с описанием процесса реабилитации и восстановления для тех, кто был вынужден участвовать в смертельных боях, анализом международной реакции на эти события и рассмотрением уроков, которые мы можем извлечь из этих трагических событий.\n\n[КУЛЬМИНАЦИЯ]\nВ этот момент истории мы достигаем кульминации - момент, когда судьба военнопленных, вынужденных участвовать в смертельных боях, становится ясной. Это момент, когда мы понимаем всю глубину ужаса, который был совершен, и когда мы осознаем, что такие события никогда не должны повториться. Это момент, когда мы должны задуматься о наших собственных ценностях и принципах, и когда мы должны решить, как мы можем внести свой вклад в предотвращение таких трагедий в будущем.\n\n[ЗАКЛЮЧЕНИЕ]\nВ заключение, история военнопленных, вынужденных участвовать в смертельных боях как живые мишени, является трагической и шокирующей. Это история, которая заставляет нас задуматься о человеческой природе и о том, что заставляет людей совершать такие ужасные действия. Это история, которая напоминает нам о важности защиты человеческих прав и о необходимости предотвращения таких трагедий в будущем.\n\nМы надеемся, что это видео заставило вас задуматься о этих вопросах и что оно дало вам возможность лучше понять сложности истории. Если вы хотите узнать больше о этой теме, мы рекомендуем вам посмотреть наши другие видео, в которых мы рассматриваем различные аспекты Второй мировой войны и ее последствий. Кроме того, мы призываем вас подписаться на наш канал, чтобы быть в курсе новых видео и чтобы поддержать нашу работу. Спасибо за просмотр, и мы увидимся в следующем видео.",
     "script_segments": [],
     "image_prompts": [
       {
         "id": 1,
-        "timecode": "0:00-0:12",
-        "duration_sec": 12,
-        "scene_ru": "Адольф Гитлер и Иосиф Сталин в раздельных кадрах",
-        "prompt_en": "Adolf Hitler and Joseph Stalin, anatomically correct, natural facial features, proper proportions, formal attire, serious expressions, standing in front of a map of Europe, cinematic lighting, masterpiece, 8k, sharp focus",
-        "motion_effect": "zoom_in",
-        "is_first_5min": true
+        "prompt_en": "A cinematic, hyperrealistic depiction of a World War II prisoner of war camp, with a dramatic lighting setting sun in the background, and a group of prisoners standing in the foreground, looking worried and scared, with a guard tower looming in the distance, in 8k resolution."
       },
       {
         "id": 2,
-        "timecode": "0:12-0:25",
-        "duration_sec": 13,
-        "scene_ru": "Немецкие солдаты маршируют через Польшу",
-        "prompt_en": "German soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, marching through Poland, documentary photograph, Kodachrome film, historical accuracy, pan_left",
-        "motion_effect": "pan_left",
-        "is_first_5min": true
+        "prompt_en": "A close-up, anatomically correct portrait of a prisoner of war, with natural facial features, looking directly at the camera with a mix of fear and desperation in his eyes, set against a blurred background of a prison camp, in a cinematic and dramatic lighting style."
       },
       {
         "id": 3,
-        "timecode": "0:25-0:38",
-        "duration_sec": 13,
-        "scene_ru": "Советские солдаты готовятся к обороне Сталинграда",
-        "prompt_en": "Soviet soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, preparing for defense, standing in front of a ruined building, cinematic lighting, masterpiece, 8k, sharp focus, zoom_out",
-        "motion_effect": "zoom_out",
-        "is_first_5min": true
+        "prompt_en": "A wide-angle shot of a prison camp, with rows of barracks and guard towers, surrounded by a high wall with barbed wire, and a group of prisoners walking in the foreground, looking downtrodden and hopeless, in a hyperrealistic and 8k resolution style."
       },
       {
         "id": 4,
-        "timecode": "0:38-0:50",
-        "duration_sec": 12,
-        "scene_ru": "Немецкие танки приближаются к Сталинграду",
-        "prompt_en": "German tanks, detailed and historically accurate, approaching Stalingrad, documentary photograph, Kodachrome film, historical accuracy, pan_right",
-        "motion_effect": "pan_right",
-        "is_first_5min": true
+        "prompt_en": "A dramatic and cinematic depiction of a prisoner of war being led to a shooting range, with a guard holding a rifle and walking behind him, and a target range in the background, with a sense of foreboding and danger in the air, in 8k resolution."
       },
       {
         "id": 5,
-        "timecode": "0:50-1:02",
-        "duration_sec": 12,
-        "scene_ru": "Советские солдаты сражаются на улицах Сталинграда",
-        "prompt_en": "Soviet soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, fighting on the streets of Stalingrad, cinematic lighting, masterpiece, 8k, sharp focus, zoom_in",
-        "motion_effect": "zoom_in",
-        "is_first_5min": true
+        "prompt_en": "A detailed and realistic illustration of a World War II-era rifle, with a guard's hand holding it, and a prisoner of war standing in the background, looking scared and helpless, in a cinematic and hyperrealistic style."
       },
       {
         "id": 6,
-        "timecode": "1:02-1:14",
-        "duration_sec": 12,
-        "scene_ru": "Гражданское население Сталинграда в бомбардировке",
-        "prompt_en": "Civilian population of Stalingrad, anatomically correct, natural facial features, proper proportions, scared and running, during a bombing, documentary photograph, Kodachrome film, historical accuracy, static",
-        "motion_effect": "static",
-        "is_first_5min": true
+        "prompt_en": "A hyperrealistic and cinematic depiction of a prisoner of war standing in front of a target range, with a guard standing next to him, holding a rifle and looking at him with a mixture of contempt and indifference, in 8k resolution."
       },
       {
         "id": 7,
-        "timecode": "1:14-1:26",
-        "duration_sec": 12,
-        "scene_ru": "Немецкие солдаты занимают позиции вокруг Сталинграда",
-        "prompt_en": "German soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, occupying positions around Stalingrad, cinematic lighting, masterpiece, 8k, sharp focus, pan_left",
-        "motion_effect": "pan_left",
-        "is_first_5min": true
+        "prompt_en": "A close-up, anatomically correct portrait of a guard, with a natural and realistic facial expression, looking directly at the camera with a sense of superiority and disdain, set against a blurred background of a prison camp, in a cinematic and dramatic lighting style."
       },
       {
         "id": 8,
-        "timecode": "1:26-1:38",
-        "duration_sec": 12,
-        "scene_ru": "Советские генералы планируют контрнаступление",
-        "prompt_en": "Soviet generals, anatomically correct, natural facial features, proper proportions, formal attire, planning a counterattack, standing in front of a map of Stalingrad, documentary photograph, Kodachrome film, historical accuracy, zoom_out",
-        "motion_effect": "zoom_out",
-        "is_first_5min": true
+        "prompt_en": "A wide-angle shot of a shooting range, with a prisoner of war standing in front of a target, and a group of guards standing in the background, looking on with a mixture of curiosity and indifference, in a hyperrealistic and 8k resolution style."
       },
       {
         "id": 9,
-        "timecode": "1:38-1:50",
-        "duration_sec": 12,
-        "scene_ru": "Советские танки атакуют немецкие позиции",
-        "prompt_en": "Soviet tanks, detailed and historically accurate, attacking German positions, cinematic lighting, masterpiece, 8k, sharp focus, pan_right",
-        "motion_effect": "pan_right",
-        "is_first_5min": true
+        "prompt_en": "A dramatic and cinematic depiction of a prisoner of war being shot, with a guard holding a rifle and looking on with a sense of satisfaction, and a sense of chaos and confusion in the background, in 8k resolution."
       },
       {
         "id": 10,
-        "timecode": "1:50-2:02",
-        "duration_sec": 12,
-        "scene_ru": "Немецкие солдаты отступают из Сталинграда",
-        "prompt_en": "German soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, retreating from Stalingrad, documentary photograph, Kodachrome film, historical accuracy, zoom_in",
-        "motion_effect": "zoom_in",
-        "is_first_5min": true
+        "prompt_en": "A detailed and realistic illustration of a World War II-era prison camp, with a group of prisoners standing in the foreground, looking worried and scared, and a guard tower looming in the background, in a cinematic and hyperrealistic style."
       },
       {
         "id": 11,
-        "timecode": "2:02-2:14",
-        "duration_sec": 12,
-        "scene_ru": "Советские солдаты празднуют победу",
-        "prompt_en": "Soviet soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, celebrating victory, standing in front of a ruined building, cinematic lighting, masterpiece, 8k, sharp focus, static",
-        "motion_effect": "static",
-        "is_first_5min": true
+        "prompt_en": "A close-up, anatomically correct portrait of a prisoner of war, with natural facial features, looking directly at the camera with a sense of desperation and hopelessness, set against a blurred background of a prison camp, in a cinematic and dramatic lighting style."
       },
       {
         "id": 12,
-        "timecode": "2:14-2:26",
-        "duration_sec": 12,
-        "scene_ru": "Гражданское население Сталинграда восстанавливает город",
-        "prompt_en": "Civilian population of Stalingrad, anatomically correct, natural facial features, proper proportions, rebuilding the city, documentary photograph, Kodachrome film, historical accuracy, pan_left",
-        "motion_effect": "pan_left",
-        "is_first_5min": true
+        "prompt_en": "A hyperrealistic and cinematic depiction of a guard tower, with a guard standing in the foreground, looking out over the prison camp, and a sense of menace and danger in the air, in 8k resolution."
       },
       {
         "id": 13,
-        "timecode": "2:26-2:38",
-        "duration_sec": 12,
-        "scene_ru": "Немецкие командующие обсуждают поражение",
-        "prompt_en": "German commanders, anatomically correct, natural facial features, proper proportions, formal attire, discussing defeat, standing in front of a map of Stalingrad, cinematic lighting, masterpiece, 8k, sharp focus, zoom_out",
-        "motion_effect": "zoom_out",
-        "is_first_5min": true
+        "prompt_en": "A wide-angle shot of a prison camp, with rows of barracks and guard towers, surrounded by a high wall with barbed wire, and a group of prisoners walking in the foreground, looking downtrodden and hopeless, in a hyperrealistic and 8k resolution style."
       },
       {
         "id": 14,
-        "timecode": "2:38-2:50",
-        "duration_sec": 12,
-        "scene_ru": "Советские солдаты охраняют немецких пленных",
-        "prompt_en": "Soviet soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, guarding German prisoners, documentary photograph, Kodachrome film, historical accuracy, pan_right",
-        "motion_effect": "pan_right",
-        "is_first_5min": true
+        "prompt_en": "A dramatic and cinematic depiction of a prisoner of war being led away from a shooting range, with a guard holding a rifle and walking behind him, and a sense of sadness and loss in the air, in 8k resolution."
       },
       {
         "id": 15,
-        "timecode": "2:50-3:02",
-        "duration_sec": 12,
-        "scene_ru": "Гитлер и Сталин в раздельных кадрах, размышляя о войне",
-        "prompt_en": "Adolf Hitler and Joseph Stalin, anatomically correct, natural facial features, proper proportions, formal attire, reflecting on the war, standing in front of a map of Europe, cinematic lighting, masterpiece, 8k, sharp focus, zoom_in",
-        "motion_effect": "zoom_in",
-        "is_first_5min": true
+        "prompt_en": "A detailed and realistic illustration of a World War II-era prison camp, with a group of prisoners standing in the foreground, looking worried and scared, and a guard tower looming in the background, with a sense of foreboding and danger in the air, in a cinematic and hyperrealistic style."
       },
       {
         "id": 16,
-        "timecode": "3:02-3:14",
-        "duration_sec": 12,
-        "scene_ru": "Советские солдаты маршируют через освобождённый город",
-        "prompt_en": "Soviet soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, marching through a liberated city, documentary photograph, Kodachrome film, historical accuracy, static",
-        "motion_effect": "static",
-        "is_first_5min": true
+        "prompt_en": "A group of war prisoners, led by a stern-looking guard, walking towards a firing range, with a hint of fear and desperation in their eyes, set against a dramatic, overcast sky with ominous clouds, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 17,
-        "timecode": "3:14-3:26",
-        "duration_sec": 12,
-        "scene_ru": "Гражданское население Сталинграда возвращается к нормальной жизни",
-        "prompt_en": "Civilian population of Stalingrad, anatomically correct, natural facial features, proper proportions, returning to normal life, documentary photograph, Kodachrome film, historical accuracy, pan_left",
-        "motion_effect": "pan_left",
-        "is_first_5min": true
+        "prompt_en": "A close-up of a war prisoner's face, showcasing a mix of emotions - fear, anxiety, and determination, with a hint of tears in his eyes, set against a blurred background of a firing range, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 18,
-        "timecode": "3:26-3:38",
-        "duration_sec": 12,
-        "scene_ru": "Немецкие солдаты в плену, размышляя о своём поражении",
-        "prompt_en": "German soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, reflecting on their defeat, standing in a prison camp, cinematic lighting, masterpiece, 8k, sharp focus, zoom_out",
-        "motion_effect": "zoom_out",
-        "is_first_5min": true
+        "prompt_en": "A dramatic scene of a war prisoner standing in front of a firing squad, with his hands tied behind his back, and a look of resignation on his face, set against a dark and ominous background, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 19,
-        "timecode": "3:38-3:50",
-        "duration_sec": 12,
-        "scene_ru": "Советские солдаты патрулируют освобождённую территорию",
-        "prompt_en": "Soviet soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, patrolling liberated territory, documentary photograph, Kodachrome film, historical accuracy, pan_right",
-        "motion_effect": "pan_right",
-        "is_first_5min": true
+        "prompt_en": "A group of observers, including military officers and civilians, watching a war prisoner being led to the firing range, with a mix of emotions on their faces - curiosity, indifference, and horror, set against a dramatic, overcast sky, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 20,
-        "timecode": "3:50-4:02",
-        "duration_sec": 12,
-        "scene_ru": "Гражданское население Сталинграда восстанавливает свой город",
-        "prompt_en": "Civilian population of Stalingrad, anatomically correct, natural facial features, proper proportions, rebuilding their city, documentary photograph, Kodachrome film, historical accuracy, static",
-        "motion_effect": "static",
-        "is_first_5min": true
+        "prompt_en": "A war prisoner, kneeling on the ground, with his hands tied behind his back, and a look of despair on his face, set against a blurred background of a firing range, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 21,
-        "timecode": "4:02-4:14",
-        "duration_sec": 12,
-        "scene_ru": "Немецкие командующие обсуждают последствия поражения",
-        "prompt_en": "German commanders, anatomically correct, natural facial features, proper proportions, formal attire, discussing the consequences of defeat, standing in front of a map of Europe, cinematic lighting, masterpiece, 8k, sharp focus, zoom_in",
-        "motion_effect": "zoom_in",
-        "is_first_5min": true
+        "prompt_en": "A close-up of a military officer's face, showcasing a mix of emotions - determination, indifference, and a hint of sadness, as he watches a war prisoner being led to the firing range, set against a blurred background, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 22,
-        "timecode": "4:14-4:26",
-        "duration_sec": 12,
-        "scene_ru": "Советские солдаты празднуют победу со своими семьями",
-        "prompt_en": "Soviet soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, celebrating victory with their families, documentary photograph, Kodachrome film, historical accuracy, pan_left",
-        "motion_effect": "pan_left",
-        "is_first_5min": true
+        "prompt_en": "A dramatic scene of a war prisoner trying to escape from the firing range, with a look of desperation and fear on his face, set against a dark and ominous background, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 23,
-        "timecode": "4:26-4:38",
-        "duration_sec": 12,
-        "scene_ru": "Гитлер и Сталин в раздельных кадрах, размышляя о будущем",
-        "prompt_en": "Adolf Hitler and Joseph Stalin, anatomically correct, natural facial features, proper proportions, formal attire, reflecting on the future, standing in front of a map of Europe, cinematic lighting, masterpiece, 8k, sharp focus, zoom_out",
-        "motion_effect": "zoom_out",
-        "is_first_5min": true
+        "prompt_en": "A group of war prisoners, standing in front of a firing squad, with a mix of emotions on their faces - fear, anxiety, and resignation, set against a dramatic, overcast sky, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 24,
-        "timecode": "4:38-4:50",
-        "duration_sec": 12,
-        "scene_ru": "Советские солдаты маршируют через освобождённый город",
-        "prompt_en": "Soviet soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, marching through a liberated city, documentary photograph, Kodachrome film, historical accuracy, static",
-        "motion_effect": "static",
-        "is_first_5min": true
+        "prompt_en": "A close-up of a war prisoner's hands, tied behind his back, with a look of desperation and fear on his face, set against a blurred background of a firing range, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 25,
-        "timecode": "4:50-5:02",
-        "duration_sec": 12,
-        "scene_ru": "Гражданское население Сталинграда возвращается к нормальной жизни",
-        "prompt_en": "Civilian population of Stalingrad, anatomically correct, natural facial features, proper proportions, returning to normal life, documentary photograph, Kodachrome film, historical accuracy, pan_right",
-        "motion_effect": "pan_right",
-        "is_first_5min": true
+        "prompt_en": "A dramatic scene of a war prisoner being hit by a bullet, with a look of shock and pain on his face, set against a dark and ominous background, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 26,
-        "timecode": "5:00-5:40",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты и гражданское население празднуют победу",
-        "prompt_en": "Soviet soldiers and civilian population, anatomically correct, natural facial features, proper proportions, celebrating victory, standing in front of a ruined building, cinematic lighting, masterpiece, 8k, sharp focus, zoom_in",
-        "motion_effect": "zoom_in",
-        "is_first_5min": false
+        "prompt_en": "A group of observers, including military officers and civilians, watching a war prisoner being executed, with a mix of emotions on their faces - horror, sadness, and indifference, set against a dramatic, overcast sky, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 27,
-        "timecode": "5:40-6:20",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты в плену, размышляя о своём поражении",
-        "prompt_en": "German soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, reflecting on their defeat, standing in a prison camp, documentary photograph, Kodachrome film, historical accuracy, static",
-        "motion_effect": "static",
-        "is_first_5min": false
+        "prompt_en": "A close-up of a war prisoner's face, showcasing a mix of emotions - fear, anxiety, and determination, as he stands in front of a firing squad, set against a blurred background, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 28,
-        "timecode": "6:20-7:00",
-        "duration_sec": 40,
-        "scene_ru": "Советские генералы планируют будущие операции",
-        "prompt_en": "Soviet generals, anatomically correct, natural facial features, proper proportions, formal attire, planning future operations, standing in front of a map of Europe, cinematic lighting, masterpiece, 8k, sharp focus, pan_left",
-        "motion_effect": "pan_left",
-        "is_first_5min": false
+        "prompt_en": "A dramatic scene of a war prisoner trying to say his last words, with a look of desperation and fear on his face, set against a dark and ominous background, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 29,
-        "timecode": "7:00-7:40",
-        "duration_sec": 40,
-        "scene_ru": "Гражданское население Сталинграда восстанавливает свой город",
-        "prompt_en": "Civilian population of Stalingrad, anatomically correct, natural facial features, proper proportions, rebuilding their city, documentary photograph, Kodachrome film, historical accuracy, pan_right",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
+        "prompt_en": "A group of war prisoners, standing in front of a firing squad, with a mix of emotions on their faces - fear, anxiety, and resignation, set against a dramatic, overcast sky, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 30,
-        "timecode": "7:40-8:20",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие командующие обсуждают последствия поражения",
-        "prompt_en": "German commanders, anatomically correct, natural facial features, proper proportions, formal attire, discussing the consequences of defeat, standing in front of a map of Europe, cinematic lighting, masterpiece, 8k, sharp focus, zoom_out",
-        "motion_effect": "zoom_out",
-        "is_first_5min": false
+        "prompt_en": "A close-up of a war prisoner's eyes, showcasing a mix of emotions - fear, anxiety, and determination, as he stands in front of a firing squad, set against a blurred background, in 8k, hyperrealistic, cinematic style, with anatomically correct and natural facial features"
       },
       {
         "id": 31,
-        "timecode": "8:20-9:00",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты патрулируют освобождённую территорию",
-        "prompt_en": "Soviet soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, patrolling liberated territory, documentary photograph, Kodachrome film, historical accuracy, static",
-        "motion_effect": "static",
-        "is_first_5min": false
+        "prompt_en": "A dramatic close-up of a young woman's face, with tears streaming down her cheeks, set against a backdrop of a desolate, war-torn landscape, with a faint glimpse of a concentration camp in the distance, under cinematic lighting, 8k resolution, and hyperrealistic details, with anatomically correct features and natural facial expressions, conveying a sense of deep sorrow and loss."
       },
       {
         "id": 32,
-        "timecode": "9:00-9:40",
-        "duration_sec": 40,
-        "scene_ru": "Гражданское население Сталинграда возвращается к нормальной жизни",
-        "prompt_en": "Civilian population of Stalingrad, anatomically correct, natural facial features, proper proportions, returning to normal life, documentary photograph, Kodachrome film, historical accuracy, pan_left",
-        "motion_effect": "pan_left",
-        "is_first_5min": false
+        "prompt_en": "A hauntingly beautiful shot of a lone figure standing at the edge of a dense forest, with the faint sound of distant gunfire and screams echoing through the trees, under a dramatic, golden-hour sky, with the figure's face obscured by shadows, emphasizing the sense of isolation and fear, in 8k, cinematic, and hyperrealistic quality."
       },
       {
         "id": 33,
-        "timecode": "9:40-10:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские генералы планируют будущие операции",
-        "prompt_en": "Soviet generals, anatomically correct, natural facial features, proper proportions, formal attire, planning future operations, standing in front of a map of Europe, cinematic lighting, masterpiece, 8k, sharp focus, zoom_in",
-        "motion_effect": "zoom_in",
-        "is_first_5min": false
+        "prompt_en": "A masterfully crafted scene depicting a group of people huddled together in a cramped, dimly lit room, their faces filled with a mix of fear, uncertainty, and desperation, as they listen to the sound of footsteps and muffled voices outside, with a sense of tension and foreboding, in 8k, cinematic, and hyperrealistic detail, with a focus on anatomically correct features and natural facial expressions."
       },
       {
         "id": 34,
-        "timecode": "10:20-11:00",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты в плену, размышляя о своём поражении",
-        "prompt_en": "German soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, reflecting on their defeat, standing in a prison camp, documentary photograph, Kodachrome film, historical accuracy, static",
-        "motion_effect": "static",
-        "is_first_5min": false
+        "prompt_en": "A poignant and powerful image of a child's doll lying abandoned in the rubble of a bombed-out building, with a faint glimpse of a family photo in the background, under a dramatic, high-contrast lighting scheme, with a sense of devastation and loss, in 8k, cinematic, and hyperrealistic quality, with a focus on textures and details."
       },
       {
         "id": 35,
-        "timecode": "11:00-11:40",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты и гражданское население празднуют победу",
-        "prompt_en": "Soviet soldiers and civilian population, anatomically correct, natural facial features, proper proportions, celebrating victory, standing in front of a ruined building, cinematic lighting, masterpiece, 8k, sharp focus, pan_right",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
+        "prompt_en": "A dramatic and intense scene showing a group of people running for their lives, with a massive cloud of smoke and flames billowing in the background, under a chaotic, handheld camera style, with a sense of urgency and panic, in 8k, cinematic, and hyperrealistic detail, with a focus on anatomically correct features and natural facial expressions."
       },
       {
         "id": 36,
-        "timecode": "11:40-12:20",
-        "duration_sec": 40,
-        "scene_ru": "Гражданское население Сталинграда восстанавливает свой город",
-        "prompt_en": "Civilian population of Stalingrad, anatomically correct, natural facial features, proper proportions, rebuilding their city, documentary photograph, Kodachrome film, historical accuracy, zoom_out",
-        "motion_effect": "zoom_out",
-        "is_first_5min": false
+        "prompt_en": "A hauntingly beautiful shot of a deserted, snow-covered landscape, with a lone figure in the distance, walking away from the camera, under a soft, ethereal lighting scheme, with a sense of isolation and melancholy, in 8k, cinematic, and hyperrealistic quality, with a focus on textures and details."
       },
       {
         "id": 37,
-        "timecode": "12:20-13:00",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие командующие обсуждают последствия поражения",
-        "prompt_en": "German commanders, anatomically correct, natural facial features, proper proportions, formal attire, discussing the consequences of defeat, standing in front of a map of Europe, cinematic lighting, masterpiece, 8k, sharp focus, static",
-        "motion_effect": "static",
-        "is_first_5min": false
+        "prompt_en": "A masterfully crafted scene depicting a group of people gathered around a makeshift radio, listening to a broadcast of a historic speech, with their faces filled with a mix of hope, fear, and uncertainty, under a warm, golden lighting scheme, with a sense of community and shared experience, in 8k, cinematic, and hyperrealistic detail, with a focus on anatomically correct features and natural facial expressions."
       },
       {
         "id": 38,
-        "timecode": "13:00-13:40",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты патрулируют освобождённую территорию",
-        "prompt_en": "Soviet soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, patrolling liberated territory, documentary photograph, Kodachrome film, historical accuracy, pan_left",
-        "motion_effect": "pan_left",
-        "is_first_5min": false
+        "prompt_en": "A dramatic and intense scene showing a group of people fighting for their freedom, with a massive, imposing structure looming in the background, under a dramatic, high-contrast lighting scheme, with a sense of determination and defiance, in 8k, cinematic, and hyperrealistic detail, with a focus on anatomically correct features and natural facial expressions."
       },
       {
         "id": 39,
-        "timecode": "13:40-14:20",
-        "duration_sec": 40,
-        "scene_ru": "Гражданское население Сталинграда возвращается к нормальной жизни",
-        "prompt_en": "Civilian population of Stalingrad, anatomically correct, natural facial features, proper proportions, returning to normal life, documentary photograph, Kodachrome film, historical accuracy, zoom_in",
-        "motion_effect": "zoom_in",
-        "is_first_5min": false
+        "prompt_en": "A poignant and powerful image of a person standing alone in a vast, empty space, with a faint glimpse of a cityscape in the distance, under a soft, melancholic lighting scheme, with a sense of loneliness and disconnection, in 8k, cinematic, and hyperrealistic quality, with a focus on textures and details."
       },
       {
         "id": 40,
-        "timecode": "14:20-15:00",
-        "duration_sec": 40,
-        "scene_ru": "Советские генералы планируют будущие операции",
-        "prompt_en": "Soviet generals, anatomically correct, natural facial features, proper proportions, formal attire, planning future operations, standing in front of a map of Europe, cinematic lighting, masterpiece, 8k, sharp focus, pan_right",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
+        "prompt_en": "A masterfully crafted scene depicting a group of people working together to build a makeshift shelter, with their faces filled with a mix of determination and exhaustion, under a warm, golden lighting scheme, with a sense of community and shared purpose, in 8k, cinematic, and hyperrealistic detail, with a focus on anatomically correct features and natural facial expressions."
       },
       {
         "id": 41,
-        "timecode": "15:00-15:40",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты в плену, размышляя о своём поражении",
-        "prompt_en": "German soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, reflecting on their defeat, standing in a prison camp, documentary photograph, Kodachrome film, historical accuracy, static",
-        "motion_effect": "static",
-        "is_first_5min": false
+        "prompt_en": "A dramatic and intense scene showing a group of people fleeing from a natural disaster, with a massive, imposing wave crashing in the background, under a chaotic, handheld camera style, with a sense of panic and desperation, in 8k, cinematic, and hyperrealistic detail, with a focus on anatomically correct features and natural facial expressions."
       },
       {
         "id": 42,
-        "timecode": "15:40-16:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты и гражданское население празднуют победу",
-        "prompt_en": "Soviet soldiers and civilian population, anatomically correct, natural facial features, proper proportions, celebrating victory, standing in front of a ruined building, cinematic lighting, masterpiece, 8k, sharp focus, zoom_out",
-        "motion_effect": "zoom_out",
-        "is_first_5min": false
+        "prompt_en": "A hauntingly beautiful shot of a deserted, abandoned cityscape, with a lone figure in the distance, walking towards the camera, under a soft, ethereal lighting scheme, with a sense of isolation and melancholy, in 8k, cinematic, and hyperrealistic quality, with a focus on textures and details."
       },
       {
         "id": 43,
-        "timecode": "16:20-17:00",
-        "duration_sec": 40,
-        "scene_ru": "Гражданское население Сталинграда восстанавливает свой город",
-        "prompt_en": "Civilian population of Stalingrad, anatomically correct, natural facial features, proper proportions, rebuilding their city, documentary photograph, Kodachrome film, historical accuracy, pan_left",
-        "motion_effect": "pan_left",
-        "is_first_5min": false
+        "prompt_en": "A masterfully crafted scene depicting a group of people gathered around a makeshift table, sharing a meal and stories, with their faces filled with a mix of laughter and tears, under a warm, golden lighting scheme, with a sense of community and shared experience, in 8k, cinematic, and hyperrealistic detail, with a focus on anatomically correct features and natural facial expressions."
       },
       {
         "id": 44,
-        "timecode": "17:00-17:40",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие командующие обсуждают последствия поражения",
-        "prompt_en": "German commanders, anatomically correct, natural facial features, proper proportions, formal attire, discussing the consequences of defeat, standing in front of a map of Europe, cinematic lighting, masterpiece, 8k, sharp focus, static",
-        "motion_effect": "static",
-        "is_first_5min": false
+        "prompt_en": "A poignant and powerful image of a person standing alone in a crowded city, with a faint glimpse of a massive, imposing structure in the background, under a dramatic, high-contrast lighting scheme, with a sense of disconnection and isolation, in 8k, cinematic, and hyperrealistic quality, with a focus on textures and details."
       },
       {
         "id": 45,
-        "timecode": "17:40-18:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты патрулируют освобождённую территорию",
-        "prompt_en": "Soviet soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, patrolling liberated territory, documentary photograph, Kodachrome film, historical accuracy, pan_right",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
+        "prompt_en": "A dramatic and intense scene showing a group of people fighting for their rights, with a massive, imposing crowd of people in the background, under a dramatic, high-contrast lighting scheme, with a sense of determination and defiance, in 8k, cinematic, and hyperrealistic detail, with a focus on anatomically correct features and natural facial expressions."
       },
       {
         "id": 46,
-        "timecode": "18:20-19:00",
-        "duration_sec": 40,
-        "scene_ru": "Гражданское население Сталинграда возвращается к нормальной жизни",
-        "prompt_en": "Civilian population of Stalingrad, anatomically correct, natural facial features, proper proportions, returning to normal life, documentary photograph, Kodachrome film, historical accuracy, zoom_in",
-        "motion_effect": "zoom_in",
-        "is_first_5min": false
+        "prompt_en": "A young woman with anatomically correct features and natural facial expressions stands at the edge of a cliff, overlooking a vast, hyperrealistic landscape with cinematic lighting, dramatic shadows, and sharp focus, as the sun sets behind her, casting a warm glow on her face, with a gentle breeze blowing through her hair, in 8k resolution"
       },
       {
         "id": 47,
-        "timecode": "19:00-19:40",
-        "duration_sec": 40,
-        "scene_ru": "Советские генералы планируют будущие операции",
-        "prompt_en": "Soviet generals, anatomically correct, natural facial features, proper proportions, formal attire, planning future operations, standing in front of a map of Europe, cinematic lighting, masterpiece, 8k, sharp focus, pan_left",
-        "motion_effect": "pan_left",
-        "is_first_5min": false
+        "prompt_en": "A close-up shot of a man's face, with a strong jawline and piercing eyes, illuminated by a single, dramatic light source, highlighting his anatomically correct features and natural facial expressions, with a shallow depth of field, blurring the background, in 8k resolution and cinematic style"
       },
       {
         "id": 48,
-        "timecode": "19:40-20:20",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты в плену, размышляя о своём поражении",
-        "prompt_en": "German soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, reflecting on their defeat, standing in a prison camp, documentary photograph, Kodachrome film, historical accuracy, static",
-        "motion_effect": "static",
-        "is_first_5min": false
+        "prompt_en": "A group of people, each with unique, anatomically correct features and natural facial expressions, gather around a campfire, surrounded by a hyperrealistic forest, with cinematic lighting and dramatic shadows, as flames dance and flicker, casting a warm glow on their faces, in 8k resolution and sharp focus"
       },
       {
         "id": 49,
-        "timecode": "20:20-21:00",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты и гражданское население празднуют победу",
-        "prompt_en": "Soviet soldiers and civilian population, anatomically correct, natural facial features, proper proportions, celebrating victory, standing in front of a ruined building, cinematic lighting, masterpiece, 8k, sharp focus, zoom_out",
-        "motion_effect": "zoom_out",
-        "is_first_5min": false
+        "prompt_en": "A serene, hyperrealistic landscape of a misty forest, with a winding path leading into the distance, illuminated by soft, cinematic lighting, and a few, strategically placed, dramatic light sources, highlighting the textures and details of the environment, in 8k resolution and sharp focus"
       },
       {
         "id": 50,
-        "timecode": "21:00-21:40",
-        "duration_sec": 40,
-        "scene_ru": "Гражданское население Сталинграда восстанавливает свой город",
-        "prompt_en": "Civilian population of Stalingrad, anatomically correct, natural facial features, proper proportions, rebuilding their city, documentary photograph, Kodachrome film, historical accuracy, pan_right",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
+        "prompt_en": "A woman with anatomically correct features and natural facial expressions, dressed in a flowing, white gown, stands in the center of a grand, hyperrealistic ballroom, surrounded by chandeliers and ornate decorations, with cinematic lighting and dramatic shadows, as she gazes out a window, lost in thought, in 8k resolution"
       },
       {
         "id": 51,
-        "timecode": "21:40-22:20",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие командующие обсуждают последствия поражения",
-        "prompt_en": "German commanders, anatomically correct, natural facial features, proper proportions, formal attire, discussing the consequences of defeat, standing in front of a map of Europe, cinematic lighting, masterpiece, 8k, sharp focus, static",
-        "motion_effect": "static",
-        "is_first_5min": false
+        "prompt_en": "A dramatic, hyperrealistic scene of a stormy sea, with waves crashing against the shore, and a few, brave, anatomically correct figures, with natural facial expressions, standing at the edge of the water, illuminated by flashes of lightning, and cinematic lighting, in 8k resolution and sharp focus"
       },
       {
         "id": 52,
-        "timecode": "22:20-23:00",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты патрулируют освобождённую территорию",
-        "prompt_en": "Soviet soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, patrolling liberated territory, documentary photograph, Kodachrome film, historical accuracy, pan_left",
-        "motion_effect": "pan_left",
-        "is_first_5min": false
+        "prompt_en": "A close-up shot of a man's hands, with anatomically correct features and natural textures, as he holds a small, delicate, hyperrealistic music box, with intricate details and patterns, illuminated by a soft, cinematic light source, highlighting the contrast between the rough, human skin and the smooth, mechanical device, in 8k resolution"
       },
       {
         "id": 53,
-        "timecode": "23:00-23:40",
-        "duration_sec": 40,
-        "scene_ru": "Гражданское население Сталинграда возвращается к нормальной жизни",
-        "prompt_en": "Civilian population of Stalingrad, anatomically correct, natural facial features, proper proportions, returning to normal life, documentary photograph, Kodachrome film, historical accuracy, zoom_in",
-        "motion_effect": "zoom_in",
-        "is_first_5min": false
+        "prompt_en": "A hyperrealistic, cinematic scene of a futuristic cityscape, with towering skyscrapers and flying cars zipping through the air, as people with anatomically correct features and natural facial expressions, go about their daily lives, illuminated by a combination of natural and artificial light sources, in 8k resolution and sharp focus"
       },
       {
         "id": 54,
-        "timecode": "23:40-24:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские генералы планируют будущие операции",
-        "prompt_en": "Soviet generals, anatomically correct, natural facial features, proper proportions, formal attire, planning future operations, standing in front of a map of Europe, cinematic lighting, masterpiece, 8k, sharp focus, pan_right",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
+        "prompt_en": "A woman with anatomically correct features and natural facial expressions, sits in a cozy, hyperrealistic library, surrounded by books and warm, cinematic lighting, as she reads a leather-bound tome, with a look of intense focus and curiosity, in 8k resolution and sharp focus"
       },
       {
         "id": 55,
-        "timecode": "24:20-25:00",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты в плену, размышляя о своём поражении",
-        "prompt_en": "German soldiers, anatomically correct, natural facial features, proper proportions, military uniforms, reflecting on their defeat, standing in a prison camp, documentary photograph, Kodachrome film, historical accuracy, static",
-        "motion_effect": "static",
-        "is_first_5min": false
+        "prompt_en": "A dramatic, hyperrealistic scene of a fiery explosion, with flames engulfing a building, and people with anatomically correct features and natural facial expressions, running for their lives, illuminated by the intense, cinematic light of the fire, in 8k resolution and sharp focus"
+      },
+      {
+        "id": 56,
+        "prompt_en": "A serene, hyperrealistic landscape of a peaceful, moonlit lake, with a few, anatomically correct figures, with natural facial expressions, standing at the water's edge, illuminated by the soft, cinematic glow of the moon, in 8k resolution and sharp focus"
+      },
+      {
+        "id": 57,
+        "prompt_en": "A close-up shot of a woman's face, with anatomically correct features and natural facial expressions, as she gazes up at the stars, illuminated by a soft, cinematic light source, highlighting the wonder and awe in her eyes, in 8k resolution and sharp focus"
+      },
+      {
+        "id": 58,
+        "prompt_en": "A hyperrealistic, cinematic scene of a bustling, ancient marketplace, with people from all walks of life, each with unique, anatomically correct features and natural facial expressions, haggling over goods and wares, illuminated by a combination of natural and artificial light sources, in 8k resolution and sharp focus"
+      },
+      {
+        "id": 59,
+        "prompt_en": "A dramatic, hyperrealistic scene of a majestic, snowy mountain range, with a few, brave, anatomically correct figures, with natural facial expressions, climbing up the steep, rocky slopes, illuminated by the harsh, cinematic light of the sun, in 8k resolution and sharp focus"
+      },
+      {
+        "id": 60,
+        "prompt_en": "A woman with anatomically correct features and natural facial expressions, stands in the center of a grand, hyperrealistic concert hall, surrounded by musicians and ornate decorations, with cinematic lighting and dramatic shadows, as she raises her arms to conduct the orchestra, in 8k resolution and sharp focus"
+      },
+      {
+        "id": 61,
+        "prompt_en": "A dramatic close-up of a young woman's face, illuminated by a single ray of sunlight, with anatomically correct features and natural facial expressions, set against a blurred background of a mystical forest, in 8k hyperrealistic cinematic style with sharp focus and dramatic lighting."
+      },
+      {
+        "id": 62,
+        "prompt_en": "A hyperrealistic depiction of a futuristic cityscape at dusk, with sleek skyscrapers and flying cars zipping by, captured in 8k cinematic quality with sharp focus, under a sky painted with hues of orange and pink, reflecting off the glass and steel towers."
+      },
+      {
+        "id": 63,
+        "prompt_en": "An intimate, cinematic portrait of an elderly man sitting by a fireplace, lost in thought, with warm, golden lighting casting a glow on his anatomically correct, aged features, in a cozy, wooden cabin surrounded by snow-covered trees, in 8k hyperrealistic detail."
+      },
+      {
+        "id": 64,
+        "prompt_en": "A majestic, hyperrealistic scene of a massive, ancient tree standing tall amidst a serene, misty forest, with the sun peeking through the canopy above, casting dappled shadows on the forest floor, in 8k cinematic quality with sharp focus and dramatic lighting."
+      },
+      {
+        "id": 65,
+        "prompt_en": "A dramatic, cinematic capture of a violent stormy sea, with waves crashing against the shore, in 8k hyperrealistic quality, under a dark, ominous sky with lightning illuminating the clouds, and a lone figure in the distance, braving the storm."
+      },
+      {
+        "id": 66,
+        "prompt_en": "A highly detailed, 8k hyperrealistic image of a futuristic laboratory, filled with advanced technology and scientists in white coats, working diligently, with cinematic lighting highlighting the intensity of their work, and a large, mysterious device at the center of the room."
+      },
+      {
+        "id": 67,
+        "prompt_en": "A breathtaking, cinematic aerial view of a sprawling, modern metropolis at night, with millions of lights twinkling like stars, captured in 8k hyperrealistic quality, with sharp focus and dramatic lighting, showcasing the city's vibrant, bustling life."
+      },
+      {
+        "id": 68,
+        "prompt_en": "A poignant, hyperrealistic portrayal of a solitary figure standing at the edge of a cliff, overlooking a vast, breathtaking landscape at sunset, with anatomically correct features and natural facial expressions, in 8k cinematic quality, with dramatic lighting and sharp focus."
+      },
+      {
+        "id": 69,
+        "prompt_en": "A stunning, cinematic depiction of a fantastical, dreamlike world, with rolling hills of purple and green, and towering, glowing trees, in 8k hyperrealistic detail, with a group of figures in the distance, walking towards a shimmering, iridescent portal."
+      },
+      {
+        "id": 70,
+        "prompt_en": "A dramatic, hyperrealistic scene of a intense, fiery explosion, with flames engulfing a city street, captured in 8k cinematic quality, with sharp focus and dramatic lighting, and people running for their lives in the foreground."
+      },
+      {
+        "id": 71,
+        "prompt_en": "A serene, cinematic image of a peaceful, moonlit lake, with a small, wooden boat drifting gently on the water, surrounded by tall, silent trees, in 8k hyperrealistic quality, with sharp focus and soft, lunar lighting."
+      },
+      {
+        "id": 72,
+        "prompt_en": "A highly detailed, 8k hyperrealistic depiction of a historic, medieval castle, with stone walls, towers, and a grand, imposing gate, set amidst a lush, green landscape, in cinematic quality, with dramatic lighting and sharp focus."
+      },
+      {
+        "id": 73,
+        "prompt_en": "A captivating, cinematic portrait of a young artist, sitting at her easel, lost in the process of creating, with anatomically correct features and natural facial expressions, in a cozy, cluttered studio filled with paintings, brushes, and half-finished canvases, in 8k hyperrealistic quality."
+      },
+      {
+        "id": 74,
+        "prompt_en": "A breathtaking, hyperrealistic scene of a massive, celestial event, such as a supernova or a black hole, captured in 8k cinematic quality, with sharp focus and dramatic lighting, showcasing the awe-inspiring power and beauty of the universe."
+      },
+      {
+        "id": 75,
+        "prompt_en": "A dramatic, cinematic image of a daring, high-stakes heist, with a team of thieves infiltrating a highly secured, futuristic facility, in 8k hyperrealistic detail, with sharp focus, dramatic lighting, and a sense of intense, heart-pumping action."
+      },
+      {
+        "id": 76,
+        "prompt_en": "A dramatic scene of a lone figure standing at the edge of a cliff, overlooking a vast, moonlit ocean, with waves crashing against the rocks below, and a distant lighthouse shining its beam across the water, in a cinematic, hyperrealistic style, with anatomically correct and natural facial features, and sharp focus, 8k resolution, masterpiece quality."
+      },
+      {
+        "id": 77,
+        "prompt_en": "In a dimly lit, hyperrealistic, 8k resolution, cinematic scene, a group of friends are seated around a roaring campfire, their faces illuminated by the flickering flames, with anatomically correct and natural facial features, as they share stories and laughter, under a star-filled night sky, with a sharp focus and masterpiece quality."
+      },
+      {
+        "id": 78,
+        "prompt_en": "A hyperrealistic, 8k, cinematic depiction of a busy city street at night, with neon lights reflecting off the wet pavement, and people of all ages and cultures walking in every direction, with anatomically correct and natural facial features, and a sharp focus, masterpiece quality, capturing the vibrant energy of the urban landscape."
+      },
+      {
+        "id": 79,
+        "prompt_en": "In a dramatic, cinematic, and hyperrealistic scene, a young artist is shown standing in front of a large, unfinished canvas, with paints and brushes scattered all around, and a look of intense focus on their face, with anatomically correct and natural facial features, as they strive to bring their vision to life, in 8k resolution, with sharp focus, and masterpiece quality."
+      },
+      {
+        "id": 80,
+        "prompt_en": "A breathtaking, hyperrealistic, 8k, cinematic scene of a majestic mountain range at sunrise, with the peaks still capped with snow, and the valleys below filled with a lush, green forest, and a few birds flying in the distance, with anatomically correct and natural facial features on the hikers in the foreground, and a sharp focus, masterpiece quality, capturing the beauty of nature."
+      },
+      {
+        "id": 81,
+        "prompt_en": "In a dramatic, hyperrealistic, and cinematic scene, a group of scientists are shown working together in a state-of-the-art laboratory, with various experiments and equipment surrounding them, and a look of concentration on their faces, with anatomically correct and natural facial features, as they strive to make a groundbreaking discovery, in 8k resolution, with sharp focus, and masterpiece quality."
+      },
+      {
+        "id": 82,
+        "prompt_en": "A hyperrealistic, 8k, cinematic depiction of a serene and peaceful landscape, with a winding river flowing gently through a lush, green meadow, and a few trees scattered along the riverbank, with anatomically correct and natural facial features on the people relaxing in the distance, and a sharp focus, masterpiece quality, capturing the tranquility of nature."
+      },
+      {
+        "id": 83,
+        "prompt_en": "In a dramatic, cinematic, and hyperrealistic scene, a lone musician is shown sitting on a stool, with a guitar in hand, and a spotlight shining down on them, as they perform in front of a packed audience, with anatomically correct and natural facial features, and a sharp focus, masterpiece quality, capturing the emotion and passion of the performance, in 8k resolution."
+      },
+      {
+        "id": 84,
+        "prompt_en": "A breathtaking, hyperrealistic, 8k, cinematic scene of a futuristic cityscape at night, with towering skyscrapers and flying cars zipping by, and people of all ages and cultures walking on the sidewalks, with anatomically correct and natural facial features, and a sharp focus, masterpiece quality, capturing the energy and excitement of the urban metropolis."
+      },
+      {
+        "id": 85,
+        "prompt_en": "In a dramatic, hyperrealistic, and cinematic scene, a group of friends are shown standing together, looking out at a stunning, sunset-lit landscape, with anatomically correct and natural facial features, and a sharp focus, masterpiece quality, capturing the beauty of the moment, as they share a laugh and a sense of camaraderie, in 8k resolution."
       }
     ],
-    "images": [
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/001_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/002_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/003_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/004_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/005_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/006_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/008_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/009_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/010_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/013_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/014_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/017_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/018_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/019_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/020_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/021_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/022_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/023_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/024_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/025_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/027_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/029_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/030_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/031_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/032_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/033_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/034_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/035_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/036_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/037_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/038_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/042_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/043_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/044_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/045_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/046_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/047_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/048_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/049_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/050_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/051_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/052_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/053_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/054_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/images/055_scene.webp"
-    ],
-    "thumbnails": [
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/thumbnails/thumbnail_emotional.webp"
-    ],
-    "audio_path": "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/audio/voiceover.mp3",
-    "preview_video": "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542226_0/preview_data.json",
+    "images": [],
+    "thumbnails": [],
+    "thumbnail_prompts": [],
+    "audio_path": "",
+    "preview_video": "",
     "final_video": "",
     "sync_data": [],
-    "seo_title": "Битва за Сталинград: Как одна неделя изменила ход истории",
-    "seo_description": "Откройте правду о ключевом событии Второй мировой войны, которое изменило ход истории. Битва за Сталинград (0:00) - одно из самых значимых и спорных моментов в истории человечества. Мы расскажем о предыстории и причинах битвы (2:00), начале битвы и первых столкновениях (5:00). Подпишитесь на наш канал, чтобы узнать больше о истории (10:00). Ссылки на наши социальные сети: [плейсхолдеры]. Оставьте лайк и комментарий ниже!",
-    "seo_tags": [
-      "Вторая мировая война",
-      "Битва за Сталинград",
-      "История",
-      "Советский Союз",
-      "Германия",
-      "Адольф Гитлер",
-      "Иосиф Сталин",
-      "Кавказ",
-      "Волга",
-      "Красная армия",
-      "Немецкая армия",
-      "Вторая мировая война события",
-      "Битвы Второй мировой войны",
-      "История Второй мировой войны",
-      "Сталинградская битва",
-      "Великая Отечественная война",
-      "Военная история",
-      "Исторические события",
-      "Вторая мировая война хронология",
-      "Битва за Сталинград хронология",
-      "История Советского Союза",
-      "Германская оккупация",
-      "Сопротивление",
-      "Победа",
-      "История Германии",
-      "История России"
-    ],
-    "status": "error",
-    "progress": 30,
-    "current_step": "Ошибка: 'ImageClip' object has no attribute 'fl'",
-    "error_message": "'ImageClip' object has no attribute 'fl'",
+    "seo_title": "",
+    "seo_description": "",
+    "seo_tags": [],
+    "seo_hashtags": [],
+    "seo_alt_titles": [],
+    "seo_first_comment": "",
+    "status": "generating_voice",
+    "progress": 48,
+    "current_step": "FLUX: 37/85 изображений",
+    "error_message": "",
     "user_edits": {}
   },
-  "proj_1765542642_1": {
-    "id": "proj_1765542642_1",
-    "name": "Самый страшный военный план Второй мировой войны: ",
-    "created_at": "2025-12-12T19:30:42.893760",
-    "topic": "Изучение самых зловещих и тревожных планов и операций Второй мировой войны, которые были либо отменены, либо провалились\n\nХук: Подготовьтесь к ужасающей правде о плане, который никогда не был реализован",
-    "competitor_channel": "https://www.youtube.com/@WW2PowDiaries/videos",
-    "duration": "10-20 минут",
+  "proj_1765569660_3": {
+    "id": "proj_1765569660_3",
+    "name": "Запрещённые факты о тюрьмах Третьего рейха: что ск",
+    "created_at": "2025-12-13T03:01:00.127678",
+    "topic": "Эмоциональное и шокирующее видео о тюрьмах Третьего рейха, где содержались и подвергались пыткам тысячи людей\n\nХук: Шокирующие кадры из тюрем Третьего рейха, которые были скрыты от общества",
+    "competitor_channel": "https://www.youtube.com/@WWII-Records",
+    "duration": "40-50 минут",
     "language": "Русский",
     "channel_style_id": "",
-    "sub_niche": "Психологическая война и пропаганда Второй мировой войны (спрос: 6, конкур: 1)",
-    "ai_style": "документальный, серьёзный",
-    "ai_image_style": "Create a thumbnail with a dramatic and emotional tone, featuring a historical scene with people in military uniforms, using earthy colors and contrasting text.",
+    "sub_niche": "Жестокая расправа над военнопленными",
+    "ai_style": "документальный/развлекательный, драматичный/серьёзный",
+    "ai_image_style": "Create a dramatic WWII-themed thumbnail with a bold, eye-catching title and a central image of a soldier or military vehicle in action, with a dark and gritty color scheme and accents of bright red or orange to draw attention",
     "ai_transitions": [
       "fade",
       "zoom_in",
@@ -632,593 +408,158 @@
     "ai_music_mood": "dramatic, epic, orchestral",
     "ai_voice": "Brian",
     "ai_voice_id": "nPczCjzI2devNBz1zQrb",
-    "script": "[HOOK - 0:00-0:45]\nВ тени Второй мировой войны скрываются секреты, которые никогда не были полностью раскрыты, планы, которые были так зловещи и тревожны, что их существование было почти полностью стерто из исторических записей. Но что если бы эти планы были реализованы? Что если бы мир увидел воплощение в жизнь самых темных и безумных идей, которые когда-либо рождались в человеческом уме? Подготовьтесь к ужасающей правде о плане, который никогда не был реализован, но который мог изменить ход истории навсегда.\n\n[ГЛАВА 1: \"Операция Валькирия\" - 0:45-3:30]\nОперация Валькирия была кодовым названием заговора, организованного группой немецких офицеров, которые были возмущены действиями Адольфа Гитлера и его режима. Эти люди, возглавляемые Клаусом фон Штауффенбергом, были решительно настроены на то, чтобы свергнуть Гитлера и положить конец Второй мировой войне. Они разработали сложный план, который включал в себя подрыв бомбы во время встречи Гитлера с его генералами, а затем захват ключевых объектов и установление нового правительства. Но что заставило этих людей пойти на такой шаг? Что было так важно, что они были готовы рискнуть своей жизнью и жизнями своих близких?\n\nОперация Валькирия была не просто простым заговором, а тщательно спланированным и подготовленным планом, который включал в себя многих людей и требовал точного выполнения. Заговорщики провели месяцы, собирая информацию и создавая сеть доверенных людей, которые были готовы помочь им в их миссии. Они также разработали сложную систему кодов и шифров, чтобы общаться друг с другом без риска обнаружения. Но несмотря на все их усилия, операция в конечном итоге провалилась. Бомба взорвалась, но Гитлер выжил, и заговорщики были пойманы и казнены.\n\nКак мы можем объяснить тот факт, что люди, которые были готовы рискнуть своей жизнью, чтобы свергнуть Гитлера, не смогли довести свой план до конца? Было ли это просто вопросом удачи, или были более глубокие причины, которые привели к провалу операции Валькирия? Может быть, ответ лежит в самой природе заговора, который был основан на доверии и лояльности, но также и на страхе и неопределенности.\n\n[ГЛАВА 2: \"План Барбаросса\" - 3:30-6:15]\nПлан Барбаросса был кодовым названием операции, разработанной немецким генералом Францем Хальдером, которая включала в себя полномасштабное вторжение в Советский Союз. План был настолько амбициозным, что включал в себя захват Москвы, Ленинграда и других ключевых городов, а также разгром Красной Армии. Но что заставило немцев пойти на такой шаг? Что было так важно, что они были готовы рискнуть своей жизнью и жизнями своих солдат?\n\nПлан Барбаросса был не просто простым военным планом, а сложной стратегией, которая включала в себя многие факторы, такие как логистика, разведка и дипломатия. Немцы провели месяцы, собирая информацию о советской армии и экономике, и разработали подробный план, который включал в себя многие подразделения и команды. Они также создали сеть шпионов и агентов, которые были готовы собирать информацию и проводить саботажные акции на советской территории. Но несмотря на все их усилия, план в конечном итоге провалился. Немцы не смогли захватить Москву, и советская армия оказалась более сильной, чем они ожидали.\n\nКак мы можем объяснить тот факт, что немцы, которые были так уверены в своем успехе, не смогли достигнуть своих целей? Было ли это просто вопросом удачи, или были более глубокие причины, которые привели к провалу плана Барбаросса? Может быть, ответ лежит в самой природе плана, который был основан на агрессии и экспансии, но также и на недооценке силы и стойкости советской армии.\n\n[ГЛАВА 3: \"Операция Цитадель\" - 6:15-9:00]\nОперация Цитадель была кодовым названием танковой битвы, которая состоялась на Восточном фронте в 1943 году. План включал в себя массированное наступление немецких танков, которые должны были прорвать советскую оборону и захватить ключевые города и объекты. Но что заставило немцев пойти на такой шаг? Что было так важно, что они были готовы рискнуть своей жизнью и жизнями своих солдат?\n\nОперация Цитадель была не просто простым военным планом, а сложной стратегией, которая включала в себя многие факторы, такие как логистика, разведка и дипломатия. Немцы провели месяцы, собирая информацию о советской армии и экономике, и разработали подробный план, который включал в себя многие подразделения и команды. Они также создали сеть шпионов и агентов, которые были готовы собирать информацию и проводить саботажные акции на советской территории. Но несмотря на все их усилия, план в конечном итоге провалился. Немцы не смогли прорвать советскую оборону, и советская армия оказалась более сильной, чем они ожидали.\n\nКак мы можем объяснить тот факт, что немцы, которые были так уверены в своем успехе, не смогли достигнуть своих целей? Было ли это просто вопросом удачи, или были более глубокие причины, которые привели к провалу операции Цитадель? Может быть, ответ лежит в самой природе плана, который был основан на агрессии и экспансии, но также и на недооценке силы и стойкости советской армии.\n\n[КУЛЬМИНАЦИЯ]\nКогда мы размышляем о самых зловещих и тревожных планах и операциях Второй мировой войны, мы не можем не задуматься о том, что могло бы произойти, если бы они были реализованы. Что если бы операция Валькирия удалась, и Гитлер был свергнут? Что если бы план Барбаросса достиг своих целей, и Советский Союз был разгромлен? Что если бы операция Цитадель прорвала советскую оборону, и немцы захватили ключевые города и объекты?\n\nОтветы на эти вопросы остаются загадкой, но одно можно сказать точно: Вторая мировая война была временем великой неопределенности и страха, и многие люди были готовы рискнуть своей жизнью и жизнями своих близких, чтобы изменить ход истории. Но что мы можем сделать, чтобы не допустить, чтобы подобные события произошли в будущем? Как мы можем предотвратить возникновение новых планов и операций, которые могут привести к таким катастрофическим последствиям?\n\n[ЗАКЛЮЧЕНИЕ]\nВ заключении, мы должны помнить, что Вторая мировая война была временем великой трагедии и страдания, и что многие люди были готовы рискнуть своей жизнью и жизнями своих близких, чтобы изменить ход истории. Мы также должны помнить, что многие планы и операции, которые были разработаны во время этой войны, были основаны на агрессии и экспансии, но также и на страхе и неопределенности. И чтобы предотвратить возникновение подобных событий в будущем, мы должны быть готовы учиться на прошлом и работать над созданием более безопасного и мирного мира.\n\nЕсли вы хотите узнать больше о Второй мировой войне и ее последствиях, подпишитесь на наш канал и следите за новыми видео. Мы будем рады ответить на ваши вопросы и предоставить вам более подробную информацию о этой теме. Спасибо за просмотр, и мы увидимся в следующем видео!",
+    "script": "",
     "script_segments": [],
-    "image_prompts": [
-      {
-        "id": 1,
-        "timecode": "0:00-0:12",
-        "duration_sec": 12,
-        "scene_ru": "Открывающая сцена: темная и загадочная атмосфера",
-        "prompt_en": "A dramatic scene with a dark and mysterious atmosphere, featuring a blurred image of Adolf Hitler in the background, with a faint image of a swastika, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_in",
-        "is_first_5min": true
-      },
-      {
-        "id": 2,
-        "timecode": "0:12-0:24",
-        "duration_sec": 12,
-        "scene_ru": "Группа немецких офицеров, возглавляемая Клаусом фон Штауффенбергом",
-        "prompt_en": "A group of German officers, led by Claus von Stauffenberg, standing in a dimly lit room, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_left",
-        "is_first_5min": true
-      },
-      {
-        "id": 3,
-        "timecode": "0:24-0:36",
-        "duration_sec": 12,
-        "scene_ru": "Подрыв бомбы во время встречи Гитлера с генералами",
-        "prompt_en": "A dramatic scene with a bomb exploding during a meeting between Hitler and his generals, with a blurred image of chaos and destruction, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_out",
-        "is_first_5min": true
-      },
-      {
-        "id": 4,
-        "timecode": "0:36-0:48",
-        "duration_sec": 12,
-        "scene_ru": "Клаус фон Штауффенберг и его спутники, планирующие операцию",
-        "prompt_en": "Claus von Stauffenberg and his companions, planning the operation, sitting around a table, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_right",
-        "is_first_5min": true
-      },
-      {
-        "id": 5,
-        "timecode": "0:48-1:00",
-        "duration_sec": 12,
-        "scene_ru": "Немецкие танки и солдаты, готовые к бою",
-        "prompt_en": "German tanks and soldiers, ready for battle, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_in",
-        "is_first_5min": true
-      },
-      {
-        "id": 6,
-        "timecode": "1:00-1:12",
-        "duration_sec": 12,
-        "scene_ru": "Франц Хальдер, разработчик плана Барбаросса",
-        "prompt_en": "Franz Halder, the developer of the Barbarossa plan, sitting at a desk, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "static",
-        "is_first_5min": true
-      },
-      {
-        "id": 7,
-        "timecode": "1:12-1:24",
-        "duration_sec": 12,
-        "scene_ru": "Немецкие солдаты, марширующие через советскую территорию",
-        "prompt_en": "German soldiers, marching through Soviet territory, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_left",
-        "is_first_5min": true
-      },
-      {
-        "id": 8,
-        "timecode": "1:24-1:36",
-        "duration_sec": 12,
-        "scene_ru": "Советские солдаты, готовые к бою",
-        "prompt_en": "Soviet soldiers, ready for battle, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_out",
-        "is_first_5min": true
-      },
-      {
-        "id": 9,
-        "timecode": "1:36-1:48",
-        "duration_sec": 12,
-        "scene_ru": "Танковая битва, операция Цитадель",
-        "prompt_en": "A tank battle, Operation Citadel, with German and Soviet tanks, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_in",
-        "is_first_5min": true
-      },
-      {
-        "id": 10,
-        "timecode": "1:48-2:00",
-        "duration_sec": 12,
-        "scene_ru": "Гитлер, наблюдая за ходом операции",
-        "prompt_en": "Hitler, observing the operation, standing in a command center, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_right",
-        "is_first_5min": true
-      },
-      {
-        "id": 11,
-        "timecode": "2:00-2:12",
-        "duration_sec": 12,
-        "scene_ru": "Немецкие солдаты, отступающие с советской территории",
-        "prompt_en": "German soldiers, retreating from Soviet territory, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_out",
-        "is_first_5min": true
-      },
-      {
-        "id": 12,
-        "timecode": "2:12-2:24",
-        "duration_sec": 12,
-        "scene_ru": "Советские солдаты, празднуя победу",
-        "prompt_en": "Soviet soldiers, celebrating their victory, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_left",
-        "is_first_5min": true
-      },
-      {
-        "id": 13,
-        "timecode": "2:24-2:36",
-        "duration_sec": 12,
-        "scene_ru": "Гитлер, разговаривающий с генералами",
-        "prompt_en": "Hitler, talking to his generals, standing in a command center, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "static",
-        "is_first_5min": true
-      },
-      {
-        "id": 14,
-        "timecode": "2:36-2:48",
-        "duration_sec": 12,
-        "scene_ru": "Немецкие солдаты, марширующие через разрушенный город",
-        "prompt_en": "German soldiers, marching through a destroyed city, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_right",
-        "is_first_5min": true
-      },
-      {
-        "id": 15,
-        "timecode": "2:48-3:00",
-        "duration_sec": 12,
-        "scene_ru": "Советские солдаты, освобождающие пленников",
-        "prompt_en": "Soviet soldiers, liberating prisoners, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_in",
-        "is_first_5min": true
-      },
-      {
-        "id": 16,
-        "timecode": "3:00-3:12",
-        "duration_sec": 12,
-        "scene_ru": "Гитлер, наблюдая за ходом войны",
-        "prompt_en": "Hitler, observing the course of the war, standing in a command center, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_left",
-        "is_first_5min": true
-      },
-      {
-        "id": 17,
-        "timecode": "3:12-3:24",
-        "duration_sec": 12,
-        "scene_ru": "Немецкие солдаты, сдающиеся в плен",
-        "prompt_en": "German soldiers, surrendering, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_out",
-        "is_first_5min": true
-      },
-      {
-        "id": 18,
-        "timecode": "3:24-3:36",
-        "duration_sec": 12,
-        "scene_ru": "Советские солдаты, празднуя победу",
-        "prompt_en": "Soviet soldiers, celebrating their victory, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_right",
-        "is_first_5min": true
-      },
-      {
-        "id": 19,
-        "timecode": "3:36-3:48",
-        "duration_sec": 12,
-        "scene_ru": "Гитлер, сидящий в темной комнате",
-        "prompt_en": "Hitler, sitting in a dark room, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "static",
-        "is_first_5min": true
-      },
-      {
-        "id": 20,
-        "timecode": "3:48-4:00",
-        "duration_sec": 12,
-        "scene_ru": "Немецкие солдаты, марширующие через разрушенный город",
-        "prompt_en": "German soldiers, marching through a destroyed city, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_left",
-        "is_first_5min": true
-      },
-      {
-        "id": 21,
-        "timecode": "4:00-4:12",
-        "duration_sec": 12,
-        "scene_ru": "Советские солдаты, освобождающие пленников",
-        "prompt_en": "Soviet soldiers, liberating prisoners, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_in",
-        "is_first_5min": true
-      },
-      {
-        "id": 22,
-        "timecode": "4:12-4:24",
-        "duration_sec": 12,
-        "scene_ru": "Гитлер, наблюдая за ходом войны",
-        "prompt_en": "Hitler, observing the course of the war, standing in a command center, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_right",
-        "is_first_5min": true
-      },
-      {
-        "id": 23,
-        "timecode": "4:24-4:36",
-        "duration_sec": 12,
-        "scene_ru": "Немецкие солдаты, сдающиеся в плен",
-        "prompt_en": "German soldiers, surrendering, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_out",
-        "is_first_5min": true
-      },
-      {
-        "id": 24,
-        "timecode": "4:36-4:48",
-        "duration_sec": 12,
-        "scene_ru": "Советские солдаты, празднуя победу",
-        "prompt_en": "Soviet soldiers, celebrating their victory, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_left",
-        "is_first_5min": true
-      },
-      {
-        "id": 25,
-        "timecode": "4:48-5:00",
-        "duration_sec": 12,
-        "scene_ru": "Гитлер, сидящий в темной комнате",
-        "prompt_en": "Hitler, sitting in a dark room, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "static",
-        "is_first_5min": true
-      },
-      {
-        "id": 26,
-        "timecode": "5:00-5:40",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты, марширующие через разрушенный город",
-        "prompt_en": "German soldiers, marching through a destroyed city, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
-      },
-      {
-        "id": 27,
-        "timecode": "5:40-6:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты, освобождающие пленников",
-        "prompt_en": "Soviet soldiers, liberating prisoners, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_in",
-        "is_first_5min": false
-      },
-      {
-        "id": 28,
-        "timecode": "6:20-7:00",
-        "duration_sec": 40,
-        "scene_ru": "Гитлер, наблюдая за ходом войны",
-        "prompt_en": "Hitler, observing the course of the war, standing in a command center, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_left",
-        "is_first_5min": false
-      },
-      {
-        "id": 29,
-        "timecode": "7:00-7:40",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты, сдающиеся в плен",
-        "prompt_en": "German soldiers, surrendering, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_out",
-        "is_first_5min": false
-      },
-      {
-        "id": 30,
-        "timecode": "7:40-8:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты, празднуя победу",
-        "prompt_en": "Soviet soldiers, celebrating their victory, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
-      },
-      {
-        "id": 31,
-        "timecode": "8:20-9:00",
-        "duration_sec": 40,
-        "scene_ru": "Гитлер, сидящий в темной комнате",
-        "prompt_en": "Hitler, sitting in a dark room, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "static",
-        "is_first_5min": false
-      },
-      {
-        "id": 32,
-        "timecode": "9:00-9:40",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты, марширующие через разрушенный город",
-        "prompt_en": "German soldiers, marching through a destroyed city, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_left",
-        "is_first_5min": false
-      },
-      {
-        "id": 33,
-        "timecode": "9:40-10:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты, освобождающие пленников",
-        "prompt_en": "Soviet soldiers, liberating prisoners, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_in",
-        "is_first_5min": false
-      },
-      {
-        "id": 34,
-        "timecode": "10:20-11:00",
-        "duration_sec": 40,
-        "scene_ru": "Гитлер, наблюдая за ходом войны",
-        "prompt_en": "Hitler, observing the course of the war, standing in a command center, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
-      },
-      {
-        "id": 35,
-        "timecode": "11:00-11:40",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты, сдающиеся в плен",
-        "prompt_en": "German soldiers, surrendering, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_out",
-        "is_first_5min": false
-      },
-      {
-        "id": 36,
-        "timecode": "11:40-12:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты, празднуя победу",
-        "prompt_en": "Soviet soldiers, celebrating their victory, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_left",
-        "is_first_5min": false
-      },
-      {
-        "id": 37,
-        "timecode": "12:20-13:00",
-        "duration_sec": 40,
-        "scene_ru": "Гитлер, сидящий в темной комнате",
-        "prompt_en": "Hitler, sitting in a dark room, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "static",
-        "is_first_5min": false
-      },
-      {
-        "id": 38,
-        "timecode": "13:00-13:40",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты, марширующие через разрушенный город",
-        "prompt_en": "German soldiers, marching through a destroyed city, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
-      },
-      {
-        "id": 39,
-        "timecode": "13:40-14:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты, освобождающие пленников",
-        "prompt_en": "Soviet soldiers, liberating prisoners, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_in",
-        "is_first_5min": false
-      },
-      {
-        "id": 40,
-        "timecode": "14:20-15:00",
-        "duration_sec": 40,
-        "scene_ru": "Гитлер, наблюдая за ходом войны",
-        "prompt_en": "Hitler, observing the course of the war, standing in a command center, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_left",
-        "is_first_5min": false
-      },
-      {
-        "id": 41,
-        "timecode": "15:00-15:40",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты, сдающиеся в плен",
-        "prompt_en": "German soldiers, surrendering, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_out",
-        "is_first_5min": false
-      },
-      {
-        "id": 42,
-        "timecode": "15:40-16:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты, празднуя победу",
-        "prompt_en": "Soviet soldiers, celebrating their victory, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
-      },
-      {
-        "id": 43,
-        "timecode": "16:20-17:00",
-        "duration_sec": 40,
-        "scene_ru": "Гитлер, сидящий в темной комнате",
-        "prompt_en": "Hitler, sitting in a dark room, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "static",
-        "is_first_5min": false
-      },
-      {
-        "id": 44,
-        "timecode": "17:00-17:40",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты, марширующие через разрушенный город",
-        "prompt_en": "German soldiers, marching through a destroyed city, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_left",
-        "is_first_5min": false
-      },
-      {
-        "id": 45,
-        "timecode": "17:40-18:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты, освобождающие пленников",
-        "prompt_en": "Soviet soldiers, liberating prisoners, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_in",
-        "is_first_5min": false
-      },
-      {
-        "id": 46,
-        "timecode": "18:20-19:00",
-        "duration_sec": 40,
-        "scene_ru": "Гитлер, наблюдая за ходом войны",
-        "prompt_en": "Hitler, observing the course of the war, standing in a command center, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
-      },
-      {
-        "id": 47,
-        "timecode": "19:00-19:40",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты, сдающиеся в плен",
-        "prompt_en": "German soldiers, surrendering, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_out",
-        "is_first_5min": false
-      },
-      {
-        "id": 48,
-        "timecode": "19:40-20:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты, празднуя победу",
-        "prompt_en": "Soviet soldiers, celebrating their victory, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_left",
-        "is_first_5min": false
-      },
-      {
-        "id": 49,
-        "timecode": "20:20-21:00",
-        "duration_sec": 40,
-        "scene_ru": "Гитлер, сидящий в темной комнате",
-        "prompt_en": "Hitler, sitting in a dark room, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "static",
-        "is_first_5min": false
-      },
-      {
-        "id": 50,
-        "timecode": "21:00-21:40",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты, марширующие через разрушенный город",
-        "prompt_en": "German soldiers, marching through a destroyed city, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
-      },
-      {
-        "id": 51,
-        "timecode": "21:40-22:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты, освобождающие пленников",
-        "prompt_en": "Soviet soldiers, liberating prisoners, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_in",
-        "is_first_5min": false
-      },
-      {
-        "id": 52,
-        "timecode": "22:20-23:00",
-        "duration_sec": 40,
-        "scene_ru": "Гитлер, наблюдая за ходом войны",
-        "prompt_en": "Hitler, observing the course of the war, standing in a command center, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_left",
-        "is_first_5min": false
-      },
-      {
-        "id": 53,
-        "timecode": "23:00-23:40",
-        "duration_sec": 40,
-        "scene_ru": "Немецкие солдаты, сдающиеся в плен",
-        "prompt_en": "German soldiers, surrendering, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "zoom_out",
-        "is_first_5min": false
-      },
-      {
-        "id": 54,
-        "timecode": "23:40-24:20",
-        "duration_sec": 40,
-        "scene_ru": "Советские солдаты, празднуя победу",
-        "prompt_en": "Soviet soldiers, celebrating their victory, standing in a field, wearing military uniforms, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "pan_right",
-        "is_first_5min": false
-      },
-      {
-        "id": 55,
-        "timecode": "24:20-25:00",
-        "duration_sec": 40,
-        "scene_ru": "Гитлер, сидящий в темной комнате",
-        "prompt_en": "Hitler, sitting in a dark room, wearing a military uniform, anatomically correct, natural facial features, proper proportions, masterpiece, 8k, sharp focus, cinematic lighting, documentary photograph, Kodachrome film, historical accuracy",
-        "motion_effect": "static",
-        "is_first_5min": false
-      }
-    ],
-    "images": [
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/003_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/004_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/005_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/006_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/007_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/008_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/009_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/011_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/012_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/013_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/014_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/015_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/016_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/017_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/018_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/020_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/021_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/023_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/024_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/026_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/027_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/028_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/029_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/031_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/034_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/035_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/036_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/037_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/038_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/039_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/040_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/041_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/042_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/043_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/044_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/045_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/046_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/047_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/049_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/050_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/051_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/052_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/053_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/054_scene.webp",
-      "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/images/055_scene.webp"
-    ],
+    "image_prompts": [],
+    "images": [],
     "thumbnails": [],
-    "audio_path": "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/audio/voiceover.mp3",
-    "preview_video": "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765542642_1/preview_data.json",
+    "thumbnail_prompts": [],
+    "audio_path": "",
+    "preview_video": "",
     "final_video": "",
     "sync_data": [],
-    "seo_title": "Самый страшный план Второй мировой войны: правда о Валькирии и Барбароссе",
-    "seo_description": "Самый страшный военный план Второй мировой войны: Операция Валькирия и План Барбаросса. 0:00 - Введение, 0:45 - Операция Валькирия, 3:30 - План Барбаросса. Подпишитесь на наш канал, чтобы узнать больше о истории! https://example.com/social-media",
-    "seo_tags": [
-      "Вторая мировая война",
-      "Операция Валькирия",
-      "План Барбаросса",
-      "Адольф Гитлер",
-      "Клаус фон Штауффенберг",
-      "Франц Хальдер",
-      "Красная Армия",
-      "Немецкая армия",
-      "Советский Союз",
-      "История",
-      "Военная история",
-      "Вторая мировая война факты",
-      "История войны",
-      "Война и мир",
-      "История Европы",
-      "20 век",
-      "Политика",
-      "Социальная история",
-      "Культурная история",
-      "Международные отношения",
-      "Дипломатия",
-      "Военная стратегия",
-      "Тактика",
-      "Логистика",
-      "Разведка",
-      "Шпионаж",
-      "Соперничество",
-      "Геополитика"
+    "seo_title": "",
+    "seo_description": "",
+    "seo_tags": [],
+    "seo_hashtags": [],
+    "seo_alt_titles": [],
+    "seo_first_comment": "",
+    "status": "queued",
+    "progress": 0,
+    "current_step": "",
+    "error_message": "",
+    "user_edits": {}
+  },
+  "proj_1765569660_4": {
+    "id": "proj_1765569660_4",
+    "name": "Ложь о советском героизме: как некоторые солдаты б",
+    "created_at": "2025-12-13T03:01:00.129305",
+    "topic": "Документальный фильм о советских солдатах, которые были прославлены за выдуманные подвиги и героизм\n\nХук: Шокирующие факты о советских солдатах, которые были прославлены за выдуманные подвиги",
+    "competitor_channel": "https://www.youtube.com/@WWII-Records",
+    "duration": "40-50 минут",
+    "language": "Русский",
+    "channel_style_id": "",
+    "sub_niche": "Жестокая расправа над военнопленными",
+    "ai_style": "документальный/развлекательный, драматичный/серьёзный",
+    "ai_image_style": "Create a dramatic WWII-themed thumbnail with a bold, eye-catching title and a central image of a soldier or military vehicle in action, with a dark and gritty color scheme and accents of bright red or orange to draw attention",
+    "ai_transitions": [
+      "fade",
+      "zoom_in",
+      "zoom_out",
+      "pan"
     ],
-    "status": "error",
-    "progress": 30,
-    "current_step": "Ошибка: 'ImageClip' object has no attribute 'fl'",
-    "error_message": "'ImageClip' object has no attribute 'fl'",
+    "ai_effects": {},
+    "ai_music_mood": "dramatic, epic, orchestral",
+    "ai_voice": "Brian",
+    "ai_voice_id": "nPczCjzI2devNBz1zQrb",
+    "script": "",
+    "script_segments": [],
+    "image_prompts": [],
+    "images": [],
+    "thumbnails": [],
+    "thumbnail_prompts": [],
+    "audio_path": "",
+    "preview_video": "",
+    "final_video": "",
+    "sync_data": [],
+    "seo_title": "",
+    "seo_description": "",
+    "seo_tags": [],
+    "seo_hashtags": [],
+    "seo_alt_titles": [],
+    "seo_first_comment": "",
+    "status": "queued",
+    "progress": 0,
+    "current_step": "",
+    "error_message": "",
+    "user_edits": {}
+  },
+  "proj_1765569861_3": {
+    "id": "proj_1765569861_3",
+    "name": "10 Смертельных ошибок Гитлера, которые изменили хо",
+    "created_at": "2025-12-13T03:04:21.782600",
+    "topic": "Рассказ о десяти наиболее критических ошибках, совершённых Адольфом Гитлером во время Второй мировой войны, которые привели к поражению нацистской Германии\n\nХук: Как простые ошибки изменили ход истории",
+    "competitor_channel": "https://www.youtube.com/@WWII-Records",
+    "duration": "40-50 минут",
+    "language": "Русский",
+    "channel_style_id": "",
+    "sub_niche": "Жестокая расправа над военнопленными",
+    "ai_style": "документальный/развлекательный, драматичный/серьёзный",
+    "ai_image_style": "Create a dramatic WWII-themed thumbnail with a bold, eye-catching title and a central image of a soldier or military vehicle in action, with a dark and gritty color scheme and accents of bright red or orange to draw attention",
+    "ai_transitions": [
+      "fade",
+      "zoom_in",
+      "zoom_out",
+      "pan"
+    ],
+    "ai_effects": {},
+    "ai_music_mood": "dramatic, epic, orchestral",
+    "ai_voice": "Brian",
+    "ai_voice_id": "nPczCjzI2devNBz1zQrb",
+    "script": "",
+    "script_segments": [],
+    "image_prompts": [],
+    "images": [],
+    "thumbnails": [],
+    "thumbnail_prompts": [],
+    "audio_path": "",
+    "preview_video": "",
+    "final_video": "",
+    "sync_data": [],
+    "seo_title": "",
+    "seo_description": "",
+    "seo_tags": [],
+    "seo_hashtags": [],
+    "seo_alt_titles": [],
+    "seo_first_comment": "",
+    "status": "queued",
+    "progress": 0,
+    "current_step": "",
+    "error_message": "",
+    "user_edits": {}
+  },
+  "proj_1765569861_4": {
+    "id": "proj_1765569861_4",
+    "name": "Самая жестокая операция СС: уничтожение целого гор",
+    "created_at": "2025-12-13T03:04:21.785425",
+    "topic": "Рассказ о самой жестокой операции СС, где был уничтожен целый город, и что стало с выжившими\n\nХук: Как нацисты уничтожили целый город за один день",
+    "competitor_channel": "https://www.youtube.com/@WWII-Records",
+    "duration": "40-50 минут",
+    "language": "Русский",
+    "channel_style_id": "",
+    "sub_niche": "Жестокая расправа над военнопленными",
+    "ai_style": "документальный/развлекательный, драматичный/серьёзный",
+    "ai_image_style": "Create a dramatic WWII-themed thumbnail with a bold, eye-catching title and a central image of a soldier or military vehicle in action, with a dark and gritty color scheme and accents of bright red or orange to draw attention",
+    "ai_transitions": [
+      "fade",
+      "zoom_in",
+      "zoom_out",
+      "pan"
+    ],
+    "ai_effects": {},
+    "ai_music_mood": "dramatic, epic, orchestral",
+    "ai_voice": "Brian",
+    "ai_voice_id": "nPczCjzI2devNBz1zQrb",
+    "script": "",
+    "script_segments": [],
+    "image_prompts": [],
+    "images": [],
+    "thumbnails": [],
+    "thumbnail_prompts": [],
+    "audio_path": "",
+    "preview_video": "",
+    "final_video": "",
+    "sync_data": [],
+    "seo_title": "",
+    "seo_description": "",
+    "seo_tags": [],
+    "seo_hashtags": [],
+    "seo_alt_titles": [],
+    "seo_first_comment": "",
+    "status": "queued",
+    "progress": 0,
+    "current_step": "",
+    "error_message": "",
     "user_edits": {}
   }
 }

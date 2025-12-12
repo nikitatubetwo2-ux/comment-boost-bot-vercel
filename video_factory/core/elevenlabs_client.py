@@ -340,11 +340,13 @@ class ElevenLabsClient:
             part_text = '\n\n'.join(paragraphs[start:end])
             parts.append((i, part_text))
         
-        print(f"[ElevenLabs] 🚀 Параллельная озвучка: {num_parts} частей")
+        total_chars = sum(len(p[1]) for p in parts)
+        print(f"[ElevenLabs] 🚀 Параллельная озвучка: {num_parts} частей, {total_chars} символов")
         
         # Генерируем параллельно
         audio_parts = [None] * num_parts
         lock = threading.Lock()
+        completed = [0]  # Для отслеживания прогресса
         
         def generate_part(args):
             part_idx, text = args
@@ -369,18 +371,22 @@ class ElevenLabsClient:
                     }
                 }
                 
+                # Таймаут 180 сек на часть (3 минуты)
+                print(f"  ⏳ Генерация части {part_idx+1}... ({len(text)} символов)")
                 response = requests.post(
                     f"{self.BASE_URL}/text-to-speech/{voice_id}",
                     headers=self.headers,
                     json=data,
-                    timeout=300
+                    timeout=180
                 )
                 response.raise_for_status()
                 
                 with open(part_path, 'wb') as f:
                     f.write(response.content)
                 
-                print(f"  ✅ Часть {part_idx+1}/{num_parts} готова")
+                with lock:
+                    completed[0] += 1
+                print(f"  ✅ Часть {part_idx+1}/{num_parts} готова ({completed[0]}/{num_parts} завершено)")
                 return part_idx, part_path
                 
             finally:

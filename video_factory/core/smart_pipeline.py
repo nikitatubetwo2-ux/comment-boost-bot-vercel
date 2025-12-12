@@ -128,8 +128,18 @@ class SmartPipeline:
         self._load_projects()
     
     def _log(self, message: str):
-        """Логирование"""
-        print(f"[Pipeline] {message}")
+        """Логирование в консоль и файл"""
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        log_msg = f"[{timestamp}] {message}"
+        print(f"[Pipeline] {log_msg}")
+        
+        # Записываем в файл лога
+        try:
+            log_file = self.output_dir / "pipeline.log"
+            with open(log_file, "a", encoding="utf-8") as f:
+                f.write(f"{log_msg}\n")
+        except:
+            pass
         if self.on_progress:
             self.on_progress(message)
     
@@ -746,27 +756,44 @@ class SmartPipeline:
         # Используем параллельную генерацию если есть несколько ключей
         num_keys = len(config.api.elevenlabs_keys)
         
-        if num_keys >= 2:
-            self._log(f"  Используем {num_keys} ключей параллельно")
-            audio_path = client.generate_voiceover_parallel(
-                script=project.script,
-                voice_id=voice_id,
-                output_dir=audio_dir,
-                max_workers=min(3, num_keys),
-                language=lang_code
-            )
-        else:
-            # Обычная генерация с одним ключом
-            audio_path = client.text_to_speech(
-                project.script,
-                voice_id,
-                audio_dir / "voiceover.mp3",
-                language=lang_code
-            )
+        script_len = len(project.script)
+        self._log(f"  📝 Длина сценария: {script_len} символов")
+        self._log(f"  🔑 Доступно ключей: {num_keys}")
         
-        if audio_path:
-            project.audio_path = str(audio_path)
-            self._log(f"  ✅ Озвучка готова: {audio_path}")
+        start_time = time.time()
+        
+        try:
+            if num_keys >= 2:
+                self._log(f"  🚀 Параллельная озвучка ({min(3, num_keys)} потоков)...")
+                audio_path = client.generate_voiceover_parallel(
+                    script=project.script,
+                    voice_id=voice_id,
+                    output_dir=audio_dir,
+                    max_workers=min(3, num_keys),
+                    language=lang_code
+                )
+            else:
+                self._log(f"  ⏳ Обычная озвучка (1 ключ)...")
+                audio_path = client.text_to_speech(
+                    project.script,
+                    voice_id,
+                    audio_dir / "voiceover.mp3",
+                    language=lang_code
+                )
+            
+            elapsed = time.time() - start_time
+            self._log(f"  ⏱️ Время озвучки: {elapsed:.1f} сек")
+            
+            if audio_path and Path(audio_path).exists():
+                file_size = Path(audio_path).stat().st_size / 1024 / 1024
+                project.audio_path = str(audio_path)
+                self._log(f"  ✅ Озвучка готова: {audio_path} ({file_size:.1f} MB)")
+            else:
+                self._log(f"  ❌ Файл озвучки не создан!")
+                
+        except Exception as e:
+            elapsed = time.time() - start_time
+            self._log(f"  ❌ Ошибка озвучки после {elapsed:.1f} сек: {e}")
         
         project.progress = 85
         self._save_projects()
