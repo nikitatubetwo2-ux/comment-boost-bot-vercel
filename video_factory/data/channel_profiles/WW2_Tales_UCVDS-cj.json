@@ -1,0 +1,107 @@
+{
+  "name": "WW2 Tales",
+  "channel_id": "UCVDS-cjZZIWPjL5fdXSMywQ",
+  "channel_url": "@ww2tales",
+  "niche": "ww2",
+  "subscribers": 165000,
+  "total_views": 27113280,
+  "video_count": 431,
+  "avg_views": 6417,
+  "avg_likes": 228,
+  "engagement_rate": 3.86,
+  "title_triggers": {
+    "numbers": [
+      "700",
+      "4",
+      "6",
+      "48",
+      "9",
+      "24",
+      "20",
+      "18",
+      "13,000",
+      "96",
+      "10"
+    ],
+    "emotions": [
+      "Devils",
+      "Fear",
+      "Dangerous",
+      "Nightmare",
+      "WORST",
+      "LARGEST"
+    ],
+    "questions": [
+      "Why",
+      "What"
+    ],
+    "intrigue": [
+      "Mystery",
+      "Vanished",
+      "Exploded"
+    ],
+    "urgency": [
+      "24 Hours",
+      "25 Days",
+      "10 Months"
+    ]
+  },
+  "title_patterns": [
+    "Использование конкретных чисел для привлечения внимания",
+    "Ссылка на исторические события и фигуры",
+    "Использование эмоциональных слов для создания интереса",
+    "Задавание вопросов для вызова любопытства",
+    "Использование интригующих элементов для создания тайны"
+  ],
+  "effective_words": [
+    "Japanese",
+    "German",
+    "American",
+    "Patton",
+    "Rommel",
+    "Göring",
+    "Devils",
+    "Dangerous",
+    "Mystery",
+    "WORST",
+    "LARGEST"
+  ],
+  "narrative_style": "документальный",
+  "tone": "серьёзный",
+  "target_audience": "людей, интересующихся историей, особенно Второй мировой войны",
+  "content_structure": "каждое видео обычно посвящено отдельному историческому событию или теме, с чёткой хронологией и подробным описанием",
+  "unique_features": [
+    "подробные описания исторических событий",
+    "использование точных дат и мест",
+    "анализ военных тактик и стратегий",
+    "цитаты и мнения исторических деятелей"
+  ],
+  "voice_gender": "мужской",
+  "voice_type": "авторитетный",
+  "voice_pace": "умеренный",
+  "voice_emotion": "нейтральный",
+  "top_tags": [
+    "ww2 tales",
+    "ww2 stories",
+    "ww2 audio books",
+    "ww2 memoirs",
+    "full length audio books",
+    "ww2",
+    "ww2 documentary",
+    "pacific war",
+    "pacific theater",
+    "battle of the bulge",
+    "world war 2",
+    "european theater ww2",
+    "ww2 naval battles",
+    "japanese navy defeat",
+    "us navy",
+    "naval warfare ww2",
+    "military history",
+    "us navy history",
+    "ww2 battles",
+    "ww2 history"
+  ],
+  "created_at": "2025-12-11T00:26:53.472984",
+  "updated_at": "2025-12-11T00:26:53.473027"
+}

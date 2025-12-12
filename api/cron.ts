@@ -51,7 +51,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             description: details.description,
             tags: details.tags,
             channelName: channel.name,
-            language: details.defaultLanguage?.startsWith('ru') ? 'ru' : 'en',
+            language: details.defaultLanguage || 'en',
           })
           
           // Find all users who track this channel and notify them

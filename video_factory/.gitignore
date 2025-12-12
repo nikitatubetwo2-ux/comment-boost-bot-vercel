@@ -1,0 +1,23 @@
+# Секретные ключи - НИКОГДА не добавлять в git!
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+
+# Выходные файлы
+output/*.mp4
+output/*.srt
+output/*.mp3
+
+# Временные файлы
+*.tmp
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp

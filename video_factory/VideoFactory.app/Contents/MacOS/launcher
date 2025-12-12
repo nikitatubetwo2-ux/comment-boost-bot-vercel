@@ -1,0 +1,29 @@
+#!/bin/bash
+# Video Factory Launcher
+
+# Файл с сохранённым путём
+CONFIG_FILE="$HOME/.video_factory_path"
+
+# Читаем путь из конфига
+if [ -f "$CONFIG_FILE" ]; then
+    APP_DIR="$(cat "$CONFIG_FILE")"
+else
+    # Fallback - пробуем найти
+    APP_DIR="$HOME/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory"
+fi
+
+# Проверяем что папка существует
+if [ ! -d "$APP_DIR" ]; then
+    osascript -e 'display alert "Video Factory" message "Папка приложения не найдена. Переустановите приложение через install_app.sh"'
+    exit 1
+fi
+
+cd "$APP_DIR" || exit 1
+
+# Активируем виртуальное окружение
+if [ -d "venv" ]; then
+    source venv/bin/activate
+fi
+
+# Запускаем приложение
+python main.py 2>&1 | tee -a "$APP_DIR/app.log"

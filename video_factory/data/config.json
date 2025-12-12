@@ -1,0 +1,24 @@
+{
+  "api": {
+    "groq_key": "",
+    "youtube_key": "",
+    "elevenlabs_key": "",
+    "groq_model": "llama-3.3-70b-versatile",
+    "temperature": 0.7
+  },
+  "paths": {
+    "chrome_path": "",
+    "ffmpeg_path": "ffmpeg",
+    "output_path": "/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output"
+  },
+  "video": {
+    "resolution": "1920x1080",
+    "fps": 30,
+    "bitrate": "12M"
+  },
+  "whisk": {
+    "headless": false,
+    "timeout": 120
+  },
+  "language": "ru"
+}

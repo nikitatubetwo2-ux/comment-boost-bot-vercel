@@ -44,7 +44,7 @@ export const handler: Handler = async (event) => {
             description: details.description,
             tags: details.tags,
             channelName: channel.name,
-            language: details.defaultLanguage?.startsWith('ru') ? 'ru' : 'en',
+            language: details.defaultLanguage || 'en',
           })
           
           const profile = await storage.getProfileById(channel.profileId)

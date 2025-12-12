@@ -27,32 +27,51 @@ export async function sendVideoNotification(
     videoId: string
   },
   comments: {
-    informative: string
-    emotional: string
-    questionBased: string
+    displayRu: {
+      informative: string
+      emotional: string
+      questionBased: string
+    }
+    forCopy: {
+      informative: string
+      emotional: string
+      questionBased: string
+    }
+    videoLanguage: string
   }
 ): Promise<void> {
   const videoUrl = `https://youtube.com/watch?v=${video.videoId}`
   
+  const langNote = comments.videoLanguage !== 'ru' 
+    ? `\n\n🌐 _Язык видео: ${comments.videoLanguage.toUpperCase()}. Комментарии для копирования на языке видео._`
+    : ''
+  
   const message = `🎬 *Новое видео!*
 
 📺 *${video.channelName}*
-${video.title}
+${escapeMarkdown(video.title)}
 
-🔗 ${videoUrl}
+🔗 ${videoUrl}${langNote}
 
-💬 *Комментарии для копирования:*
+💬 *Комментарии:*
 
 1️⃣ *Информативный:*
-\`${comments.informative}\`
+${escapeMarkdown(comments.displayRu.informative)}
+📋 \`${comments.forCopy.informative}\`
 
 2️⃣ *Эмоциональный:*
-\`${comments.emotional}\`
+${escapeMarkdown(comments.displayRu.emotional)}
+📋 \`${comments.forCopy.emotional}\`
 
 3️⃣ *Вопрос:*
-\`${comments.questionBased}\`
+${escapeMarkdown(comments.displayRu.questionBased)}
+📋 \`${comments.forCopy.questionBased}\`
 
-_Нажми на комментарий чтобы скопировать_`
+_Нажми на текст в рамке чтобы скопировать_`
 
   await sendMessage(chatId, message)
+}
+
+function escapeMarkdown(text: string): string {
+  return text.replace(/[_*[\]()~`>#+=|{}.!-]/g, '\\$&')
 }

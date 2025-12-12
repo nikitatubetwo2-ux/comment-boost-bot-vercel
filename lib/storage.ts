@@ -53,7 +53,7 @@ async function kvFetch(method: string, args: unknown[] = []): Promise<unknown> {
     body: JSON.stringify([method, ...args]),
   })
 
-  const data = await response.json()
+  const data = await response.json() as { result: unknown }
   return data.result
 }
 

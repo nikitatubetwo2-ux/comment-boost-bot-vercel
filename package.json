@@ -13,6 +13,7 @@
   "devDependencies": {
     "@netlify/functions": "^2.8.0",
     "@types/node": "^22.10.1",
+    "@vercel/node": "^5.5.15",
     "typescript": "^5.7.2"
   }
 }
