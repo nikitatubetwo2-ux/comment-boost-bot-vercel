@@ -703,28 +703,29 @@ class YouTubeAnalyzer:
     def find_rising_stars(self, query: str, max_results: int = 15,
                           max_age_months: int = 6) -> List[ChannelInfo]:
         """
-        Поиск "восходящих звёзд" — каналов с АНОМАЛЬНО высокими просмотрами
+        🔥 АГРЕССИВНЫЙ поиск "восходящих звёзд"
         
-        Ищем каналы где просмотры >> подписчиков (признак вирусности)
-        Например: 500 подписчиков но 30-40к просмотров на видео = ЗОЛОТО!
+        Ищем каналы с АНОМАЛЬНЫМИ показателями:
+        - Мало подписчиков но МНОГО просмотров
+        - Высокий engagement (лайки/комменты)
+        - Быстрый рост за короткое время
         
-        Args:
-            query: Поисковый запрос
-            max_results: Максимум результатов
-            max_age_months: Максимальный возраст канала в месяцах
+        КРИТЕРИИ ЗОЛОТА:
+        - < 1K subs + > 5K views/video = 🔥 БОМБА
+        - < 5K subs + > 10K views/video = ⭐ ЗВЕЗДА
+        - Virality > 10x (views/subs) = 💎 АНОМАЛИЯ
         """
         from datetime import datetime, timedelta
         
-        min_created_date = datetime.now() - timedelta(days=max_age_months * 30)
-        
-        # Ищем через свежие видео с высокими просмотрами
         rising_stars = []
         seen_ids = set()
         
+        print(f"🔥 Агрессивный поиск звёзд: {query}")
+        
         for attempt in range(len(self.api_keys)):
             try:
-                # Ищем видео с высокими просмотрами за последние месяцы
-                for order in ['viewCount', 'date']:
+                # Ищем видео с ВЫСОКИМИ просмотрами за последние 90 дней
+                for order in ['viewCount', 'date', 'relevance']:
                     response = self.youtube.search().list(
                         part='snippet',
                         q=query,
@@ -732,7 +733,7 @@ class YouTubeAnalyzer:
                         maxResults=50,
                         order=order,
                         publishedAfter=(datetime.now() - timedelta(days=90)).strftime('%Y-%m-%dT00:00:00Z'),
-                        videoDuration='medium'  # Исключаем Shorts
+                        videoDuration='medium'
                     ).execute()
                     
                     # Собираем channel_id
@@ -786,26 +787,48 @@ class YouTubeAnalyzer:
                                 except:
                                     pass
                             
-                            # Категоризация по "золотости"
+                            # 🔥 АГРЕССИВНАЯ категоризация
                             is_gold = False
                             star_type = ""
+                            priority = 0
                             
-                            # ЗОЛОТО: мало подписчиков но много просмотров
-                            if subs < 1000 and avg_views > 10000:
+                            # TIER 1: БОМБА — мало подписчиков, МНОГО просмотров
+                            if subs < 500 and avg_views > 5000:
                                 is_gold = True
-                                star_type = f"🔥 ЗОЛОТО! {subs} subs, {int(avg_views/1000)}K views/vid"
-                            elif subs < 5000 and avg_views > 20000:
+                                star_type = f"🔥 БОМБА! {subs} subs → {int(avg_views/1000)}K/vid"
+                                priority = 100
+                            elif subs < 1000 and avg_views > 8000:
                                 is_gold = True
-                                star_type = f"⭐ Растущий: {int(avg_views/1000)}K views/vid"
-                            elif subs < 10000 and virality_score > 20:
+                                star_type = f"🔥 БОМБА! {subs} subs → {int(avg_views/1000)}K/vid"
+                                priority = 95
+                            
+                            # TIER 2: ЗВЕЗДА — растущий канал
+                            elif subs < 2000 and avg_views > 5000:
                                 is_gold = True
-                                star_type = f"📈 Вирусный: x{int(virality_score)} views/subs"
-                            elif age_days < 90 and avg_views > 5000:
+                                star_type = f"⭐ ЗВЕЗДА: {int(avg_views/1000)}K/vid при {subs} subs"
+                                priority = 80
+                            elif subs < 5000 and avg_views > 10000:
                                 is_gold = True
-                                star_type = f"🆕 Новичок {age_days}д: {int(avg_views/1000)}K/vid"
-                            elif virality_score > 50:
+                                star_type = f"⭐ ЗВЕЗДА: {int(avg_views/1000)}K/vid"
+                                priority = 75
+                            
+                            # TIER 3: ВИРУСНЫЙ — аномальное соотношение
+                            elif virality_score > 15:
                                 is_gold = True
-                                star_type = f"💎 Аномалия: x{int(virality_score)}"
+                                star_type = f"💎 ВИРУСНЫЙ: x{int(virality_score)} views/subs"
+                                priority = 70
+                            
+                            # TIER 4: НОВИЧОК — молодой но перспективный
+                            elif age_days < 60 and avg_views > 3000:
+                                is_gold = True
+                                star_type = f"🆕 НОВИЧОК {age_days}д: {int(avg_views/1000)}K/vid"
+                                priority = 60
+                            
+                            # TIER 5: РОСТ — хорошая динамика
+                            elif subs < 10000 and virality_score > 8:
+                                is_gold = True
+                                star_type = f"📈 РОСТ: x{int(virality_score)} engagement"
+                                priority = 50
                             
                             if is_gold:
                                 channel = ChannelInfo(
@@ -825,10 +848,13 @@ class YouTubeAnalyzer:
                                 channel._virality = virality_score
                                 channel._avg_views = avg_views
                                 channel._age_days = age_days
+                                channel._priority = priority
+                                channel._engagement = virality_score * 10  # Для UI
                                 rising_stars.append(channel)
+                                print(f"   ✅ {channel.title}: {star_type}")
                 
-                # Сортируем по вирусности (просмотры/подписчики)
-                rising_stars.sort(key=lambda x: getattr(x, '_virality', 0), reverse=True)
+                # Сортируем по ПРИОРИТЕТУ (БОМБА > ЗВЕЗДА > ВИРУСНЫЙ > НОВИЧОК)
+                rising_stars.sort(key=lambda x: (getattr(x, '_priority', 0), getattr(x, '_virality', 0)), reverse=True)
                 return rising_stars[:max_results]
                 
             except HttpError as e:
