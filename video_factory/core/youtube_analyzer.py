@@ -96,6 +96,46 @@ class YouTubeAnalyzer:
         
         return None
     
+    def _search_channel_by_name(self, name: str) -> Optional[str]:
+        """Поиск канала по названию"""
+        for attempt in range(len(self.api_keys)):
+            try:
+                response = self.youtube.search().list(
+                    part='snippet',
+                    q=name,
+                    type='channel',
+                    maxResults=5
+                ).execute()
+                
+                # Ищем точное или близкое совпадение по названию
+                name_lower = name.lower().replace('-', '').replace('_', '').replace(' ', '')
+                
+                for item in response.get('items', []):
+                    channel_title = item['snippet']['title']
+                    title_lower = channel_title.lower().replace('-', '').replace('_', '').replace(' ', '')
+                    
+                    # Точное совпадение
+                    if name_lower == title_lower:
+                        return item['id']['channelId']
+                    
+                    # Частичное совпадение
+                    if name_lower in title_lower or title_lower in name_lower:
+                        return item['id']['channelId']
+                
+                # Если не нашли точное — берём первый результат
+                if response.get('items'):
+                    return response['items'][0]['id']['channelId']
+                
+                return None
+            except HttpError as e:
+                if e.resp.status in [403, 429]:
+                    print(f"Ключ #{self.current_key_index + 1} заблокирован, пробую следующий...")
+                    self.rotate_key()
+                else:
+                    print(f"Ошибка поиска канала: {e}")
+                    return None
+        return None
+    
     def _resolve_channel_id(self, identifier: str, url: str) -> Optional[str]:
         """Получение channel_id по handle или username с ротацией ключей"""
         for attempt in range(len(self.api_keys)):
@@ -157,8 +197,39 @@ class YouTubeAnalyzer:
                     return None
         return None
     
-    def get_channel_info(self, channel_id: str) -> Optional[ChannelInfo]:
-        """Получение информации о канале"""
+    def get_channel_info(self, channel_input: str) -> Optional[ChannelInfo]:
+        """
+        Получение информации о канале
+        
+        Поддерживает:
+        - Channel ID (UCxxxxxx)
+        - @handle (@ChannelName)
+        - URL (youtube.com/@channel, youtube.com/channel/UCxxx)
+        - Название канала (поиск)
+        """
+        channel_id = None
+        
+        # Определяем тип ввода
+        if channel_input.startswith('UC') and len(channel_input) == 24:
+            # Это channel_id
+            channel_id = channel_input
+        elif channel_input.startswith('@'):
+            # Это @handle
+            channel_id = self._resolve_channel_id(channel_input[1:], f"@{channel_input[1:]}")
+        elif 'youtube.com' in channel_input:
+            # Это URL
+            channel_id = self.extract_channel_id(channel_input)
+        else:
+            # Пробуем как handle без @
+            channel_id = self._resolve_channel_id(channel_input, f"@{channel_input}")
+            
+            # Если не нашли — ищем по названию
+            if not channel_id:
+                channel_id = self._search_channel_by_name(channel_input)
+        
+        if not channel_id:
+            return None
+        
         for attempt in range(len(self.api_keys)):
             try:
                 response = self.youtube.channels().list(

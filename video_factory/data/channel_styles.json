@@ -1,0 +1,33 @@
+{
+  "style_1765571488_0": {
+    "id": "style_1765571488_0",
+    "name": "Test Channel",
+    "created_at": "2025-12-13T03:31:28.744151",
+    "updated_at": "",
+    "competitor_channel": "WWII-Records",
+    "competitor_name": "",
+    "main_niche": "",
+    "sub_niche": "",
+    "sub_niche_description": "",
+    "rejected_subniches": [],
+    "narrative_style": "",
+    "tone": "",
+    "target_audience": "",
+    "voice_id": "",
+    "voice_name": "",
+    "voice_stability": 0.5,
+    "voice_clarity": 0.75,
+    "image_style": "",
+    "color_correction": "",
+    "transitions": [],
+    "zoom_effect": 1.05,
+    "pan_effect": true,
+    "music_mood": "",
+    "music_genre": "",
+    "intro_image_interval": 10,
+    "main_image_interval": 40,
+    "generated_topics": [],
+    "approved_topics": [],
+    "videos_created": 0
+  }
+}

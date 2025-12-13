@@ -182,7 +182,7 @@ class ChannelStyleManager:
             result["steps"].append(f"✅ Канал найден: {channel_info.title}")
             
             # 2. Получаем видео
-            videos = analyzer.get_channel_videos(channel_info.id, max_results=15)
+            videos = analyzer.get_channel_videos(channel_info.channel_id, max_results=15)
             titles = [v.title for v in videos]
             descriptions = [v.description for v in videos if v.description]
             
@@ -219,7 +219,7 @@ class ChannelStyleManager:
             style.main_niche = self._extract_niche(titles)
             
             # 5. Ищем подниши
-            channels_info = f"Канал: {channel_info.title}\nПодписчики: {channel_info.subscribers}\nВидео: {', '.join(titles[:10])}"
+            channels_info = f"Канал: {channel_info.title}\nПодписчики: {channel_info.subscriber_count}\nВидео: {', '.join(titles[:10])}"
             niche_analysis = groq.analyze_niche(style.main_niche, channels_info)
             
             result["niche_analysis"] = niche_analysis
