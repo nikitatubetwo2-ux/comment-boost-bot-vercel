@@ -1205,11 +1205,68 @@ PROMPT:
     # === ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===
     
     def _map_voice(self, voice_info: dict) -> str:
-        """Маппинг рекомендации голоса на реальный голос"""
-        gender = voice_info.get('gender', 'мужской').lower()
-        if 'женск' in gender:
-            return "Rachel (женский, спокойный)"
-        return "Brian (мужской, нарратор)"
+        """
+        УМНЫЙ маппинг рекомендации голоса на реальный голос
+        
+        Учитывает: gender, age, tone, emotion
+        """
+        from .voice_library import VOICE_LIBRARY
+        
+        gender = voice_info.get('gender', 'male').lower()
+        age = voice_info.get('age', 'middle').lower()
+        tone = voice_info.get('tone', 'serious').lower()
+        emotion = voice_info.get('emotion', 'calm').lower()
+        
+        # Нормализуем gender
+        if 'female' in gender or 'женск' in gender:
+            gender = 'female'
+        else:
+            gender = 'male'
+        
+        best_voice = None
+        best_score = 0
+        
+        for voice_id, voice in VOICE_LIBRARY.items():
+            if voice.gender != gender:
+                continue
+            
+            score = 0
+            
+            # Возраст
+            if voice.age == age:
+                score += 20
+            
+            # Тон
+            if tone in ['serious', 'dramatic']:
+                if voice.category == 'narration':
+                    score += 30
+                if 'documentary' in voice.use_case or 'military' in voice.use_case:
+                    score += 15
+            elif tone == 'casual':
+                if voice.category == 'conversational':
+                    score += 30
+            
+            # Эмоция
+            if emotion == 'dramatic':
+                if 'drama' in voice.use_case or 'intense' in voice.use_case:
+                    score += 20
+            elif emotion == 'calm':
+                if 'calm' in voice.use_case:
+                    score += 20
+            
+            # Бонус за военную тематику
+            if 'military' in voice.use_case or 'history' in voice.use_case:
+                score += 15
+            
+            if score > best_score:
+                best_score = score
+                best_voice = voice
+        
+        if best_voice:
+            return f"{best_voice.name} ({best_voice.gender}, {best_voice.accent})"
+        
+        # Fallback
+        return "Rachel (female, american)" if gender == 'female' else "Brian (male, american)"
     
     def _determine_image_style(self, topic: str, style: dict) -> str:
         """Определение стиля изображений по теме"""

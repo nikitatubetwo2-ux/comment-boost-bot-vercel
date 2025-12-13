@@ -335,34 +335,90 @@ class ChannelStyleManager:
     # === ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===
     
     def _select_voice(self, voice_rec: dict) -> tuple:
-        """Выбор голоса на основе рекомендации"""
-        voices = {
-            "мужской": [
-                ("Brian (мужской, нарратор)", "nPczCjzI2devNBz1zQrb"),
-                ("Adam (мужской, глубокий)", "pNInz6obpgDQGcFmaJgB"),
-                ("Clyde (мужской, военный)", "2EiwWnXFnvU5JabPnv8n"),
-            ],
-            "женский": [
-                ("Rachel (женский, спокойный)", "21m00Tcm4TlvDq8ikWAM"),
-                ("Matilda (женский, профессиональный)", "XrExE9yKIg1WjnnlVkGX"),
-            ]
-        }
+        """
+        УМНЫЙ выбор голоса на основе полного анализа конкурента
         
-        gender = voice_rec.get('gender', 'мужской').lower()
-        voice_type = voice_rec.get('type', '').lower()
+        Учитывает:
+        - gender (male/female)
+        - age (young/middle/old)
+        - tone (serious/casual/dramatic)
+        - speed (slow/medium/fast)
+        - emotion (calm/energetic/dramatic)
+        """
+        from .voice_library import VOICE_LIBRARY, get_voices_by_category
         
-        if 'женск' in gender:
-            options = voices['женский']
+        gender = voice_rec.get('gender', 'male').lower()
+        age = voice_rec.get('age', 'middle').lower()
+        tone = voice_rec.get('tone', 'serious').lower()
+        emotion = voice_rec.get('emotion', 'calm').lower()
+        
+        # Нормализуем gender
+        if 'female' in gender or 'женск' in gender:
+            gender = 'female'
         else:
-            options = voices['мужской']
+            gender = 'male'
         
-        # Выбираем наиболее подходящий
-        if 'военн' in voice_type or 'команд' in voice_type:
-            return ("Clyde (мужской, военный)", "2EiwWnXFnvU5JabPnv8n")
-        elif 'глубок' in voice_type or 'серьёзн' in voice_type:
-            return ("Adam (мужской, глубокий)", "pNInz6obpgDQGcFmaJgB")
+        # === МАТРИЦА ВЫБОРА ГОЛОСА ===
+        # Приоритет: tone + emotion → age → gender
         
-        return options[0]
+        best_voice = None
+        best_score = 0
+        
+        for voice_id, voice in VOICE_LIBRARY.items():
+            if voice.gender != gender:
+                continue
+            
+            score = 0
+            
+            # Возраст (20 баллов)
+            if voice.age == age:
+                score += 20
+            elif (age == 'middle' and voice.age in ['young', 'old']):
+                score += 10  # middle совместим с любым
+            
+            # Тон и эмоция (40 баллов)
+            if tone == 'serious' or tone == 'dramatic':
+                if voice.category == 'narration':
+                    score += 30
+                if 'documentary' in voice.use_case or 'military' in voice.use_case:
+                    score += 10
+            elif tone == 'casual':
+                if voice.category == 'conversational':
+                    score += 30
+                if 'podcast' in voice.use_case or 'vlog' in voice.use_case:
+                    score += 10
+            
+            # Эмоциональность (20 баллов)
+            if emotion == 'dramatic':
+                if 'drama' in voice.use_case or 'intense' in voice.use_case:
+                    score += 20
+                elif voice.category == 'narration':
+                    score += 10
+            elif emotion == 'calm':
+                if 'calm' in voice.use_case or 'meditation' in voice.use_case:
+                    score += 20
+                elif 'audiobook' in voice.use_case:
+                    score += 10
+            elif emotion == 'energetic':
+                if 'energetic' in voice.use_case or 'gaming' in voice.use_case:
+                    score += 20
+            
+            # Бонус за военную тематику (для нашего проекта)
+            if 'military' in voice.use_case or 'history' in voice.use_case:
+                score += 15
+            
+            if score > best_score:
+                best_score = score
+                best_voice = voice
+        
+        if best_voice:
+            display_name = f"{best_voice.name} ({best_voice.gender}, {best_voice.accent})"
+            return (display_name, best_voice.voice_id)
+        
+        # Fallback — Brian для мужского, Rachel для женского
+        if gender == 'female':
+            return ("Rachel (female, american)", "21m00Tcm4TlvDq8ikWAM")
+        return ("Brian (male, american)", "nPczCjzI2devNBz1zQrb")
     
     def _determine_image_style(self, titles: List[str], style: dict) -> str:
         """Определение стиля изображений"""
