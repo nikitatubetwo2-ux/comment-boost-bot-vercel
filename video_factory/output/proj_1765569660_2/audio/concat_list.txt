@@ -1,3 +1,0 @@
-file '/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765569660_2/audio/part_00.mp3'
-file '/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765569660_2/audio/part_01.mp3'
-file '/Users/nikitamoskalev/Desktop/pricing/comment-boost-bot-vercel/comment-boost-bot-vercel/video_factory/output/proj_1765569660_2/audio/part_02.mp3'

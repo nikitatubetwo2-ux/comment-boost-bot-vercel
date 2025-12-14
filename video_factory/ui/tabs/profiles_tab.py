@@ -420,7 +420,7 @@ class ProfilesTab(QWidget):
             return
         
         # Генерируем новые подниши (исключая отклонённые)
-        from core.groq_client import GroqClient
+        from core.groq_client import GroqClient, get_groq_client
         from config import config
         
         if not config.api.groq_key:
@@ -429,7 +429,7 @@ class ProfilesTab(QWidget):
         
         self.status_label.setText("🔄 Генерация новых подниш...")
         
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         # Добавляем текущую поднишу в отклонённые
         if self.current_style.sub_niche:

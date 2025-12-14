@@ -342,7 +342,7 @@ class AnalyzerWorker(QThread):
     
     def _analyze_niche(self):
         """AI анализ ниши - поиск подниш"""
-        from core.groq_client import GroqClient
+        from core.groq_client import GroqClient, get_groq_client
         
         if not config.api.groq_key:
             self.error.emit("Groq API ключ не настроен!")
@@ -357,7 +357,7 @@ class AnalyzerWorker(QThread):
             channels_info += f"{i}. {ch.get('title', '?')} - {ch.get('subscriber_count', 0):,} подписчиков, {ch.get('video_count', 0)} видео\n"
         
         self.progress.emit("🤖 AI анализ ниши...")
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         result = groq.analyze_niche(query, channels_info)
         
@@ -487,7 +487,7 @@ class AnalyzerWorker(QThread):
     
     def _analyze_channel(self):
         from core.youtube_analyzer import YouTubeAnalyzer
-        from core.groq_client import GroqClient
+        from core.groq_client import GroqClient, get_groq_client
         from core.channel_profile import ProfileManager
         
         if not config.api.youtube_keys:
@@ -502,7 +502,7 @@ class AnalyzerWorker(QThread):
         niche = self.data.get('niche', 'Общая')
         
         yt = YouTubeAnalyzer(api_keys=config.api.youtube_keys)
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         self.progress.emit("📊 Загрузка информации...")
         channel_info = yt.get_channel_info(channel_id)

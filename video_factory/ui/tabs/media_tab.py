@@ -101,11 +101,11 @@ class MediaWorker(QThread):
             self.error.emit(f"{str(e)}\n{traceback.format_exc()}")
     
     def _generate_image_prompts(self):
-        from core.groq_client import GroqClient
+        from core.groq_client import GroqClient, get_groq_client
         if not config.api.groq_key:
             self.error.emit("Groq API ключ не настроен!")
             return
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         self.progress.emit("Генерация промптов...")
         prompts = groq.generate_image_prompts(
             self.data['script'], self.data.get('style', 'Cinematic')

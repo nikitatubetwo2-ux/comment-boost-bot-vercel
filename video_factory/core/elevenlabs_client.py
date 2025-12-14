@@ -21,15 +21,18 @@ class Voice:
 
 
 class ElevenLabsClient:
-    """Клиент для работы с ElevenLabs API с ротацией ключей"""
+    """
+    Клиент для работы с ElevenLabs API с УМНОЙ ротацией ключей
+    
+    Логика:
+    - Если ключ вернул 401 (невалидный) или 429 (лимит) — переходим к следующему
+    - Перебираем ВСЕ ключи пока не найдём рабочий
+    - Даже если 50-100 ключей подряд не работают — продолжаем искать
+    """
     
     BASE_URL = "https://api.elevenlabs.io/v1"
     
     def __init__(self, api_keys: list = None, api_key: str = None):
-        """
-        api_keys: список ключей для ротации
-        api_key: один ключ (для обратной совместимости)
-        """
         if api_keys:
             self.api_keys = [k for k in api_keys if k]
         elif api_key:
@@ -48,12 +51,16 @@ class ElevenLabsClient:
             "Content-Type": "application/json"
         }
     
+    def _set_key(self, index: int):
+        """Установить ключ по индексу"""
+        self.current_key_index = index % len(self.api_keys)
+        self._update_headers()
+    
     def rotate_key(self):
         """Переключение на следующий ключ"""
         if len(self.api_keys) > 1:
             self.current_key_index = (self.current_key_index + 1) % len(self.api_keys)
             self._update_headers()
-            print(f"Переключение на ElevenLabs ключ #{self.current_key_index + 1}")
     
     @property
     def api_key(self) -> str:
@@ -320,28 +327,91 @@ class ElevenLabsClient:
         script = normalize_text(script, language)
         script = self.optimize_text_for_speech(script)
         
-        # Разбиваем на части по параграфам (сохраняя целостность предложений)
-        paragraphs = [p.strip() for p in script.split('\n\n') if p.strip()]
-        paragraphs = [p for p in paragraphs if not (p.startswith('[') and p.endswith(']'))]
+        # ElevenLabs лимит ~5000 символов на запрос
+        # Рассчитываем количество частей исходя из длины текста
+        MAX_CHARS_PER_PART = 4500  # Безопасный лимит
+        min_parts_needed = max(1, len(script) // MAX_CHARS_PER_PART + 1)
         
-        # Определяем количество частей (по числу ключей, но не больше 3)
-        num_parts = min(max_workers, len(self.api_keys), 3)
-        if num_parts < 2:
-            # Если только 1 ключ — обычная генерация
+        # Количество частей = максимум из (нужно по размеру, воркеры)
+        # Но не больше количества ключей
+        num_parts = min(max(min_parts_needed, max_workers), len(self.api_keys), 20)
+        
+        print(f"[ElevenLabs] Текст: {len(script)} символов, нужно минимум {min_parts_needed} частей")
+        
+        if num_parts < 2 or len(script) < 5000:
+            # Короткий текст — обычная генерация
             output_path = output_dir / "voiceover.mp3"
             return self.text_to_speech(script, voice_id, output_path, language=language)
         
-        # Делим параграфы на части
-        part_size = len(paragraphs) // num_parts
+        # УМНАЯ РАЗБИВКА ТЕКСТА на части (каждая <= 4500 символов)
+        import re
+        
+        # Разбиваем по предложениям
+        sentences = re.split(r'(?<=[.!?])\s+', script)
+        sentences = [s.strip() for s in sentences if s.strip()]
+        
+        # Собираем части, следя за лимитом символов
         parts = []
-        for i in range(num_parts):
-            start = i * part_size
-            end = start + part_size if i < num_parts - 1 else len(paragraphs)
-            part_text = '\n\n'.join(paragraphs[start:end])
-            parts.append((i, part_text))
+        current_part = []
+        current_length = 0
+        
+        for sentence in sentences:
+            sentence_len = len(sentence)
+            
+            # Если предложение само по себе слишком длинное — разбиваем его
+            if sentence_len > MAX_CHARS_PER_PART:
+                # Сохраняем текущую часть если есть
+                if current_part:
+                    parts.append((len(parts), ' '.join(current_part)))
+                    current_part = []
+                    current_length = 0
+                
+                # Разбиваем длинное предложение по запятым или пробелам
+                chunks = re.split(r'(?<=,)\s+', sentence)
+                for chunk in chunks:
+                    if len(chunk) <= MAX_CHARS_PER_PART:
+                        parts.append((len(parts), chunk))
+                    else:
+                        # Крайний случай — режем по символам
+                        for i in range(0, len(chunk), MAX_CHARS_PER_PART):
+                            parts.append((len(parts), chunk[i:i+MAX_CHARS_PER_PART]))
+                continue
+            
+            # Если добавление предложения превысит лимит — начинаем новую часть
+            if current_length + sentence_len + 1 > MAX_CHARS_PER_PART and current_part:
+                parts.append((len(parts), ' '.join(current_part)))
+                current_part = []
+                current_length = 0
+            
+            current_part.append(sentence)
+            current_length += sentence_len + 1
+        
+        # Добавляем последнюю часть
+        if current_part:
+            parts.append((len(parts), ' '.join(current_part)))
+        
+        print(f"[ElevenLabs] Разбивка: {len(sentences)} предложений -> {len(parts)} частей (макс {MAX_CHARS_PER_PART} символов)")
+        
+        # Проверяем что все части непустые и перенумеровываем
+        parts = [(i, text) for i, (_, text) in enumerate(parts) if text.strip()]
+        num_parts = len(parts)
+        
+        if num_parts == 0:
+            raise Exception("Не удалось разбить текст на части")
+        
+        if num_parts == 1:
+            # Только одна часть — обычная генерация
+            output_path = output_dir / "voiceover.mp3"
+            return self.text_to_speech(parts[0][1], voice_id, output_path, language=language)
         
         total_chars = sum(len(p[1]) for p in parts)
+        max_part_len = max(len(p[1]) for p in parts)
+        
+        # Ограничиваем параллельность количеством ключей
+        actual_workers = min(num_parts, len(self.api_keys), 10)
+        
         print(f"[ElevenLabs] 🚀 Параллельная озвучка: {num_parts} частей, {total_chars} символов")
+        print(f"[ElevenLabs]    Макс. часть: {max_part_len} символов, воркеров: {actual_workers}")
         
         # Генерируем параллельно
         audio_parts = [None] * num_parts
@@ -349,52 +419,81 @@ class ElevenLabsClient:
         completed = [0]  # Для отслеживания прогресса
         
         def generate_part(args):
+            """
+            Генерация одной части озвучки.
+            Перебирает ВСЕ ключи пока не найдёт рабочий.
+            """
             part_idx, text = args
+            total_keys = len(self.api_keys)
             
-            # Используем разные ключи для разных частей
-            with lock:
-                original_idx = self.current_key_index
-                self.current_key_index = part_idx % len(self.api_keys)
-                self._update_headers()
+            # Начинаем с разных ключей для разных частей (распределяем нагрузку)
+            start_key = (part_idx * 7) % total_keys
             
-            try:
-                part_path = output_dir / f"part_{part_idx:02d}.mp3"
+            # Перебираем ВСЕ ключи
+            for attempt in range(total_keys):
+                key_idx = (start_key + attempt) % total_keys
                 
-                data = {
-                    "text": text,
-                    "model_id": "eleven_multilingual_v2",
-                    "voice_settings": {
-                        "stability": 0.5,
-                        "similarity_boost": 0.75,
-                        "style": 0.0,
-                        "use_speaker_boost": True
+                with lock:
+                    self._set_key(key_idx)
+                    current_headers = self.headers.copy()
+                
+                try:
+                    part_path = output_dir / f"part_{part_idx:02d}.mp3"
+                    
+                    data = {
+                        "text": text,
+                        "model_id": "eleven_multilingual_v2",
+                        "voice_settings": {
+                            "stability": 0.5,
+                            "similarity_boost": 0.75,
+                            "style": 0.0,
+                            "use_speaker_boost": True
+                        }
                     }
-                }
-                
-                # Таймаут 180 сек на часть (3 минуты)
-                print(f"  ⏳ Генерация части {part_idx+1}... ({len(text)} символов)")
-                response = requests.post(
-                    f"{self.BASE_URL}/text-to-speech/{voice_id}",
-                    headers=self.headers,
-                    json=data,
-                    timeout=180
-                )
-                response.raise_for_status()
-                
-                with open(part_path, 'wb') as f:
-                    f.write(response.content)
-                
-                with lock:
-                    completed[0] += 1
-                print(f"  ✅ Часть {part_idx+1}/{num_parts} готова ({completed[0]}/{num_parts} завершено)")
-                return part_idx, part_path
-                
-            finally:
-                with lock:
-                    self.current_key_index = original_idx
-                    self._update_headers()
+                    
+                    if attempt == 0:
+                        print(f"  ⏳ Часть {part_idx+1}... ({len(text)} символов)")
+                    elif attempt % 10 == 0:
+                        print(f"  🔄 Часть {part_idx+1}: попытка {attempt+1}/{total_keys}...")
+                    
+                    response = requests.post(
+                        f"{self.BASE_URL}/text-to-speech/{voice_id}",
+                        headers=current_headers,
+                        json=data,
+                        timeout=120
+                    )
+                    
+                    # 401 = ключ невалидный, 429 = лимит исчерпан — пробуем следующий
+                    if response.status_code in [401, 429]:
+                        continue
+                    
+                    # 5xx = серверная ошибка — пауза и retry
+                    if response.status_code >= 500:
+                        import time
+                        time.sleep(2)
+                        continue
+                    
+                    response.raise_for_status()
+                    
+                    with open(part_path, 'wb') as f:
+                        f.write(response.content)
+                    
+                    # УСПЕХ! Возвращаем результат
+                    print(f"  ✅ Часть {part_idx+1} готова")
+                    return (part_idx, part_path)
+                    
+                except Exception as e:
+                    # Ошибка — пробуем следующий ключ
+                    import time
+                    time.sleep(1)
+                    continue
+            
+            # Все ключи перебрали — ни один не сработал
+            raise Exception(f"Часть {part_idx+1}: все {total_keys} ключей не сработали")
         
-        with ThreadPoolExecutor(max_workers=num_parts) as executor:
+        errors = []
+        
+        with ThreadPoolExecutor(max_workers=actual_workers) as executor:
             futures = {executor.submit(generate_part, p): p[0] for p in parts}
             
             for future in as_completed(futures):
@@ -402,10 +501,14 @@ class ElevenLabsClient:
                     idx, path = future.result()
                     audio_parts[idx] = path
                 except Exception as e:
-                    print(f"[ElevenLabs] ❌ Ошибка части: {e}")
+                    error_msg = str(e)
+                    errors.append(error_msg)
+                    print(f"[ElevenLabs] ❌ Ошибка части: {error_msg[:100]}")
         
         # Склеиваем части
         valid_parts = [p for p in audio_parts if p and p.exists()]
+        
+        print(f"[ElevenLabs] Результат: {len(valid_parts)}/{num_parts} частей успешно")
         
         if len(valid_parts) == 1:
             # Только одна часть — просто переименовываем
@@ -423,38 +526,48 @@ class ElevenLabsClient:
                     pass
             return final_path
         
-        raise Exception("Не удалось сгенерировать озвучку")
+        # Если ни одна часть не сгенерировалась — пробуем обычную генерацию
+        if len(valid_parts) == 0:
+            print(f"[ElevenLabs] ⚠️ Параллельная генерация не удалась, пробую обычную...")
+            print(f"[ElevenLabs] Ошибки: {errors[:3]}")
+            
+            # Fallback: обычная генерация всего текста
+            try:
+                output_path = output_dir / "voiceover.mp3"
+                return self.text_to_speech(script, voice_id, output_path, language=language)
+            except Exception as e:
+                print(f"[ElevenLabs] ❌ Обычная генерация тоже не удалась: {e}")
+        
+        raise Exception(f"Не удалось сгенерировать озвучку. Ошибки: {errors[:2]}")
     
     def _merge_audio_files(self, audio_files: List[Path], output_path: Path) -> Path:
-        """Склеивание аудио файлов в один"""
+        """Склеивание аудио файлов в один используя moviepy"""
         try:
-            from pydub import AudioSegment
+            from moviepy import AudioFileClip, concatenate_audioclips
             
-            combined = AudioSegment.empty()
+            clips = []
             for audio_file in audio_files:
-                segment = AudioSegment.from_mp3(str(audio_file))
-                combined += segment
+                clip = AudioFileClip(str(audio_file))
+                clips.append(clip)
             
-            combined.export(str(output_path), format="mp3")
+            final = concatenate_audioclips(clips)
+            final.write_audiofile(str(output_path), logger=None)
+            
+            # Закрываем клипы
+            for clip in clips:
+                clip.close()
+            final.close()
+            
             return output_path
             
-        except ImportError:
-            # Если pydub не установлен — используем ffmpeg напрямую
-            import subprocess
-            
-            # Создаём файл со списком
-            list_file = output_path.parent / "concat_list.txt"
-            with open(list_file, 'w') as f:
-                for audio_file in audio_files:
-                    f.write(f"file '{audio_file.absolute()}'\n")
-            
-            subprocess.run([
-                'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-                '-i', str(list_file), '-c', 'copy', str(output_path)
-            ], capture_output=True)
-            
-            list_file.unlink()
-            return output_path
+        except Exception as e:
+            print(f"[ElevenLabs] Ошибка склейки через moviepy: {e}")
+            # Fallback: просто копируем первый файл если только один
+            if len(audio_files) == 1:
+                import shutil
+                shutil.copy(audio_files[0], output_path)
+                return output_path
+            raise Exception(f"Не удалось склеить аудио: {e}")
     
     def get_user_info(self) -> Dict[str, Any]:
         """Информация о пользователе и лимитах"""

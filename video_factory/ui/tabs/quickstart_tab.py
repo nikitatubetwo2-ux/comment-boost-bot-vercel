@@ -37,7 +37,7 @@ class AnalyzeWorker(QThread):
     def run(self):
         try:
             from core.youtube_analyzer import YouTubeAnalyzer
-            from core.groq_client import GroqClient
+            from core.groq_client import GroqClient, get_groq_client
             from core.voice_library import recommend_voice_for_content, VOICE_LIBRARY
             
             self.progress.emit("🔍 Анализирую канал...")
@@ -61,7 +61,7 @@ class AnalyzeWorker(QThread):
             videos = analyzer.get_channel_videos(channel.channel_id, max_results=15)
             
             self.progress.emit("🧠 AI анализ стиля...")
-            groq = GroqClient(config.api.groq_key, config.api.groq_model)
+            groq = get_groq_client()
             
             titles = [v.title for v in videos]
             descriptions = [v.description for v in videos if v.description]
@@ -129,8 +129,8 @@ class SubnicheWorker(QThread):
     
     def run(self):
         try:
-            from core.groq_client import GroqClient
-            groq = GroqClient(config.api.groq_key, config.api.groq_model)
+            from core.groq_client import GroqClient, get_groq_client
+            groq = get_groq_client()
             subniches = groq.generate_more_subniches(self.main_niche, self.rejected, self.style_context)
             self.finished.emit(subniches)
         except Exception as e:
@@ -151,8 +151,8 @@ class TopicsWorker(QThread):
     
     def run(self):
         try:
-            from core.groq_client import GroqClient
-            groq = GroqClient(config.api.groq_key, config.api.groq_model)
+            from core.groq_client import GroqClient, get_groq_client
+            groq = get_groq_client()
             topics = groq.generate_video_topics(
                 self.subniche, 
                 self.style_info, 

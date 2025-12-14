@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageForge - AI Image Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <div id="app" class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-2">🎨 ImageForge</h1>
+            <p class="text-gray-400">FLUX-powered AI Image Generation</p>
+        </header>
+
+        <!-- Stats Bar -->
+        <div class="glass rounded-lg p-4 mb-6 flex justify-between items-center">
+            <div class="flex gap-6">
+                <div>
+                    <span class="text-gray-400">Workers:</span>
+                    <span class="text-green-400 font-bold">{{ stats.active_workers }}</span>
+                </div>
+                <div>
+                    <span class="text-gray-400">Queue:</span>
+                    <span class="text-yellow-400 font-bold">{{ stats.pending_tasks }}</span>
+                </div>
+                <div>
+                    <span class="text-gray-400">Completed:</span>
+                    <span class="text-blue-400 font-bold">{{ stats.completed_tasks }}</span>
+                </div>
+            </div>
+            <div v-if="stats.estimated_wait_time" class="text-gray-400">
+                Est. wait: {{ formatTime(stats.estimated_wait_time) }}
+            </div>
+        </div>
+
+        <!-- Generation Form -->
+        <div class="glass rounded-lg p-6 mb-8">
+            <div class="mb-4">
+                <label class="block text-sm text-gray-400 mb-2">Prompt</label>
+                <textarea 
+                    v-model="prompt"
+                    class="w-full bg-black/30 rounded-lg p-4 text-white border border-gray-700 focus:border-blue-500 focus:outline-none"
+                    rows="3"
+                    placeholder="Describe the image you want to generate..."
+                ></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">Width</label>
+                    <select v-model="width" class="w-full bg-black/30 rounded p-2 border border-gray-700">
+                        <option value="512">512</option>
+                        <option value="768">768</option>
+                        <option value="1024">1024</option>
+                        <option value="1280">1280</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">Height</label>
+                    <select v-model="height" class="w-full bg-black/30 rounded p-2 border border-gray-700">
+                        <option value="512">512</option>
+                        <option value="768">768</option>
+                        <option value="1024">1024</option>
+                        <option value="1280">1280</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">Steps</label>
+                    <input 
+                        type="number" 
+                        v-model="steps" 
+                        min="1" 
+                        max="100"
+                        class="w-full bg-black/30 rounded p-2 border border-gray-700"
+                    >
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">Guidance</label>
+                    <input 
+                        type="number" 
+                        v-model="guidance" 
+                        min="1" 
+                        max="20"
+                        step="0.5"
+                        class="w-full bg-black/30 rounded p-2 border border-gray-700"
+                    >
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <button 
+                    @click="generate"
+                    :disabled="generating || !prompt"
+                    class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 rounded-lg py-3 font-bold transition"
+                >
+                    <span v-if="generating">Generating...</span>
+                    <span v-else>🎨 Generate</span>
+                </button>
+                <button 
+                    @click="generateBatch"
+                    :disabled="generating || !prompt"
+                    class="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 rounded-lg px-6 py-3 font-bold transition"
+                >
+                    ×4
+                </button>
+            </div>
+        </div>
+
+        <!-- Current Generation -->
+        <div v-if="currentTask" class="glass rounded-lg p-6 mb-8">
+            <div class="flex items-center gap-4">
+                <div class="spinner"></div>
+                <div>
+                    <div class="font-bold">Generating...</div>
+                    <div class="text-sm text-gray-400">{{ currentTask.request.prompt.substring(0, 50) }}...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery -->
+        <div class="mb-4 flex justify-between items-center">
+            <h2 class="text-xl font-bold">Gallery</h2>
+            <button @click="loadTasks" class="text-blue-400 hover:text-blue-300">
+                🔄 Refresh
+            </button>
+        </div>
+
+        <div class="image-grid">
+            <div 
+                v-for="task in completedTasks" 
+                :key="task.id"
+                class="glass rounded-lg overflow-hidden"
+            >
+                <img 
+                    :src="'/api/image/' + task.id + '/0'"
+                    class="w-full aspect-square object-cover cursor-pointer hover:opacity-90"
+                    @click="openImage(task)"
+                >
+                <div class="p-3">
+                    <p class="text-sm text-gray-300 truncate">{{ task.request.prompt }}</p>
+                    <p class="text-xs text-gray-500">{{ formatDuration(task) }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div v-if="completedTasks.length === 0" class="text-center py-12 text-gray-500">
+            <p class="text-4xl mb-4">🖼️</p>
+            <p>No images yet. Generate your first one!</p>
+        </div>
+
+        <!-- Image Modal -->
+        <div 
+            v-if="selectedTask" 
+            class="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+            @click="selectedTask = null"
+        >
+            <div class="max-w-4xl max-h-[90vh] p-4" @click.stop>
+                <img 
+                    :src="'/api/image/' + selectedTask.id + '/0'"
+                    class="max-w-full max-h-[80vh] rounded-lg"
+                >
+                <div class="mt-4 text-center">
+                    <p class="text-gray-300">{{ selectedTask.request.prompt }}</p>
+                    <button 
+                        @click="downloadImage(selectedTask)"
+                        class="mt-2 bg-blue-600 hover:bg-blue-700 rounded px-4 py-2"
+                    >
+                        📥 Download
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted, computed } = Vue;
+
+        createApp({
+            setup() {
+                const prompt = ref('');
+                const width = ref(1024);
+                const height = ref(1024);
+                const steps = ref(28);
+                const guidance = ref(3.5);
+                const generating = ref(false);
+                const currentTask = ref(null);
+                const tasks = ref([]);
+                const stats = ref({
+                    active_workers: 0,
+                    pending_tasks: 0,
+                    completed_tasks: 0,
+                    estimated_wait_time: null
+                });
+                const selectedTask = ref(null);
+
+                const completedTasks = computed(() => 
+                    tasks.value.filter(t => t.status === 'completed').reverse()
+                );
+
+                async function loadStats() {
+                    try {
+                        const res = await fetch('/api/queue/stats');
+                        stats.value = await res.json();
+                    } catch (e) {
+                        console.error('Failed to load stats:', e);
+                    }
+                }
+
+                async function loadTasks() {
+                    try {
+                        const res = await fetch('/api/queue/tasks?limit=50');
+                        tasks.value = await res.json();
+                    } catch (e) {
+                        console.error('Failed to load tasks:', e);
+                    }
+                }
+
+                async function generate() {
+                    if (!prompt.value || generating.value) return;
+                    
+                    generating.value = true;
+                    
+                    try {
+                        const res = await fetch('/api/generate', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                prompt: prompt.value,
+                                width: parseInt(width.value),
+                                height: parseInt(height.value),
+                                steps: parseInt(steps.value),
+                                guidance: parseFloat(guidance.value)
+                            })
+                        });
+                        
+                        const task = await res.json();
+                        currentTask.value = task;
+                        
+                        // Poll for completion
+                        await pollTask(task.id);
+                        
+                    } catch (e) {
+                        console.error('Generation failed:', e);
+                        alert('Generation failed: ' + e.message);
+                    } finally {
+                        generating.value = false;
+                        currentTask.value = null;
+                    }
+                }
+
+                async function generateBatch() {
+                    if (!prompt.value || generating.value) return;
+                    
+                    generating.value = true;
+                    
+                    try {
+                        const requests = Array(4).fill(null).map(() => ({
+                            prompt: prompt.value,
+                            width: parseInt(width.value),
+                            height: parseInt(height.value),
+                            steps: parseInt(steps.value),
+                            guidance: parseFloat(guidance.value)
+                        }));
+                        
+                        const res = await fetch('/api/batch/generate', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(requests)
+                        });
+                        
+                        const batchTasks = await res.json();
+                        
+                        // Poll all tasks
+                        await Promise.all(batchTasks.map(t => pollTask(t.id)));
+                        
+                    } catch (e) {
+                        console.error('Batch generation failed:', e);
+                    } finally {
+                        generating.value = false;
+                        currentTask.value = null;
+                    }
+                }
+
+                async function pollTask(taskId) {
+                    const maxWait = 300;
+                    let waited = 0;
+                    
+                    while (waited < maxWait) {
+                        await new Promise(r => setTimeout(r, 2000));
+                        waited += 2;
+                        
+                        const res = await fetch(`/api/task/${taskId}`);
+                        const task = await res.json();
+                        
+                        if (task.status === 'completed' || task.status === 'failed') {
+                            await loadTasks();
+                            await loadStats();
+                            return task;
+                        }
+                    }
+                }
+
+                function formatTime(seconds) {
+                    if (seconds < 60) return `${Math.round(seconds)}s`;
+                    return `${Math.round(seconds / 60)}m`;
+                }
+
+                function formatDuration(task) {
+                    if (task.started_at && task.completed_at) {
+                        const start = new Date(task.started_at);
+                        const end = new Date(task.completed_at);
+                        const seconds = (end - start) / 1000;
+                        return `${seconds.toFixed(1)}s`;
+                    }
+                    return '';
+                }
+
+                function openImage(task) {
+                    selectedTask.value = task;
+                }
+
+                function downloadImage(task) {
+                    const link = document.createElement('a');
+                    link.href = `/api/image/${task.id}/0`;
+                    link.download = `imageforge_${task.id}.png`;
+                    link.click();
+                }
+
+                onMounted(() => {
+                    loadStats();
+                    loadTasks();
+                    
+                    // Auto-refresh
+                    setInterval(loadStats, 10000);
+                });
+
+                return {
+                    prompt,
+                    width,
+                    height,
+                    steps,
+                    guidance,
+                    generating,
+                    currentTask,
+                    tasks,
+                    stats,
+                    completedTasks,
+                    selectedTask,
+                    generate,
+                    generateBatch,
+                    loadTasks,
+                    formatTime,
+                    formatDuration,
+                    openImage,
+                    downloadImage
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

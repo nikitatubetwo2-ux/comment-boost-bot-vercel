@@ -67,6 +67,12 @@ class FluxGenerator:
         
         # Трекинг лимитов токенов
         self._token_cooldowns = {}  # token -> время когда можно снова использовать
+        self._cooldown_file = self.output_dir.parent / "hf_cooldowns.json"
+        self._load_cooldowns()  # Загружаем сохранённые cooldowns
+        
+        # Для параллельной работы — какие токены сейчас используются
+        self._tokens_in_use = set()
+        self._token_lock = None  # Инициализируем при первом использовании
     
     def _get_client(self, token: str = None) -> Client:
         """Получение клиента для токена"""
@@ -89,39 +95,143 @@ class FluxGenerator:
         
         return self._clients.get(token) or self._clients.get(None)
     
-    def _get_available_token(self) -> Optional[str]:
-        """Получение доступного токена (не в cooldown)"""
-        now = time.time()
+    def _get_available_token(self, for_parallel: bool = False) -> Optional[str]:
+        """
+        Получение доступного токена (не в cooldown и не используется)
+        
+        ВАЖНО: Эта функция НИКОГДА не возвращает ошибку!
+        Если все токены в cooldown — ждёт пока хотя бы один освободится.
+        Это гарантирует что проект НЕ уйдёт в ошибку из-за квот.
+        """
+        import threading
+        
+        # Ленивая инициализация lock
+        if self._token_lock is None:
+            self._token_lock = threading.Lock()
+        
+        wait_time = 0
         
         # Если нет токенов — работаем без токена
         if not self.hf_tokens:
             return None
         
-        # Ищем токен не в cooldown
-        for i in range(len(self.hf_tokens)):
-            idx = (self._current_token_idx + i) % len(self.hf_tokens)
-            token = self.hf_tokens[idx]
+        while True:  # Бесконечный цикл пока не найдём токен
+            now = time.time()
             
-            cooldown_until = self._token_cooldowns.get(token, 0)
-            if now >= cooldown_until:
-                self._current_token_idx = idx
-                return token
-        
-        # Все токены в cooldown — берём тот что раньше освободится
-        min_cooldown_token = min(self.hf_tokens, key=lambda t: self._token_cooldowns.get(t, 0))
-        wait_time = self._token_cooldowns.get(min_cooldown_token, 0) - now
-        
-        if wait_time > 0:
-            print(f"[FLUX] Все токены в cooldown. Жду {wait_time:.0f} сек...")
-            time.sleep(wait_time + 1)
-        
-        return min_cooldown_token
+            with self._token_lock:
+                # Ищем токен не в cooldown и не используемый
+                for i in range(len(self.hf_tokens)):
+                    idx = (self._current_token_idx + i) % len(self.hf_tokens)
+                    token = self.hf_tokens[idx]
+                    
+                    cooldown_until = self._token_cooldowns.get(token, 0)
+                    is_available = now >= cooldown_until
+                    is_free = token not in self._tokens_in_use
+                    
+                    if is_available and (is_free or not for_parallel):
+                        self._current_token_idx = (idx + 1) % len(self.hf_tokens)
+                        if for_parallel:
+                            self._tokens_in_use.add(token)
+                        return token
+                
+                # Все токены заняты или в cooldown
+                available_tokens = [t for t in self.hf_tokens if t not in self._tokens_in_use]
+                
+                if not available_tokens:
+                    # Все токены используются другими потоками — короткое ожидание
+                    wait_time = 5
+                else:
+                    # Находим токен который раньше освободится
+                    min_cooldown_token = min(available_tokens, key=lambda t: self._token_cooldowns.get(t, 0))
+                    wait_time = self._token_cooldowns.get(min_cooldown_token, 0) - now
+                    
+                    if wait_time <= 0:
+                        # Токен уже доступен — пробуем снова
+                        continue
+                    
+                    # Показываем статус ожидания
+                    mins = int(wait_time / 60)
+                    available_count = sum(1 for t in self.hf_tokens if self._token_cooldowns.get(t, 0) <= now)
+                    print(f"[FLUX] ⏳ Все {len(self.hf_tokens)} токенов в cooldown ({available_count} доступно)")
+                    print(f"[FLUX] 💤 Ожидание {mins} мин до восстановления квоты...")
+            
+            # Ждём вне lock чтобы не блокировать другие потоки
+            if wait_time > 0:
+                # Ждём порциями по 10 минут с логированием
+                wait_interval = 600  # 10 минут
+                total_waited = 0
+                
+                while total_waited < wait_time:
+                    actual_wait = min(wait_interval, wait_time - total_waited)
+                    time.sleep(actual_wait)
+                    total_waited += actual_wait
+                    
+                    # Проверяем не освободился ли токен раньше
+                    now = time.time()
+                    available_count = sum(1 for t in self.hf_tokens if self._token_cooldowns.get(t, 0) <= now)
+                    
+                    if available_count > 0:
+                        print(f"[FLUX] ✅ Токен освободился! Продолжаю генерацию...")
+                        break
+                    
+                    remaining = int((wait_time - total_waited) / 60)
+                    if remaining > 0:
+                        print(f"[FLUX] ⏳ Ещё {remaining} мин до восстановления квоты...")
     
-    def _mark_token_cooldown(self, token: str, seconds: int = 3600):
-        """Пометить токен как в cooldown"""
+    def _release_token(self, token: str):
+        """Освободить токен после использования"""
+        if self._token_lock and token:
+            with self._token_lock:
+                self._tokens_in_use.discard(token)
+    
+    def _load_cooldowns(self):
+        """Загрузка сохранённых cooldowns из файла"""
+        import json
+        try:
+            if self._cooldown_file.exists():
+                with open(self._cooldown_file, 'r') as f:
+                    data = json.load(f)
+                    self._token_cooldowns = data.get('cooldowns', {})
+                    
+                    # Показываем статус при загрузке
+                    now = time.time()
+                    available = sum(1 for t in self.hf_tokens if self._token_cooldowns.get(t, 0) <= now)
+                    in_cooldown = len(self.hf_tokens) - available
+                    
+                    if in_cooldown > 0:
+                        print(f"[FLUX] Загружены cooldowns: {available}/{len(self.hf_tokens)} токенов доступно")
+        except Exception as e:
+            print(f"[FLUX] Не удалось загрузить cooldowns: {e}")
+            self._token_cooldowns = {}
+    
+    def _save_cooldowns(self):
+        """Сохранение cooldowns в файл"""
+        import json
+        try:
+            with open(self._cooldown_file, 'w') as f:
+                json.dump({'cooldowns': self._token_cooldowns}, f)
+        except Exception as e:
+            print(f"[FLUX] Не удалось сохранить cooldowns: {e}")
+    
+    def _mark_token_cooldown(self, token: str, seconds: int = 5400):
+        """
+        Пометить токен как в cooldown
+        
+        По умолчанию 5400 секунд (1.5 часа) — время восстановления GPU квоты на HuggingFace.
+        Это предотвращает постоянные запросы на исчерпанные аккаунты.
+        """
         self._token_cooldowns[token] = time.time() + seconds
         self.stats["token_switches"] += 1
-        print(f"[FLUX] Токен ...{token[-8:] if token else 'none'} в cooldown на {seconds}с")
+        self._save_cooldowns()  # Сохраняем в файл
+        
+        # Показываем сколько токенов доступно
+        now = time.time()
+        available = sum(1 for t in self.hf_tokens if self._token_cooldowns.get(t, 0) <= now)
+        in_cooldown = len(self.hf_tokens) - available
+        
+        hours = seconds / 3600
+        print(f"[FLUX] Токен ...{token[-8:] if token else 'none'} в cooldown на {hours:.1f}ч")
+        print(f"[FLUX] Доступно: {available}/{len(self.hf_tokens)} токенов ({in_cooldown} в cooldown)")
     
     def generate(
         self,
@@ -134,10 +244,15 @@ class FluxGenerator:
         seed: int = 0,
         randomize_seed: bool = True,
         enhance_prompt: bool = True,
-        max_retries: int = 3
+        max_retries: int = 3,
+        for_parallel: bool = False
     ) -> FluxResult:
         """
         Генерация изображения с автоматической ротацией токенов
+        
+        Args:
+            for_parallel: True если вызывается из параллельной генерации
+                         (токен будет заблокирован на время использования)
         """
         start_time = time.time()
         
@@ -146,9 +261,18 @@ class FluxGenerator:
             prompt = self._enhance_prompt(prompt)
         
         last_error = ""
+        current_token = None
         
         for attempt in range(max_retries):
-            token = self._get_available_token()
+            # Получаем токен (с блокировкой для параллельной работы)
+            token = self._get_available_token(for_parallel=for_parallel)
+            
+            # Если токен не получен — ждём и пробуем снова
+            if token is None and for_parallel:
+                time.sleep(5)
+                continue
+            
+            current_token = token
             
             try:
                 client = self._get_client(token)
@@ -192,6 +316,10 @@ class FluxGenerator:
                 
                 print(f"[FLUX] ✅ Готово за {generation_time:.1f}с: {output_path.name}")
                 
+                # Освобождаем токен при успехе
+                if for_parallel and current_token:
+                    self._release_token(current_token)
+                
                 return FluxResult(
                     success=True,
                     path=output_path,
@@ -206,13 +334,19 @@ class FluxGenerator:
                 
                 # Проверяем тип ошибки
                 if "GPU quota" in error_msg or "exceeded" in error_msg.lower():
-                    # Лимит GPU — ставим токен в cooldown
-                    self._mark_token_cooldown(token, 3600)  # 1 час
+                    # Лимит GPU — ставим токен в cooldown на 1.5 часа
+                    self._mark_token_cooldown(token, 5400)  # 1.5 часа для восстановления квоты
+                    if for_parallel and current_token:
+                        self._release_token(current_token)
+                    current_token = None
                     continue
                     
                 elif "rate limit" in error_msg.lower():
                     # Rate limit — короткий cooldown
                     self._mark_token_cooldown(token, 60)
+                    if for_parallel and current_token:
+                        self._release_token(current_token)
+                    current_token = None
                     continue
                     
                 elif "content" in error_msg.lower() or "safety" in error_msg.lower() or "nsfw" in error_msg.lower():
@@ -228,6 +362,28 @@ class FluxGenerator:
                         prompt = self._enhance_prompt(prompt, attempt + 1)
                         print(f"[FLUX] 🔄 Пробую с изменённым промптом...")
                     self.stats["errors"] += 1
+        
+        # Освобождаем токен при неудаче
+        if for_parallel and current_token:
+            self._release_token(current_token)
+        
+        # Если ошибка связана с квотой — пробуем ещё раз после ожидания
+        if "GPU quota" in last_error or "exceeded" in last_error.lower():
+            print(f"[FLUX] 🔄 Все попытки исчерпаны из-за квот, жду и пробую снова...")
+            time.sleep(60)  # Ждём минуту
+            return self.generate(
+                prompt=prompt.split(',')[0],  # Упрощаем промпт
+                filename=filename,
+                width=width,
+                height=height,
+                steps=steps,
+                guidance=guidance,
+                seed=seed,
+                randomize_seed=randomize_seed,
+                enhance_prompt=True,
+                max_retries=max_retries,
+                for_parallel=for_parallel
+            )
         
         return FluxResult(success=False, error=last_error)
     
@@ -395,7 +551,8 @@ class FluxGenerator:
             index, prompt = args
             filename = f"{base_filename}_{index+1:03d}"
             
-            result = self.generate(prompt, filename, enhance_prompt=False)
+            # for_parallel=True чтобы токены распределялись между потоками
+            result = self.generate(prompt, filename, enhance_prompt=False, for_parallel=True)
             
             with lock:
                 completed += 1
@@ -434,6 +591,47 @@ class FluxGenerator:
             "tokens_count": len(self.hf_tokens),
             "model": "FLUX.1-dev" if self.use_dev else "FLUX.1-schnell"
         }
+    
+    def get_token_status(self) -> dict:
+        """
+        Получить статус всех токенов
+        
+        Returns:
+            dict с информацией о доступных и заблокированных токенах
+        """
+        now = time.time()
+        available = []
+        in_cooldown = []
+        
+        for token in self.hf_tokens:
+            cooldown_until = self._token_cooldowns.get(token, 0)
+            token_short = f"...{token[-8:]}"
+            
+            if now >= cooldown_until:
+                available.append(token_short)
+            else:
+                remaining = cooldown_until - now
+                mins = int(remaining / 60)
+                in_cooldown.append({
+                    "token": token_short,
+                    "remaining_min": mins,
+                    "available_at": time.strftime("%H:%M", time.localtime(cooldown_until))
+                })
+        
+        return {
+            "total": len(self.hf_tokens),
+            "available": len(available),
+            "in_cooldown": len(in_cooldown),
+            "available_tokens": available[:5],  # Показываем первые 5
+            "cooldown_details": in_cooldown[:10],  # Показываем первые 10
+            "next_available": min([c["remaining_min"] for c in in_cooldown]) if in_cooldown else 0
+        }
+    
+    def clear_cooldowns(self):
+        """Очистить все cooldowns (для тестирования)"""
+        self._token_cooldowns = {}
+        self._save_cooldowns()
+        print(f"[FLUX] Все cooldowns очищены. Доступно {len(self.hf_tokens)} токенов")
 
 
 # === Глобальный экземпляр ===

@@ -200,6 +200,18 @@ class SettingsTab(QWidget):
         yt_quota_layout.addStretch()
         quota_layout.addLayout(yt_quota_layout)
         
+        # HuggingFace GPU квота
+        hf_quota_layout = QHBoxLayout()
+        hf_quota_layout.addWidget(QLabel("HuggingFace GPU:"))
+        self.hf_quota_label = QLabel("— токенов")
+        self.hf_quota_label.setStyleSheet("font-weight: bold;")
+        hf_quota_layout.addWidget(self.hf_quota_label)
+        self.hf_quota_info = QLabel("")
+        self.hf_quota_info.setMinimumWidth(200)
+        hf_quota_layout.addWidget(self.hf_quota_info)
+        hf_quota_layout.addStretch()
+        quota_layout.addLayout(hf_quota_layout)
+        
         # Кнопка обновления
         refresh_quota_layout = QHBoxLayout()
         self.btn_refresh_quota = QPushButton("🔄 Обновить квоты")
@@ -211,7 +223,7 @@ class SettingsTab(QWidget):
         quota_layout.addLayout(refresh_quota_layout)
         
         # Инфо
-        quota_info = QLabel("💡 ElevenLabs: лимит обновляется 1-го числа месяца\n📌 YouTube: 10,000 единиц/день на ключ")
+        quota_info = QLabel("💡 ElevenLabs: лимит обновляется 1-го числа месяца\n📌 YouTube: 10,000 единиц/день на ключ\n🖼 HuggingFace: 75 сек GPU/час на токен (обновляется каждый час)")
         quota_info.setStyleSheet("color: #888; font-size: 11px;")
         quota_layout.addWidget(quota_info)
         
@@ -767,14 +779,24 @@ class SettingsTab(QWidget):
                 color = "#dc3545"  # Красный
             elif percent > 50:
                 color = "#ffc107"  # Жёлтый
-            else:
-                color = "#28a745"  # Зелёный
+        
+        # HuggingFace GPU квота (расчётная)
+        hf_tokens = len(config.api.huggingface_tokens)
+        if hf_tokens > 0:
+            # 75 сек GPU/час на токен, 24 часа = 1800 сек/день на токен
+            daily_gpu_sec = hf_tokens * 1800
+            # 1 картинка ≈ 17 сек GPU
+            images_per_day = daily_gpu_sec // 17
+            # 1 видео 45 мин ≈ 91 картинка (90 сцен + 1 обложка)
+            videos_per_day = images_per_day // 91
             
-            self.eleven_progress.setText(f"[{bar}] {percent}%")
-            self.eleven_progress.setStyleSheet(f"color: {color};")
+            self.hf_quota_label.setText(f"{hf_tokens} токенов")
+            self.hf_quota_info.setText(f"≈ {images_per_day} картинок/день = {videos_per_day} видео (45 мин)")
+            self.hf_quota_info.setStyleSheet("color: #28a745;" if videos_per_day >= 20 else "color: #ffc107;")
         else:
-            self.eleven_chars_label.setText("Ошибка")
-            self.eleven_progress.setText(eleven_data.get('error', ''))
+            self.hf_quota_label.setText("0 токенов")
+            self.hf_quota_info.setText("Добавьте токены в .env")
+            self.hf_quota_info.setStyleSheet("color: #dc3545;")
         
         # YouTube
         if yt_data.get('success'):

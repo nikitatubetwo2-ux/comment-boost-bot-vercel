@@ -223,13 +223,13 @@ class SmartMusicSelector:
                 "recommended_music": {...}
             }
         """
-        from core.groq_client import GroqClient
+        from core.groq_client import GroqClient, get_groq_client
         from config import config
         
         if not config.api.groq_key:
             return self._fallback_analysis(script)
         
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         prompt = f"""Проанализируй эмоциональное настроение этого сценария для подбора фоновой музыки.
 

@@ -37,7 +37,8 @@ load_env()
 @dataclass
 class APIConfig:
     """Настройки API"""
-    groq_key: str = ""
+    groq_key: str = ""  # Для обратной совместимости
+    groq_keys: List[str] = field(default_factory=list)  # Несколько ключей с ротацией!
     youtube_keys: List[str] = field(default_factory=list)  # Несколько ключей
     elevenlabs_keys: List[str] = field(default_factory=list)  # Несколько ключей
     groq_model: str = "llama-3.3-70b-versatile"
@@ -116,8 +117,13 @@ class APIConfig:
             val = os.environ.get(env_var, "")
             return [k.strip() for k in val.split(",") if k.strip()]
         
+        # Groq ключи (через запятую) — с ротацией при rate limit
+        groq_keys_str = os.environ.get("GROQ_API_KEYS", os.environ.get("GROQ_API_KEY", ""))
+        groq_keys = [k.strip() for k in groq_keys_str.split(",") if k.strip()]
+        
         return cls(
-            groq_key=os.environ.get("GROQ_API_KEY", ""),
+            groq_key=groq_keys[0] if groq_keys else "",  # Для обратной совместимости
+            groq_keys=groq_keys,
             youtube_keys=yt_keys,
             elevenlabs_keys=el_keys,
             groq_model=os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile"),
@@ -185,11 +191,12 @@ class AppConfig:
         data = {
             "api": {
                 "groq_key": self.api.groq_key,
+                "groq_keys": self.api.groq_keys,  # Сохраняем groq_keys!
                 "youtube_keys": self.api.youtube_keys,
                 "elevenlabs_keys": self.api.elevenlabs_keys,
-                "leonardo_keys": self.api.leonardo_keys,
                 "groq_model": self.api.groq_model,
                 "temperature": self.api.temperature,
+                "huggingface_tokens": self.api.huggingface_tokens,
                 "telegram_bot_token": self.api.telegram_bot_token,
                 "telegram_chat_id": self.api.telegram_chat_id,
             },
@@ -208,7 +215,7 @@ class AppConfig:
         
         # Сначала из переменных окружения
         env_api = APIConfig.from_env()
-        has_env_keys = bool(env_api.groq_key or env_api.youtube_keys or env_api.elevenlabs_keys)
+        has_env_keys = bool(env_api.groq_key or env_api.groq_keys or env_api.youtube_keys or env_api.elevenlabs_keys)
         
         # Если есть config.json — загружаем
         if CONFIG_FILE.exists():
@@ -220,6 +227,7 @@ class AppConfig:
                 config = cls(
                     api=APIConfig(
                         groq_key=api_data.get("groq_key", ""),
+                        groq_keys=api_data.get("groq_keys", []),  # Загружаем groq_keys!
                         youtube_keys=api_data.get("youtube_keys", []),
                         elevenlabs_keys=api_data.get("elevenlabs_keys", []),
                         groq_model=api_data.get("groq_model", "llama-3.3-70b-versatile"),
@@ -241,6 +249,8 @@ class AppConfig:
                 if has_env_keys:
                     if env_api.groq_key:
                         config.api.groq_key = env_api.groq_key
+                    if env_api.groq_keys:  # Groq ключи из .env!
+                        config.api.groq_keys = env_api.groq_keys
                     if env_api.youtube_keys:
                         config.api.youtube_keys = env_api.youtube_keys
                     if env_api.elevenlabs_keys:
@@ -275,12 +285,9 @@ class AppConfig:
             except Exception as e:
                 print(f"Ошибка загрузки конфига: {e}")
         
-        # Создаём новый конфиг
+        # Создаём новый конфиг — используем ключи из .env
         config = cls()
-        
-        # Используем ключи из окружения
-        if has_env_keys:
-            config.api = env_api
+        config.api = env_api  # Всегда используем env_api для нового конфига
         
         config.save()
         return config

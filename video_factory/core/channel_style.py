@@ -165,7 +165,7 @@ class ChannelStyleManager:
             return {"error": "Профиль не найден или не указан конкурент"}
         
         from .youtube_analyzer import YouTubeAnalyzer
-        from .groq_client import GroqClient
+        from .groq_client import get_groq_client
         from config import config
         
         result = {"status": "ok", "steps": []}
@@ -187,7 +187,7 @@ class ChannelStyleManager:
             descriptions = [v.description for v in videos if v.description]
             
             # 3. AI анализ стиля
-            groq = GroqClient(config.api.groq_key, config.api.groq_model)
+            groq = get_groq_client()
             
             style_analysis = groq.analyze_style(descriptions, titles)
             result["steps"].append("✅ Стиль проанализирован")
@@ -264,10 +264,9 @@ class ChannelStyleManager:
         if not style:
             return []
         
-        from .groq_client import GroqClient
-        from config import config
+        from .groq_client import get_groq_client
         
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         # Формируем контекст
         context = f"""

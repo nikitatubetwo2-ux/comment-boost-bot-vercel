@@ -21,3 +21,6 @@ output/*.mp3
 .idea/
 .vscode/
 *.swp
+*.mp4
+*.mp3
+hf_cooldowns.json

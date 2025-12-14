@@ -3,3 +3,7 @@ node_modules
 dist
 .env
 .env.local
+video_factory/output/proj_*/audio/
+video_factory/output/proj_*/*.mp4
+**/hf_cooldowns.json
+video_factory/output/

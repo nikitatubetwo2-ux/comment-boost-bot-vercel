@@ -560,8 +560,9 @@ class QueueTab(QWidget):
         self.worker = None
         self.update_timer = QTimer()
         self.update_timer.timeout.connect(self._update_table)
+        self._init_pipeline()  # Сначала инициализируем pipeline!
         self.init_ui()
-        self._init_pipeline()
+        self._refresh_table()  # Обновляем таблицу после полной инициализации
     
     def _init_pipeline(self):
         """Инициализация пайплайна и менеджера стилей"""
@@ -614,12 +615,13 @@ class QueueTab(QWidget):
         
         # === ТАБЛИЦА ПРОЕКТОВ ===
         self.table = QTableWidget()
-        self.table.setColumnCount(7)
+        self.table.setColumnCount(8)
         self.table.setHorizontalHeaderLabels([
-            "Название", "Тема", "Длительность", "Статус", "Прогресс", "Действия", ""
+            "Название", "Тема", "Длительность", "🌐", "Статус", "Прогресс", "Действия", ""
         ])
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         self.table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        self.table.setColumnWidth(3, 35)  # Узкая колонка для языка
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.table.cellDoubleClicked.connect(self._on_row_double_click)
         layout.addWidget(self.table)
@@ -644,9 +646,6 @@ class QueueTab(QWidget):
         ready_layout.addLayout(ready_btn_row)
         
         layout.addWidget(ready_group)
-        
-        # Загружаем существующие проекты
-        self._refresh_table()
     
     def _add_project(self):
         """Добавление нового проекта с поддержкой профилей"""
@@ -726,8 +725,22 @@ class QueueTab(QWidget):
     
     def _start_queue(self):
         """Запуск обработки очереди"""
+        # ВСЕГДА добавляем проекты с ошибками в очередь (для перезапуска)
+        added = 0
+        for pid, project in self.pipeline.projects.items():
+            # Добавляем проекты с ошибками или в статусе queued
+            if project.status in ["error", "queued"] and pid not in self.pipeline.queue:
+                self.pipeline.queue.append(pid)
+                project.status = "queued"
+                project.error_message = ""  # Сбрасываем ошибку
+                added += 1
+        
+        if added > 0:
+            self.pipeline._save_projects()
+            self._refresh_table()
+        
         if not self.pipeline.queue:
-            QMessageBox.warning(self, "Ошибка", "Очередь пуста")
+            QMessageBox.warning(self, "Ошибка", "Нет проектов для обработки")
             return
         
         reply = QMessageBox.question(
@@ -789,11 +802,19 @@ class QueueTab(QWidget):
             self.table.setItem(row, 1, QTableWidgetItem(project.topic[:50] + "..." if len(project.topic) > 50 else project.topic))
             self.table.setItem(row, 2, QTableWidgetItem(project.duration))
             
+            # Язык — компактный индикатор
+            lang = getattr(project, 'language', 'Русский')
+            lang_icon = "🇺🇸" if lang.lower() in ["english", "en", "английский"] else "🇷🇺"
+            lang_item = QTableWidgetItem(lang_icon)
+            lang_item.setToolTip(lang)
+            lang_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.table.setItem(row, 3, lang_item)
+            
             status_item = QTableWidgetItem(self._translate_status(project.status))
             status_item.setBackground(self._get_status_color(project.status))
-            self.table.setItem(row, 3, status_item)
+            self.table.setItem(row, 4, status_item)
             
-            self.table.setItem(row, 4, QTableWidgetItem(f"{project.progress}%"))
+            self.table.setItem(row, 5, QTableWidgetItem(f"{project.progress}%"))
             
             # Кнопки действий
             btn_widget = QWidget()
@@ -811,12 +832,12 @@ class QueueTab(QWidget):
             btn_del.clicked.connect(lambda checked, pid=project.id: self._delete_project(pid))
             btn_layout.addWidget(btn_del)
             
-            self.table.setCellWidget(row, 5, btn_widget)
+            self.table.setCellWidget(row, 6, btn_widget)
             
             # ID для ссылки
             id_item = QTableWidgetItem(project.id)
             id_item.setData(Qt.ItemDataRole.UserRole, project.id)
-            self.table.setItem(row, 6, id_item)
+            self.table.setItem(row, 7, id_item)
         
         # Обновляем список готовых
         self._update_ready_list()
@@ -876,7 +897,7 @@ class QueueTab(QWidget):
     
     def _on_row_double_click(self, row: int, col: int):
         """Двойной клик по строке"""
-        id_item = self.table.item(row, 6)
+        id_item = self.table.item(row, 7)  # ID теперь в колонке 7
         if id_item:
             project_id = id_item.data(Qt.ItemDataRole.UserRole)
             self._preview_project_by_id(project_id)
@@ -911,15 +932,30 @@ class QueueTab(QWidget):
         
         reply = QMessageBox.question(
             self, "Рендер всех",
-            f"Запустить рендер {len(ready)} проектов?",
+            f"Запустить рендер {len(ready)} проектов?\n\n"
+            "⚠️ Рендер может занять 10-30 минут на проект.\n"
+            "Интерфейс может подвисать во время рендера.",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
         
         if reply == QMessageBox.StandardButton.Yes:
-            for project in ready:
-                self.pipeline.render_final(project.id)
-            self._refresh_table()
-            QMessageBox.information(self, "Готово", "Рендер запущен")
+            # Запускаем рендер в отдельном потоке
+            import threading
+            
+            def render_thread():
+                for project in ready:
+                    try:
+                        self.pipeline.render_final(project.id)
+                    except Exception as e:
+                        print(f"Ошибка рендера {project.name}: {e}")
+            
+            thread = threading.Thread(target=render_thread, daemon=True)
+            thread.start()
+            
+            self.update_timer.start(2000)  # Обновление каждые 2 сек
+            QMessageBox.information(self, "Рендер запущен", 
+                f"Рендер {len(ready)} проектов запущен в фоне.\n"
+                "Следите за прогрессом в таблице.")
     
     def _delete_project(self, project_id: str):
         """Удаление проекта"""

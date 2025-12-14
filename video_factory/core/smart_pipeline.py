@@ -236,6 +236,87 @@ class SmartPipeline:
         """Остановка очереди"""
         self.is_running = False
     
+    def _get_resume_point(self, project: SmartProject, project_dir: Path) -> str:
+        """
+        Определяет с какого этапа продолжить прерванный проект
+        
+        Returns:
+            None - начать сначала
+            "images" - продолжить генерацию изображений
+            "voice" - продолжить озвучку
+            "assemble" - продолжить сборку
+            "seo" - продолжить SEO
+            "thumbnails" - продолжить превью
+        """
+        # Проверяем что уже сделано (независимо от статуса!)
+        has_script = bool(project.script and len(project.script) > 100)
+        
+        # Считаем готовые изображения
+        images_dir = project_dir / "images"
+        existing_images = list(images_dir.glob("*.webp")) if images_dir.exists() else []
+        total_prompts = len(project.image_prompts) if project.image_prompts else 0
+        images_done = len(existing_images) >= total_prompts * 0.9 if total_prompts > 0 else False
+        
+        # Считаем готовые аудио и проверяем длительность
+        voice_dir = project_dir / "voice"
+        audio_dir = project_dir / "audio"
+        existing_voice = list(voice_dir.glob("*.mp3")) if voice_dir.exists() else []
+        
+        # Также проверяем папку audio (где хранится voiceover.mp3)
+        voiceover_path = audio_dir / "voiceover.mp3" if audio_dir.exists() else None
+        
+        voice_done = False
+        if voiceover_path and voiceover_path.exists():
+            # Проверяем длительность аудио — должно быть минимум 60 секунд для нормального видео
+            try:
+                from moviepy import AudioFileClip
+                audio = AudioFileClip(str(voiceover_path))
+                audio_duration = audio.duration
+                audio.close()
+                
+                # Минимум 60 секунд для короткого видео, иначе считаем неполным
+                voice_done = audio_duration >= 60
+                if not voice_done:
+                    self._log(f"[{project.name}] ⚠️ Озвучка слишком короткая: {audio_duration:.1f} сек")
+            except Exception as e:
+                self._log(f"[{project.name}] ⚠️ Ошибка проверки аудио: {e}")
+                voice_done = False
+        elif len(existing_voice) > 0:
+            voice_done = True  # Старый формат с voice папкой
+        
+        # Проверяем превью
+        preview_exists = (project_dir / "preview.mp4").exists()
+        
+        # Проверяем SEO
+        has_seo = bool(project.seo_title and project.seo_description)
+        
+        # Определяем точку продолжения
+        if not has_script:
+            return None  # Начинаем сначала
+        
+        # Если изображения не готовы — продолжаем с изображений
+        if not images_done:
+            if existing_images:
+                self._log(f"[{project.name}] Найдено {len(existing_images)}/{total_prompts} изображений")
+            else:
+                self._log(f"[{project.name}] Изображений нет, начинаем генерацию")
+            return "images"  # Продолжаем/начинаем изображения
+        
+        # Если озвучка не готова — продолжаем с озвучки
+        if not voice_done:
+            return "voice"  # Продолжаем озвучку
+        
+        if images_done and voice_done and not preview_exists:
+            return "assemble"  # Продолжаем сборку
+        
+        if preview_exists and not has_seo:
+            return "seo"  # Продолжаем SEO
+        
+        if has_seo and not project.thumbnails:
+            return "thumbnails"  # Продолжаем превью
+        
+        return None  # Всё готово или начинаем сначала
+    
     def _process_queue(self):
         """
         🚀 ПАРАЛЛЕЛЬНАЯ обработка очереди
@@ -296,15 +377,37 @@ class SmartPipeline:
                 
             except Exception as e:
                 import traceback
-                self._log(f"❌ ОШИБКА: {e}")
+                error_msg = str(e)
+                self._log(f"❌ ОШИБКА: {error_msg}")
                 self._log(traceback.format_exc())
-                self.projects[project_id].status = ProjectStatus.ERROR.value
-                self.projects[project_id].error_message = str(e)
-                self.queue.pop(0)
-                failed += 1
                 
-                # Telegram уведомление об ошибке
-                self._notify_project_error(project_id, str(e))
+                project = self.projects[project_id]
+                retry_count = project.user_edits.get('_retry_count', 0)
+                max_retries = 3  # Максимум 3 попытки
+                
+                if retry_count < max_retries:
+                    # АВТОМАТИЧЕСКИЙ ПЕРЕЗАПУСК
+                    retry_count += 1
+                    project.user_edits['_retry_count'] = retry_count
+                    project.status = ProjectStatus.QUEUED.value
+                    project.error_message = f"Попытка {retry_count}/{max_retries}: {error_msg[:100]}"
+                    
+                    # Перемещаем в конец очереди
+                    self.queue.pop(0)
+                    self.queue.append(project_id)
+                    
+                    self._log(f"🔄 АВТОПЕРЕЗАПУСК: попытка {retry_count}/{max_retries}, проект в конец очереди")
+                    self._log(f"⏳ Пауза 60 сек перед следующим проектом...")
+                    time.sleep(60)  # Пауза перед следующим проектом
+                else:
+                    # Все попытки исчерпаны
+                    project.status = ProjectStatus.ERROR.value
+                    project.error_message = f"Ошибка после {max_retries} попыток: {error_msg}"
+                    self.queue.pop(0)
+                    failed += 1
+                    
+                    self._log(f"❌ ФИНАЛЬНАЯ ОШИБКА после {max_retries} попыток")
+                    self._notify_project_error(project_id, error_msg)
             
             # Собираем результат фоновой генерации сценария
             if script_future and next_project_id:
@@ -341,16 +444,16 @@ class SmartPipeline:
                 if not project or project.script:
                     return None
                 
-                from .groq_client import GroqClient
-                from config import config
+                from .groq_client import get_groq_client
                 
-                groq = GroqClient(config.api.groq_key, config.api.groq_model)
+                groq = get_groq_client()
                 
-                # Генерируем сценарий
+                # Генерируем сценарий на нужном языке
                 script = groq.generate_script(
                     topic=project.topic,
                     duration=project.duration,
-                    style=project.ai_style or "документальный, драматичный"
+                    style=project.ai_style or "документальный, драматичный",
+                    language=project.language
                 )
                 
                 return script
@@ -362,10 +465,15 @@ class SmartPipeline:
     
     def _process_project_parallel(self, project_id: str, preloaded_data: dict = None, 
                                    pregenerated_script: str = None):
-        """Обработка проекта с поддержкой предгенерированных данных"""
+        """Обработка проекта с поддержкой предгенерированных данных и ПРОДОЛЖЕНИЯ"""
         project = self.projects[project_id]
         project_dir = self.output_dir / project_id
         project_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Определяем с какого этапа продолжать
+        resume_from = self._get_resume_point(project, project_dir)
+        if resume_from:
+            self._log(f"⏩ ПРОДОЛЖАЕМ с этапа: {resume_from}")
         
         project.status = ProjectStatus.ANALYZING.value
         
@@ -379,20 +487,61 @@ class SmartPipeline:
             project.script = pregenerated_script
             self._log(f"⚡ Используем предгенерированный сценарий ({len(pregenerated_script)} символов)")
         
+        # Определяем какие этапы пропустить
+        skip_steps = set()
+        
+        # Если есть сценарий — пропускаем анализ и генерацию сценария
+        if resume_from in ["images", "voice", "assemble", "seo", "thumbnails"]:
+            skip_steps.add("🔍 Анализ конкурента")
+            skip_steps.add("📝 Генерация сценария")
+        
+        # Проверяем реальное наличие изображений
+        images_dir = project_dir / "images"
+        existing_images = list(images_dir.glob("*.webp")) if images_dir.exists() else []
+        total_prompts = len(project.image_prompts) if project.image_prompts else 0
+        images_actually_done = len(existing_images) >= total_prompts * 0.9 if total_prompts > 0 else False
+        
+        # Пропускаем изображения ТОЛЬКО если они реально готовы
+        if resume_from in ["voice", "assemble", "seo", "thumbnails"] and images_actually_done:
+            skip_steps.add("🖼️ Генерация изображений")
+            project.images = sorted([str(p) for p in existing_images])
+            self._log(f"📂 Загружено {len(project.images)} существующих картинок")
+        elif resume_from == "voice" and not images_actually_done:
+            # Изображений нет — НЕ пропускаем этот этап!
+            self._log(f"⚠️ Изображений {len(existing_images)}/{total_prompts}, генерируем заново")
+        
+        # Пропускаем озвучку только если она реально готова
+        if resume_from in ["assemble", "seo", "thumbnails"]:
+            skip_steps.add("🎙️ Озвучка")
+            voice_dir = project_dir / "voice"
+            if voice_dir.exists():
+                project.voice_files = sorted([str(p) for p in voice_dir.glob("*.mp3")])
+        
+        if resume_from in ["seo", "thumbnails"]:
+            skip_steps.add("🎬 Сборка превью")
+        if resume_from == "thumbnails":
+            skip_steps.add("📈 SEO оптимизация")
+        
         # Выполняем этапы
         steps = [
             ("🔍 Анализ конкурента", self._step_analyze_competitor),
             ("📝 Генерация сценария", self._step_generate_script),
             ("🖼️ Генерация изображений", lambda p: self._step_generate_images(p, project_dir)),
-            ("🎙️ Озвучка", lambda p: self._step_generate_voiceover(p, project_dir)),
+            ("🎙️ Озвучка", lambda p: self._step_generate_voice(p, project_dir)),
             ("🎬 Сборка превью", lambda p: self._step_assemble_preview(p, project_dir)),
             ("📈 SEO оптимизация", self._step_generate_seo),
             ("🖼️ Генерация превью", lambda p: self._step_generate_thumbnails(p, project_dir)),
+            ("🎬 Финальный рендер", lambda p: self._step_final_render_auto(p, project_dir)),
         ]
         
         for step_name, step_func in steps:
             if not self.is_running:
                 break
+            
+            # Пропускаем уже выполненные этапы
+            if step_name in skip_steps:
+                self._log(f"⏭ {step_name} — пропускаем (уже готово)")
+                continue
             
             self._log(f"\n--- {step_name} ---")
             start_time = time.time()
@@ -407,9 +556,10 @@ class SmartPipeline:
             
             self._save_projects()
         
-        project.status = ProjectStatus.READY_FOR_REVIEW.value
+        project.status = ProjectStatus.COMPLETED.value
         project.progress = 100
-        self._log(f"\n🎉 ПРОЕКТ ГОТОВ: {project.name}")
+        self._log(f"\n🎉 ВИДЕО ПОЛНОСТЬЮ ГОТОВО: {project.name}")
+        self._log(f"📁 Папка: ~/Desktop/VideoFactory_Ready/")
     
     def _notify_project_ready(self, project_id: str):
         """Telegram уведомление о готовности проекта"""
@@ -484,7 +634,6 @@ class SmartPipeline:
             self._log(f"[Preload] Предзагрузка данных для: {project.name}")
             
             from .youtube_analyzer import YouTubeAnalyzer
-            from .groq_client import GroqClient
             from config import config
             
             preload_data = {}
@@ -496,7 +645,7 @@ class SmartPipeline:
                     channel_info = analyzer.get_channel_info(project.competitor_channel)
                     
                     if channel_info:
-                        videos = analyzer.get_channel_videos(channel_info.id, max_results=15)
+                        videos = analyzer.get_channel_videos(channel_info.channel_id, max_results=15)
                         preload_data['channel_info'] = channel_info
                         preload_data['videos'] = videos
                         preload_data['titles'] = [v.title for v in videos]
@@ -511,10 +660,15 @@ class SmartPipeline:
             self._log(f"[Preload] Ошибка: {e}")
     
     def _process_project(self, project_id: str, preloaded_data: dict = None):
-        """Полная обработка одного проекта"""
+        """Полная обработка одного проекта с поддержкой ПРОДОЛЖЕНИЯ"""
         project = self.projects[project_id]
         project_dir = self.output_dir / project_id
         project_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Определяем с какого этапа продолжать
+        resume_from = self._get_resume_point(project, project_dir)
+        if resume_from:
+            self._log(f"[{project.name}] ⏩ Продолжаем с этапа: {resume_from}")
         
         # Сохраняем предзагруженные данные
         if preloaded_data:
@@ -522,36 +676,43 @@ class SmartPipeline:
             self._log(f"[{project.name}] Используем предзагруженные данные")
         
         # Шаги 1-2: последовательно (нужен сценарий для остального)
-        sequential_steps = [
-            ("Анализ конкурента", lambda: self._step_analyze_competitor(project) if project.competitor_channel else self._step_set_defaults(project)),
-            ("Генерация сценария", lambda: self._step_generate_script(project)),
-        ]
-        
-        for step_name, step_func in sequential_steps:
-            if not self.is_running:
-                self._log(f"[{project.name}] Остановлено пользователем")
-                return
-            try:
-                self._log(f"[{project.name}] {step_name}...")
-                step_func()
-            except Exception as e:
-                import traceback
-                error_msg = f"{step_name}: {str(e)}"
-                self._log(f"[{project.name}] ❌ Ошибка: {error_msg}")
-                project.error_message = error_msg
-                project.status = ProjectStatus.ERROR.value
-                self._save_projects()
-                raise
+        # Пропускаем если уже есть сценарий
+        if resume_from not in ["images", "voice", "assemble", "seo", "thumbnails"]:
+            sequential_steps = [
+                ("Анализ конкурента", lambda: self._step_analyze_competitor(project) if project.competitor_channel else self._step_set_defaults(project)),
+                ("Генерация сценария", lambda: self._step_generate_script(project)),
+            ]
+            
+            for step_name, step_func in sequential_steps:
+                if not self.is_running:
+                    self._log(f"[{project.name}] Остановлено пользователем")
+                    return
+                try:
+                    self._log(f"[{project.name}] {step_name}...")
+                    step_func()
+                except Exception as e:
+                    import traceback
+                    error_msg = f"{step_name}: {str(e)}"
+                    self._log(f"[{project.name}] ❌ Ошибка: {error_msg}")
+                    project.error_message = error_msg
+                    project.status = ProjectStatus.ERROR.value
+                    self._save_projects()
+                    raise
+        else:
+            self._log(f"[{project.name}] ⏭ Сценарий уже есть, пропускаем")
         
         # Шаги 3-4: ПАРАЛЛЕЛЬНО (изображения + озвучка одновременно!)
-        self._log(f"[{project.name}] 🚀 Параллельная генерация: изображения + озвучка")
-        self._step_parallel_media(project, project_dir)
+        if resume_from not in ["assemble", "seo", "thumbnails"]:
+            self._log(f"[{project.name}] 🚀 Параллельная генерация: изображения + озвучка")
+            self._step_parallel_media(project, project_dir, resume=resume_from in ["images", "voice"])
+        else:
+            self._log(f"[{project.name}] ⏭ Медиа уже готово, пропускаем")
         
-        # Шаги 5-7: последовательно
+        # Шаги 5-8: последовательно (включая финальный рендер!)
         final_steps = [
-            ("Сборка превью", lambda: self._step_assemble_preview(project, project_dir)),
             ("Генерация SEO", lambda: self._step_generate_seo(project)),
-            ("Генерация превью", lambda: self._step_generate_thumbnails(project, project_dir)),
+            ("Генерация обложек (3 варианта)", lambda: self._step_generate_thumbnails(project, project_dir)),
+            ("Финальный рендер видео", lambda: self._step_final_render_auto(project, project_dir)),
         ]
         
         for step_name, step_func in final_steps:
@@ -572,10 +733,11 @@ class SmartPipeline:
                 self._save_projects()
                 raise  # Пробрасываем ошибку наверх
         
-        # Готов к проверке
-        project.status = ProjectStatus.READY_FOR_REVIEW.value
+        # Полностью завершён!
+        project.status = ProjectStatus.COMPLETED.value
         project.progress = 100
         self._save_projects()
+        self._log(f"[{project.name}] 🎉 ВИДЕО ПОЛНОСТЬЮ ГОТОВО: {project.final_video}")
     
     def _step_analyze_competitor(self, project: SmartProject):
         """Анализ конкурента и подбор параметров (с поддержкой preload)"""
@@ -586,7 +748,7 @@ class SmartPipeline:
         
         try:
             from .youtube_analyzer import YouTubeAnalyzer
-            from .groq_client import GroqClient
+            from .groq_client import get_groq_client
             from config import config
             
             # Проверяем есть ли предзагруженные данные
@@ -607,7 +769,7 @@ class SmartPipeline:
                     self._step_set_defaults(project)
                     return
                 
-                videos = analyzer.get_channel_videos(channel_info.id, max_results=15)
+                videos = analyzer.get_channel_videos(channel_info.channel_id, max_results=15)
                 titles = [v.title for v in videos]
                 descriptions = [v.description for v in videos if v.description]
             
@@ -617,7 +779,7 @@ class SmartPipeline:
             self._log(f"[{project.name}] Сохранено {len(titles)} заголовков для анализа крючков")
             
             # AI анализ стиля
-            groq = GroqClient(config.api.groq_key, config.api.groq_model)
+            groq = get_groq_client()
             style_analysis = groq.analyze_style(descriptions, titles)
             
             # Применяем результаты
@@ -652,10 +814,9 @@ class SmartPipeline:
         project.progress = 15
         self._log(f"[{project.name}] Генерация сценария с анализом крючков")
         
-        from .groq_client import GroqClient
-        from config import config
+        from .groq_client import get_groq_client
         
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         # Если есть данные о конкуренте — анализируем крючки
         hook_templates = []
@@ -674,12 +835,13 @@ class SmartPipeline:
                 except Exception as e:
                     self._log(f"[{project.name}] Ошибка анализа крючков: {e}")
         
-        # Генерируем сценарий
+        # Генерируем сценарий на нужном языке
         project.current_step = "Генерация сценария..."
         script = groq.generate_script(
             topic=project.topic,
             duration=project.duration,
-            style=project.ai_style
+            style=project.ai_style,
+            language=project.language
         )
         
         # Если есть шаблоны крючков — генерируем мощный hook и заменяем начало
@@ -713,12 +875,12 @@ class SmartPipeline:
         project.progress = 35
         self._log(f"[{project.name}] 🚀 Параллельная генерация изображений через FLUX")
         
-        from .groq_client import GroqClient
+        from .groq_client import get_groq_client
         from .flux_generator import FluxGenerator
         from config import config
         
         # Генерация промптов через BATCH запрос (быстрее!)
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         # Определяем длительность для расчёта количества изображений
         duration_map = {
@@ -788,35 +950,61 @@ class SmartPipeline:
         
         self._save_projects()
     
-    def _step_parallel_media(self, project: SmartProject, project_dir: Path):
+    def _step_parallel_media(self, project: SmartProject, project_dir: Path, resume: bool = False):
         """
         ПАРАЛЛЕЛЬНАЯ генерация изображений и озвучки
         
         Запускает оба процесса одновременно — экономит 30-50% времени!
+        
+        Args:
+            resume: True если продолжаем прерванную генерацию
         """
         import concurrent.futures
         
         project.current_step = "Параллельная генерация медиа..."
         project.progress = 35
         
+        if resume:
+            self._log(f"[{project.name}] ⏩ Продолжаем генерацию медиа...")
+        
+        # Проверяем что уже готово
+        images_dir = project_dir / "images"
+        voice_dir = project_dir / "voice"
+        
+        existing_images = list(images_dir.glob("*.webp")) if images_dir.exists() else []
+        existing_voice = list(voice_dir.glob("*.mp3")) if voice_dir.exists() else []
+        
+        total_prompts = len(project.image_prompts) if project.image_prompts else 0
+        images_complete = len(existing_images) >= total_prompts * 0.95 if total_prompts > 0 else False
+        voice_complete = len(existing_voice) > 0
+        
+        if resume:
+            self._log(f"[{project.name}] Изображений: {len(existing_images)}/{total_prompts}, Озвучка: {'✅' if voice_complete else '❌'}")
+        
         # Создаём executor для параллельного выполнения
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
-            # Запускаем оба процесса
-            future_images = executor.submit(self._step_generate_images, project, project_dir)
-            future_voice = executor.submit(self._step_generate_voice, project, project_dir)
+            futures = []
             
-            # Ждём завершения обоих
+            # Запускаем только то что нужно
+            if not images_complete:
+                futures.append(("Изображения", executor.submit(self._step_generate_images, project, project_dir)))
+            else:
+                self._log(f"[{project.name}] ⏭ Изображения уже готовы ({len(existing_images)} шт)")
+                project.images = [str(p) for p in existing_images]
+            
+            if not voice_complete:
+                futures.append(("Озвучка", executor.submit(self._step_generate_voice, project, project_dir)))
+            else:
+                self._log(f"[{project.name}] ⏭ Озвучка уже готова")
+                project.voice_files = [str(p) for p in existing_voice]
+            
+            # Ждём завершения
             errors = []
-            
-            try:
-                future_images.result()
-            except Exception as e:
-                errors.append(f"Изображения: {e}")
-            
-            try:
-                future_voice.result()
-            except Exception as e:
-                errors.append(f"Озвучка: {e}")
+            for name, future in futures:
+                try:
+                    future.result()
+                except Exception as e:
+                    errors.append(f"{name}: {e}")
             
             if errors:
                 raise Exception("; ".join(errors))
@@ -887,8 +1075,7 @@ class SmartPipeline:
         from config import config
         
         if not config.api.elevenlabs_keys:
-            self._log("ElevenLabs ключи не настроены, пропускаем озвучку")
-            return
+            raise Exception("ElevenLabs ключи не настроены! Добавьте ELEVENLABS_API_KEYS в .env")
         
         audio_dir = project_dir / "audio"
         audio_dir.mkdir(exist_ok=True)
@@ -944,11 +1131,13 @@ class SmartPipeline:
                 project.audio_path = str(audio_path)
                 self._log(f"  ✅ Озвучка готова: {audio_path} ({file_size:.1f} MB)")
             else:
-                self._log(f"  ❌ Файл озвучки не создан!")
+                raise Exception("Файл озвучки не создан")
                 
         except Exception as e:
             elapsed = time.time() - start_time
             self._log(f"  ❌ Ошибка озвучки после {elapsed:.1f} сек: {e}")
+            # Пробрасываем ошибку чтобы проект не завершился без озвучки
+            raise Exception(f"Ошибка генерации озвучки: {e}")
         
         project.progress = 85
         self._save_projects()
@@ -1002,16 +1191,16 @@ class SmartPipeline:
         project.current_step = "Генерация SEO..."
         project.progress = 92
         
-        from .groq_client import GroqClient
-        from config import config
+        from .groq_client import get_groq_client
         
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         seo = groq.generate_seo(
             project.name, 
             project.script, 
             [],
-            subniche=project.sub_niche
+            subniche=project.sub_niche,
+            language=project.language
         )
         
         # Заголовок и альтернативы для A/B теста
@@ -1049,13 +1238,13 @@ class SmartPipeline:
         self._log(f"[{project.name}] 🎨 Генерация 3 вирусных превью")
         
         from .flux_generator import FluxGenerator
-        from .groq_client import GroqClient
+        from .groq_client import get_groq_client
         from config import config
         
         thumbnails_dir = project_dir / "thumbnails"
         thumbnails_dir.mkdir(exist_ok=True)
         
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         # === ГЛУБОКИЙ АНАЛИЗ ДЛЯ ПРЕВЬЮ ===
         self._log(f"[{project.name}] Анализ для создания вирусных превью...")
@@ -1071,24 +1260,48 @@ class SmartPipeline:
         concepts = thumbnail_analysis.get('concepts', [])
         
         if not concepts or len(concepts) < 3:
-            # Fallback если AI не вернул концепции
-            concepts = [
-                {
-                    "type": "dramatic",
-                    "prompt_en": f"dramatic cinematic scene, {project.topic}, intense atmosphere, dark moody lighting, epic composition, war photography style, 8k, photorealistic, youtube thumbnail",
-                    "why_viral": "Драматичность привлекает внимание"
-                },
-                {
-                    "type": "emotional",
-                    "prompt_en": f"emotional powerful moment, {project.topic}, human face with intense expression, cinematic lighting, documentary style, 8k, photorealistic, youtube thumbnail",
-                    "why_viral": "Эмоции вызывают эмпатию"
-                },
-                {
-                    "type": "mystery",
-                    "prompt_en": f"mysterious intriguing scene, {project.topic}, shadows and light, hidden secrets revealed, cinematic composition, 8k, photorealistic, youtube thumbnail",
-                    "why_viral": "Загадка вызывает любопытство"
-                }
-            ]
+            # Определяем военную тематику для Ч/Б стиля
+            topic_lower = project.topic.lower() if project.topic else ""
+            is_war_theme = any(w in topic_lower for w in ['война', 'военн', 'ww2', 'битва', 'сражен', 'war', 'battle', 'military'])
+            
+            if is_war_theme:
+                # Ч/Б стиль для военной тематики (как у конкурентов)
+                concepts = [
+                    {
+                        "type": "dramatic",
+                        "prompt_en": f"dramatic black and white photograph, {project.topic}, intense atmosphere, high contrast monochrome, vintage 1940s documentary style, grainy film texture, epic composition, youtube thumbnail",
+                        "why_viral": "Ч/Б драматичность как у топовых военных каналов"
+                    },
+                    {
+                        "type": "intriguing",
+                        "prompt_en": f"mysterious black and white scene, {project.topic}, soldier silhouette, dramatic shadows, vintage wartime photography, high contrast, historical archive style, youtube thumbnail",
+                        "why_viral": "Загадочность и аутентичность привлекают"
+                    },
+                    {
+                        "type": "emotional",
+                        "prompt_en": f"emotional black and white portrait, {project.topic}, human face with intense expression, vintage documentary style, grainy texture, dramatic lighting, youtube thumbnail",
+                        "why_viral": "Эмоции в Ч/Б выглядят мощнее"
+                    }
+                ]
+            else:
+                # Цветной стиль для других тем
+                concepts = [
+                    {
+                        "type": "dramatic",
+                        "prompt_en": f"dramatic cinematic scene, {project.topic}, intense atmosphere, dark moody lighting, epic composition, 8k, photorealistic, youtube thumbnail",
+                        "why_viral": "Драматичность привлекает внимание"
+                    },
+                    {
+                        "type": "emotional",
+                        "prompt_en": f"emotional powerful moment, {project.topic}, human face with intense expression, cinematic lighting, documentary style, 8k, photorealistic, youtube thumbnail",
+                        "why_viral": "Эмоции вызывают эмпатию"
+                    },
+                    {
+                        "type": "mystery",
+                        "prompt_en": f"mysterious intriguing scene, {project.topic}, shadows and light, hidden secrets revealed, cinematic composition, 8k, photorealistic, youtube thumbnail",
+                        "why_viral": "Загадка вызывает любопытство"
+                    }
+                ]
         
         # Получаем токены
         hf_tokens = getattr(config.api, 'huggingface_tokens', [])
@@ -1180,26 +1393,53 @@ PROMPT:
         self._log(f"[{project.name}] ✅ {len(project.thumbnails)} превью готовы, промпты сохранены")
         self._save_projects()
     
-    def _enhance_thumbnail_prompt(self, prompt: str) -> str:
-        """Улучшение промпта для thumbnail техническими тегами"""
-        # Базовые улучшения для YouTube превью
-        enhancements = [
-            "youtube thumbnail style",
-            "eye-catching composition",
-            "vibrant saturated colors",
-            "high contrast",
-            "sharp focus",
-            "professional photography",
-            "8k ultra detailed",
-            "cinematic lighting"
-        ]
+    def _enhance_thumbnail_prompt(self, prompt: str, use_bw: bool = None) -> str:
+        """
+        Улучшение промпта для thumbnail техническими тегами
+        
+        Args:
+            prompt: Исходный промпт
+            use_bw: Использовать Ч/Б стиль (автоопределение для военной тематики)
+        """
+        prompt_lower = prompt.lower()
+        
+        # Автоопределение Ч/Б для военной тематики
+        if use_bw is None:
+            war_keywords = ['war', 'military', 'soldier', 'battle', 'ww2', 'wwii', 'army', 
+                           'война', 'военн', 'солдат', 'битва', 'армия', 'сражен']
+            use_bw = any(kw in prompt_lower for kw in war_keywords)
+        
+        if use_bw:
+            # Ч/Б стиль для военной тематики (как у топовых конкурентов)
+            enhancements = [
+                "black and white photograph",
+                "vintage 1940s documentary style",
+                "high contrast monochrome",
+                "grainy film texture",
+                "dramatic shadows",
+                "youtube thumbnail style",
+                "eye-catching composition",
+                "sharp focus",
+                "8k ultra detailed"
+            ]
+        else:
+            # Цветной стиль
+            enhancements = [
+                "youtube thumbnail style",
+                "eye-catching composition",
+                "vibrant saturated colors",
+                "high contrast",
+                "sharp focus",
+                "professional photography",
+                "8k ultra detailed",
+                "cinematic lighting"
+            ]
         
         # Проверяем что уже есть в промпте
-        prompt_lower = prompt.lower()
         missing = [e for e in enhancements if e.lower() not in prompt_lower]
         
         if missing:
-            return f"{prompt}, {', '.join(missing[:5])}"
+            return f"{prompt}, {', '.join(missing[:6])}"
         return prompt
     
     # === ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===
@@ -1284,27 +1524,99 @@ PROMPT:
             return "cinematic, dramatic lighting, 8k, hyperrealistic, detailed"
     
     def _determine_transitions(self, style: dict) -> List[str]:
-        """Определение переходов"""
-        return ["fade", "dissolve", "crossfade", "slide_left"]
+        """
+        Определение переходов на основе стиля конкурента
+        
+        Для документальных/военных каналов:
+        - Медленные fade переходы (0.5-1 сек)
+        - Dissolve для драматичных моментов
+        - Минимум резких переходов
+        """
+        tone = style.get('tone', '').lower()
+        narrative = style.get('narrative_style', '').lower()
+        
+        # Документальный/серьёзный стиль — плавные переходы
+        if any(w in tone for w in ['серьёзн', 'драматич', 'serious', 'dramatic']):
+            return ["fade", "dissolve", "crossfade"]
+        
+        # Динамичный стиль — больше разнообразия
+        if any(w in narrative for w in ['динамич', 'энергич', 'dynamic']):
+            return ["fade", "slide_left", "slide_right", "dissolve", "crossfade"]
+        
+        # По умолчанию — классический документальный
+        return ["fade", "dissolve", "crossfade"]
     
     def _determine_effects(self, style: dict) -> dict:
-        """Определение эффектов"""
-        return {
-            "zoom": 1.05,
+        """
+        Определение эффектов монтажа на основе стиля конкурента
+        
+        Для военных/документальных каналов (как WWII Records):
+        - Ken Burns эффект (zoom 1.0 → 1.15)
+        - Медленное панорамирование
+        - Cinematic цветокоррекция
+        - Ч/Б или desaturated для аутентичности
+        """
+        tone = style.get('tone', '').lower()
+        narrative = style.get('narrative_style', '').lower()
+        
+        effects = {
+            "zoom_min": 1.0,
+            "zoom_max": 1.15,
+            "zoom_speed": "slow",  # slow, medium, fast
             "pan": True,
-            "color_correction": "cinematic"
+            "pan_speed": "slow",
+            "color_correction": "cinematic",
+            "vignette": True,  # Затемнение по краям
+            "film_grain": False,  # Зернистость плёнки
         }
+        
+        # Документальный стиль — медленные эффекты, виньетка
+        if any(w in narrative for w in ['документ', 'documentary', 'образоват']):
+            effects["zoom_speed"] = "slow"
+            effects["pan_speed"] = "slow"
+            effects["vignette"] = True
+        
+        # Драматичный стиль — больше контраста
+        if any(w in tone for w in ['драматич', 'dramatic', 'серьёзн']):
+            effects["color_correction"] = "dramatic"
+            effects["zoom_max"] = 1.2  # Больше зум для драматизма
+        
+        # Военная тематика — Ч/Б или desaturated
+        if any(w in narrative for w in ['военн', 'war', 'military', 'истори']):
+            effects["color_correction"] = "cinematic_bw"  # Ч/Б с контрастом
+            effects["film_grain"] = True  # Зернистость для аутентичности
+            effects["vignette"] = True
+        
+        return effects
     
     def _determine_music_mood(self, topic: str, style: dict) -> str:
-        """Определение настроения музыки"""
+        """
+        Определение настроения музыки на основе темы и стиля конкурента
+        """
         topic_lower = topic.lower()
+        tone = style.get('tone', '').lower() if style else ''
         
-        if any(w in topic_lower for w in ['война', 'битва', 'сражен']):
-            return "epic, dramatic, orchestral"
-        elif any(w in topic_lower for w in ['тайн', 'загадк', 'мистер']):
-            return "mysterious, suspenseful, ambient"
-        elif any(w in topic_lower for w in ['ужас', 'страш']):
-            return "dark, horror, tense"
+        # Военная тематика — эпическая оркестровая музыка
+        if any(w in topic_lower for w in ['война', 'битва', 'сражен', 'war', 'battle', 'military']):
+            return "epic, dramatic, orchestral, cinematic"
+        
+        # Тайны и загадки — напряжённая атмосферная
+        elif any(w in topic_lower for w in ['тайн', 'загадк', 'мистер', 'secret', 'mystery']):
+            return "mysterious, suspenseful, ambient, dark"
+        
+        # Ужасы — тёмная напряжённая
+        elif any(w in topic_lower for w in ['ужас', 'страш', 'horror', 'terror']):
+            return "dark, horror, tense, atmospheric"
+        
+        # Исторические — эпическая кинематографичная
+        elif any(w in topic_lower for w in ['истори', 'history', 'древн', 'ancient']):
+            return "epic, historical, orchestral, emotional"
+        
+        # Драматичный тон — эмоциональная
+        elif 'драматич' in tone or 'dramatic' in tone:
+            return "dramatic, emotional, orchestral"
+        
+        # По умолчанию — кинематографичная
         else:
             return "cinematic, emotional, orchestral"
     
@@ -1345,6 +1657,170 @@ PROMPT:
         
         self._save_projects()
     
+    def _step_final_render_auto(self, project: SmartProject, project_dir: Path):
+        """
+        Автоматический финальный рендер видео (без превью)
+        
+        Создаёт полное видео с:
+        - Ken Burns эффектом на изображениях
+        - Озвучкой
+        - Переходами
+        - Цветокоррекцией
+        """
+        project.status = ProjectStatus.RENDERING.value
+        project.current_step = "Финальный рендер видео..."
+        project.progress = 95
+        self._save_projects()
+        
+        # Проверяем длительность аудио перед рендером
+        if not project.audio_path or not Path(project.audio_path).exists():
+            raise Exception("Нет файла озвучки для рендера")
+        
+        from moviepy import AudioFileClip
+        audio = AudioFileClip(project.audio_path)
+        audio_duration = audio.duration
+        audio.close()
+        
+        # Минимум 60 секунд для нормального видео
+        if audio_duration < 60:
+            raise Exception(f"Озвучка слишком короткая: {audio_duration:.1f} сек (минимум 60 сек)")
+        
+        self._log(f"[{project.name}] 🎬 Финальный рендер: {audio_duration/60:.1f} мин аудио, {len(project.images)} картинок")
+        
+        from .video_editor import VideoEditor, VideoConfig, SceneConfig
+        
+        # Получаем эффекты из анализа конкурента
+        effects = project.ai_effects or {}
+        
+        # Настройка видеоредактора на основе стиля конкурента
+        config = VideoConfig(
+            resolution=(1920, 1080),
+            fps=30,
+            enable_zoom=True,
+            min_zoom=effects.get('zoom_min', 1.0),
+            max_zoom=effects.get('zoom_max', 1.15),
+            transition_type=project.ai_transitions[0] if project.ai_transitions else "fade",
+            transition_duration=0.7,  # Медленные переходы для документального стиля
+            color_grade=effects.get('color_correction', 'cinematic'),
+            add_vignette=effects.get('vignette', True),
+            add_film_grain=effects.get('film_grain', False)
+        )
+        
+        self._log(f"[{project.name}] Монтаж: переходы={project.ai_transitions}, zoom={config.min_zoom}-{config.max_zoom}, цвет={config.color_grade}")
+        
+        editor = VideoEditor(config)
+        
+        # Подготовка сцен
+        images = [Path(p) for p in project.images if Path(p).exists()]
+        
+        # Если нет изображений — ждём их генерации (до 2 часов)
+        if not images:
+            import time
+            max_wait = 7200  # 2 часа
+            waited = 0
+            wait_interval = 60  # Проверяем каждую минуту
+            
+            self._log(f"[{project.name}] ⏳ Ожидание генерации изображений...")
+            
+            while waited < max_wait:
+                time.sleep(wait_interval)
+                waited += wait_interval
+                
+                # Перечитываем изображения
+                images_dir = project_dir / "images"
+                if images_dir.exists():
+                    images = sorted([p for p in images_dir.glob("*.webp")])
+                    if images:
+                        self._log(f"[{project.name}] ✅ Найдено {len(images)} изображений после {waited//60} мин ожидания")
+                        break
+                
+                if waited % 300 == 0:  # Каждые 5 минут
+                    self._log(f"[{project.name}] ⏳ Ожидание изображений... ({waited//60} мин)")
+            
+            if not images:
+                raise Exception("Нет изображений для рендера после 2 часов ожидания")
+        
+        scene_duration = audio_duration / len(images)
+        self._log(f"[{project.name}] Каждая сцена: {scene_duration:.2f} сек")
+        
+        scenes = []
+        current_time = 0
+        
+        for i, img_path in enumerate(images):
+            scenes.append(SceneConfig(
+                image_path=img_path,
+                duration=scene_duration,
+                start_time=current_time,
+                zoom_direction="in" if i % 2 == 0 else "out"
+            ))
+            current_time += scene_duration
+        
+        # Путь для выходного файла
+        output_path = project_dir / f"{project.name.replace(' ', '_')}_final.mp4"
+        
+        # Ищем фоновую музыку
+        music_path = self._find_music(project.ai_music_mood)
+        
+        # Рендерим
+        self._log(f"[{project.name}] 🎥 Рендер {len(scenes)} сцен...")
+        editor.create_video(
+            scenes=scenes,
+            audio_path=Path(project.audio_path),
+            output_path=output_path,
+            music_path=music_path,
+            music_volume=0.12
+        )
+        
+        project.final_video = str(output_path)
+        project.progress = 100
+        self._save_projects()
+        
+        self._log(f"[{project.name}] ✅ Финальное видео готово: {output_path}")
+        
+        # Копируем на рабочий стол
+        try:
+            import shutil
+            import re
+            
+            safe_name = re.sub(r'[<>:"/\\|?*]', '', project.name)[:80]
+            desktop_path = Path.home() / "Desktop" / "VideoFactory_Ready" / safe_name
+            desktop_path.mkdir(parents=True, exist_ok=True)
+            
+            # Копируем видео
+            shutil.copy2(output_path, desktop_path / f"{safe_name}.mp4")
+            
+            # Копируем превью
+            thumbnails_dir = project_dir / "thumbnails"
+            if thumbnails_dir.exists():
+                for thumb in thumbnails_dir.glob("*.webp"):
+                    shutil.copy2(thumb, desktop_path / thumb.name)
+                for thumb in thumbnails_dir.glob("*.png"):
+                    shutil.copy2(thumb, desktop_path / thumb.name)
+            
+            # SEO файл
+            seo_content = f"""=== SEO для YouTube ===
+
+📌 ЗАГОЛОВОК:
+{project.seo_title or project.name}
+
+📝 ОПИСАНИЕ:
+{project.seo_description or 'Описание не сгенерировано'}
+
+🏷️ ТЕГИ:
+{', '.join(project.seo_tags) if project.seo_tags else 'Теги не сгенерированы'}
+
+#️⃣ ХЕШТЕГИ:
+{' '.join(project.seo_hashtags) if project.seo_hashtags else ''}
+
+💬 ПЕРВЫЙ КОММЕНТАРИЙ:
+{project.seo_first_comment or ''}
+"""
+            (desktop_path / "SEO.txt").write_text(seo_content, encoding="utf-8")
+            
+            self._log(f"[{project.name}] 📁 Готово: ~/Desktop/VideoFactory_Ready/{safe_name}/")
+        except Exception as e:
+            self._log(f"[{project.name}] ⚠️ Ошибка копирования на рабочий стол: {e}")
+    
     def render_final(self, project_id: str, on_progress: Callable = None, 
                      add_subtitles: bool = False) -> Optional[str]:
         """
@@ -1375,30 +1851,42 @@ PROMPT:
             from .quality_checker import QualityChecker
             from pathlib import Path
             
-            # Проверка качества перед рендером
-            checker = QualityChecker()
-            report = checker.check_project(project)
-            
-            if not report.passed:
-                project.error_message = f"Проверка не пройдена: {report.summary}"
-                project.status = ProjectStatus.ERROR.value
-                self._save_projects()
-                return None
+            # Проверка качества перед рендером (мягкая - только предупреждения)
+            try:
+                checker = QualityChecker()
+                report = checker.check_project(project)
+                
+                if not report.passed:
+                    # Логируем проблемы но НЕ блокируем рендер
+                    critical_issues = [i for i in report.issues if i.severity == 'critical']
+                    if critical_issues:
+                        issues_text = "; ".join([f"{i.category}: {i.message}" for i in critical_issues[:3]])
+                        self._log(f"[{project.name}] ⚠️ Предупреждения: {issues_text}")
+                    # Продолжаем рендер несмотря на предупреждения
+            except Exception as e:
+                self._log(f"[{project.name}] ⚠️ Ошибка проверки качества: {e}")
             
             project.current_step = "Настройка видео..."
             project.progress = 10
             
-            # Настройка видеоредактора
+            # Получаем эффекты из анализа конкурента
+            effects = project.ai_effects or {}
+            
+            # Настройка видеоредактора на основе стиля конкурента
             config = VideoConfig(
                 resolution=(1920, 1080),
                 fps=30,
                 enable_zoom=True,
-                min_zoom=1.0,
-                max_zoom=1.15,
+                min_zoom=effects.get('zoom_min', 1.0),
+                max_zoom=effects.get('zoom_max', 1.15),
                 transition_type=project.ai_transitions[0] if project.ai_transitions else "fade",
-                transition_duration=0.5,
-                color_grade="cinematic"
+                transition_duration=0.7,  # Медленные переходы для документального стиля
+                color_grade=effects.get('color_correction', 'cinematic'),
+                add_vignette=effects.get('vignette', True),
+                add_film_grain=effects.get('film_grain', False)
             )
+            
+            self._log(f"[{project.name}] Монтаж: переходы={project.ai_transitions}, цвет={config.color_grade}")
             
             editor = VideoEditor(config)
             
@@ -1413,8 +1901,32 @@ PROMPT:
             
             # Рассчитываем длительность каждой сцены
             images = [Path(p) for p in project.images if Path(p).exists()]
+            
+            # Если нет изображений — ждём их генерации
             if not images:
-                raise Exception("Нет изображений для рендера")
+                import time
+                project_dir = self.output_dir / project_id
+                max_wait = 7200  # 2 часа
+                waited = 0
+                
+                self._log(f"[{project.name}] ⏳ Ожидание генерации изображений...")
+                
+                while waited < max_wait:
+                    time.sleep(60)
+                    waited += 60
+                    
+                    images_dir = project_dir / "images"
+                    if images_dir.exists():
+                        images = sorted([p for p in images_dir.glob("*.webp")])
+                        if images:
+                            self._log(f"[{project.name}] ✅ Найдено {len(images)} изображений")
+                            break
+                    
+                    if waited % 300 == 0:
+                        self._log(f"[{project.name}] ⏳ Ожидание... ({waited//60} мин)")
+                
+                if not images:
+                    raise Exception("Нет изображений для рендера после ожидания")
             
             scene_duration = total_duration / len(images)
             
@@ -1497,6 +2009,60 @@ PROMPT:
             project.progress = 100
             project.current_step = "Готово!"
             self._save_projects()
+            
+            # Копируем видео на рабочий стол в папку VideoFactory_Ready
+            try:
+                import shutil
+                import re
+                import os
+                
+                # Очищаем название от недопустимых символов
+                safe_name = re.sub(r'[<>:"/\\|?*]', '', project.name)[:80]
+                
+                # Папка на рабочем столе
+                desktop_path = Path.home() / "Desktop" / "VideoFactory_Ready" / safe_name
+                desktop_path.mkdir(parents=True, exist_ok=True)
+                
+                # Копируем видео
+                final_copy = desktop_path / f"{safe_name}.mp4"
+                shutil.copy2(output_path, final_copy)
+                
+                # Копируем превью/обложки если есть
+                project_dir = output_path.parent
+                thumbnails_dir = project_dir / "thumbnails"
+                if thumbnails_dir.exists():
+                    for thumb in thumbnails_dir.glob("*.webp"):
+                        shutil.copy2(thumb, desktop_path / thumb.name)
+                    for thumb in thumbnails_dir.glob("*.png"):
+                        shutil.copy2(thumb, desktop_path / thumb.name)
+                
+                # Создаём SEO.txt файл
+                seo_content = f"""=== SEO для YouTube ===
+
+📌 ЗАГОЛОВОК:
+{project.seo_title or project.name}
+
+📝 ОПИСАНИЕ:
+{project.seo_description or 'Описание не сгенерировано'}
+
+🏷️ ТЕГИ:
+{', '.join(project.seo_tags) if project.seo_tags else 'Теги не сгенерированы'}
+
+#️⃣ ХЕШТЕГИ:
+{' '.join(project.seo_hashtags) if project.seo_hashtags else ''}
+
+💬 ПЕРВЫЙ КОММЕНТАРИЙ:
+{project.seo_first_comment or ''}
+
+📊 АЛЬТЕРНАТИВНЫЕ ЗАГОЛОВКИ (A/B тест):
+{chr(10).join(project.seo_alt_titles) if project.seo_alt_titles else 'Нет альтернатив'}
+"""
+                seo_file = desktop_path / "SEO.txt"
+                seo_file.write_text(seo_content, encoding="utf-8")
+                
+                self._log(f"[{project.name}] 📁 Готово на рабочем столе: ~/Desktop/VideoFactory_Ready/{safe_name}/")
+            except Exception as e:
+                self._log(f"[{project.name}] ⚠️ Не удалось скопировать на рабочий стол: {e}")
             
             self._log(f"✅ Рендер завершён: {output_path}")
             return str(output_path)

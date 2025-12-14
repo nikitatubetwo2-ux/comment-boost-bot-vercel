@@ -1,10 +1,12 @@
 """
 Клиент Groq API для генерации текста
+С АВТОМАТИЧЕСКОЙ РОТАЦИЕЙ КЛЮЧЕЙ при исчерпании лимита!
 """
 
 from typing import Optional, List, Dict, Any
 from dataclasses import dataclass
 import json
+import time
 from groq import Groq
 
 
@@ -17,21 +19,116 @@ class AnalysisResult:
 
 
 class GroqClient:
-    """Клиент для работы с Groq API"""
+    """
+    Клиент для работы с Groq API
     
-    def __init__(self, api_key: str, model: str = "llama-3.3-70b-versatile"):
-        self.client = Groq(api_key=api_key)
+    Поддерживает АВТОМАТИЧЕСКУЮ РОТАЦИЮ ключей при rate limit!
+    Если один ключ исчерпан — автоматически переключается на следующий.
+    """
+    
+    def __init__(self, api_key: str = None, api_keys: List[str] = None, 
+                 model: str = "llama-3.3-70b-versatile"):
+        # Поддержка нескольких ключей
+        if api_keys:
+            self.api_keys = [k for k in api_keys if k and k.startswith("gsk_")]
+        elif api_key:
+            self.api_keys = [api_key] if api_key.startswith("gsk_") else []
+        else:
+            self.api_keys = []
+        
+        self._current_key_idx = 0
+        self._key_cooldowns = {}  # key -> время когда можно снова использовать
         self.model = model
+        
+        # Создаём клиент с первым ключом
+        if self.api_keys:
+            self.client = Groq(api_key=self.api_keys[0])
+        else:
+            raise ValueError("Нет Groq API ключей!")
+        
+        print(f"[Groq] Инициализирован с {len(self.api_keys)} ключами")
+    
+    def _get_available_key(self) -> str:
+        """Получение доступного ключа (не в cooldown)"""
+        now = time.time()
+        
+        # Ищем ключ не в cooldown
+        for i in range(len(self.api_keys)):
+            idx = (self._current_key_idx + i) % len(self.api_keys)
+            key = self.api_keys[idx]
+            
+            cooldown_until = self._key_cooldowns.get(key, 0)
+            if now >= cooldown_until:
+                if idx != self._current_key_idx:
+                    self._current_key_idx = idx
+                    self.client = Groq(api_key=key)
+                    print(f"[Groq] Переключился на ключ #{idx+1}")
+                return key
+        
+        # Все ключи в cooldown — ждём минимальное время
+        min_wait = min(self._key_cooldowns.values()) - now
+        if min_wait > 0:
+            print(f"[Groq] Все ключи в cooldown. Жду {min_wait:.0f} сек...")
+            time.sleep(min(min_wait + 1, 60))  # Максимум 60 сек
+        
+        return self._get_available_key()
+    
+    def _mark_key_cooldown(self, key: str, seconds: int = 60):
+        """Пометить ключ как в cooldown"""
+        self._key_cooldowns[key] = time.time() + seconds
+        print(f"[Groq] Ключ #{self.api_keys.index(key)+1} в cooldown на {seconds}с")
     
     def _chat(self, messages: List[Dict], temperature: float = 0.7, max_tokens: int = 4096) -> str:
-        """Базовый метод для чата"""
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=messages,
-            temperature=temperature,
-            max_tokens=max_tokens
-        )
-        return response.choices[0].message.content
+        """Базовый метод для чата с автоматической ротацией ключей"""
+        max_retries = len(self.api_keys) + 1
+        last_error = None
+        
+        for attempt in range(max_retries):
+            key = self._get_available_key()
+            
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    temperature=temperature,
+                    max_tokens=max_tokens
+                )
+                return response.choices[0].message.content
+                
+            except Exception as e:
+                error_msg = str(e)
+                last_error = e
+                
+                # Rate limit — переключаемся на другой ключ
+                if "429" in error_msg or "rate_limit" in error_msg.lower():
+                    # Определяем время cooldown из сообщения
+                    import re
+                    cooldown = 0
+                    
+                    if "try again in" in error_msg.lower():
+                        # Парсим минуты и секунды
+                        match_m = re.search(r'(\d+)m', error_msg)
+                        match_s = re.search(r'(\d+(?:\.\d+)?)s', error_msg)
+                        
+                        if match_m:
+                            cooldown += int(match_m.group(1)) * 60
+                        if match_s:
+                            cooldown += int(float(match_s.group(1)))
+                    
+                    # Если не удалось распарсить — ставим 1 час (дневной лимит)
+                    if cooldown == 0:
+                        cooldown = 3600
+                    
+                    self._mark_key_cooldown(key, cooldown)
+                    continue
+                
+                # Другая ошибка — пробуем ещё раз
+                print(f"[Groq] Ошибка: {error_msg[:100]}")
+                if attempt < max_retries - 1:
+                    time.sleep(2)
+                    continue
+        
+        raise last_error or Exception("Все Groq ключи исчерпаны")
     
     def chat(self, prompt: str, system: str = "Ты полезный AI ассистент.", temperature: float = 0.7) -> str:
         """Простой чат с одним промптом"""
@@ -290,66 +387,247 @@ class GroqClient:
         except:
             return [{"raw": response}]
     
-    def generate_script(self, topic: str, duration: str, style: str, include_hooks: bool = True) -> str:
-        """Генерация сценария — УВЕЛИЧЕННЫЙ ОБЪЁМ"""
-        # Расчёт: ~150 слов/минута для комфортной озвучки
+    def generate_script(self, topic: str, duration: str, style: str, 
+                        language: str = "Русский", include_hooks: bool = True) -> str:
+        """
+        Генерация сценария по главам
+        
+        40-50 минут = ~45000 СИМВОЛОВ (не слов!)
+        ~1000 символов = 1 минута озвучки
+        Разбиваем на 12-15 глав для удобства генерации
+        """
+        # СИМВОЛЫ (не слова!) для каждой длительности
+        # ElevenLabs озвучивает ~1200 символов = 1 минута (быстрее чем ожидалось)
+        # Поэтому добавляем +20% к символам для компенсации
         duration_map = {
-            "10-20 минут": (2500, 15),
-            "20-30 минут": (4000, 25),
-            "30-40 минут": (5500, 35),
-            "40-50 минут": (7000, 45),
-            "50-60 минут": (9000, 55),
-            "60+ минут": (10000, 65)
+            "10-20 минут": (18000, 15, 5),     # 18K символов (+20%), 15 мин, 5 глав
+            "20-30 минут": (30000, 25, 8),     # 30K символов (+20%), 25 мин, 8 глав
+            "30-40 минут": (42000, 35, 10),    # 42K символов (+20%), 35 мин, 10 глав
+            "40-50 минут": (54000, 45, 12),    # 54K символов (+20%), 45 мин, 12 глав
+            "50-60 минут": (66000, 55, 14),    # 66K символов (+20%), 55 мин, 14 глав
+            "60+ минут": (78000, 65, 16)       # 78K символов (+20%), 65 мин, 16 глав
         }
         
-        words, mins = duration_map.get(duration, (4000, 25))
+        target_chars, mins, num_chapters = duration_map.get(duration, (45000, 45, 12))
+        chars_per_chapter = target_chars // num_chapters  # ~3000-4000 символов на главу
         
-        prompt = f"""Напиши ПОЛНЫЙ РАЗВЁРНУТЫЙ сценарий для YouTube видео.
+        # Определяем язык
+        is_english = language.lower() in ["english", "английский", "en"]
+        
+        # Генерируем сценарий по главам
+        full_script = self._generate_script_by_chapters(
+            topic=topic,
+            style=style,
+            target_chars=target_chars,
+            num_chapters=num_chapters,
+            chars_per_chapter=chars_per_chapter,
+            mins=mins,
+            is_english=is_english
+        )
+        
+        return full_script
+    
+    def _generate_script_by_chapters(self, topic: str, style: str, 
+                                       target_chars: int, num_chapters: int,
+                                       chars_per_chapter: int, mins: int, 
+                                       is_english: bool) -> str:
+        """
+        Генерация сценария по главам
+        
+        Каждая глава ~3000-4000 символов для удобства генерации
+        """
+        print(f"[Groq] Генерация сценария: {target_chars} символов, {num_chapters} глав")
+        
+        # Генерируем план глав
+        chapters = self._generate_chapter_plan(topic, num_chapters, is_english)
+        
+        print(f"[Groq] План: {len(chapters)} глав по ~{chars_per_chapter} символов")
+        
+        # Генерируем каждую главу
+        full_script_parts = []
+        
+        # HOOK (короткий, ~500 символов)
+        hook = self._generate_single_chapter(
+            topic=topic,
+            chapter_title="HOOK" if is_english else "КРЮЧОК", 
+            chapter_num=0,
+            total_chapters=len(chapters),
+            target_chars=500,
+            style=style,
+            is_english=is_english,
+            context=""
+        )
+        full_script_parts.append(f"[HOOK]\n\n{hook}")
+        
+        # Основные главы
+        context = hook[-300:]
+        
+        for i, chapter_title in enumerate(chapters):
+            print(f"  Глава {i+1}/{len(chapters)}: {chapter_title[:30]}...")
+            
+            chapter_text = self._generate_single_chapter(
+                topic=topic,
+                chapter_title=chapter_title,
+                chapter_num=i+1,
+                total_chapters=len(chapters),
+                target_chars=chars_per_chapter,
+                style=style,
+                is_english=is_english,
+                context=context
+            )
+            
+            marker = f"CHAPTER {i+1}" if is_english else f"ГЛАВА {i+1}"
+            full_script_parts.append(f"[{marker}: {chapter_title}]\n\n{chapter_text}")
+            context = chapter_text[-300:]
+        
+        # CONCLUSION (~500 символов)
+        conclusion = self._generate_single_chapter(
+            topic=topic,
+            chapter_title="CONCLUSION" if is_english else "ЗАКЛЮЧЕНИЕ",
+            chapter_num=len(chapters)+1,
+            total_chapters=len(chapters),
+            target_chars=500,
+            style=style,
+            is_english=is_english,
+            context=context
+        )
+        full_script_parts.append(f"[{'CONCLUSION' if is_english else 'ЗАКЛЮЧЕНИЕ'}]\n\n{conclusion}")
+        
+        full_script = "\n\n".join(full_script_parts)
+        
+        actual_chars = len(full_script)
+        actual_mins = actual_chars / 1000  # ~1000 символов = 1 минута
+        print(f"[Groq] ✅ Сценарий: {actual_chars} символов (~{actual_mins:.0f} мин)")
+        
+        return full_script
+    
+    def _generate_chapter_plan(self, topic: str, num_chapters: int, is_english: bool) -> list:
+        """Генерация плана глав"""
+        if is_english:
+            prompt = f"""Create {num_chapters} chapter titles for a documentary.
 
-ТЕМА: {topic}
-ДЛИТЕЛЬНОСТЬ: {mins} минут
-ТРЕБУЕМЫЙ ОБЪЁМ: МИНИМУМ {words} слов (это критически важно!)
+Topic: {topic}
+(If topic is in Russian, translate it and create English titles about that topic)
 
-СТИЛЬ: {style}
+!!! WRITE ONLY IN ENGLISH !!!
+DO NOT USE RUSSIAN OR CYRILLIC!
 
-СТРУКТУРА СЦЕНАРИЯ:
+Reply with ONLY chapter titles in English, one per line:
+1. [English title]
+2. [English title]
+..."""
+            system_msg = "You write ONLY in English. Never use Russian or Cyrillic characters. Create chapter titles in English."
+        else:
+            prompt = f"""Создай {num_chapters} названий глав для документального видео о: {topic}
 
-[HOOK - 0:00-0:45]
-Мощное начало без приветствий. Сразу интрига, факт или вопрос который заставит остаться.
-
-[ГЛАВА 1: Название - 0:45-X:XX]
-Развёрнутое повествование с деталями, примерами, описаниями.
-
-[ГЛАВА 2: Название - X:XX-X:XX]
-...продолжение истории...
-
-[ГЛАВА 3-N: ...]
-...столько глав сколько нужно для полного раскрытия темы...
-
-[КУЛЬМИНАЦИЯ]
-Самый напряжённый момент истории.
-
-[ЗАКЛЮЧЕНИЕ]
-Выводы, мораль, призыв подписаться.
-
-КРИТИЧЕСКИЕ ТРЕБОВАНИЯ:
-1. НЕ ПИШИ "Привет", "Добро пожаловать" — сразу в тему!
-2. МИНИМУМ {words} слов — это обязательно!
-3. Каждая глава должна быть РАЗВЁРНУТОЙ (минимум 500-800 слов)
-4. Добавляй детали, описания, эмоции, диалоги
-5. Используй риторические вопросы каждые 2-3 абзаца
-6. Интрига перед каждой новой главой
-7. Текст для ОЗВУЧКИ — должен звучать естественно
-
-ПИШИ ПОЛНОСТЬЮ, БЕЗ СОКРАЩЕНИЙ, БЕЗ "..." или "и так далее".
-Каждое предложение должно быть написано полностью."""
-
+Ответь ТОЛЬКО названиями, по одному на строку:
+1. [название]
+2. [название]
+..."""
+            system_msg = "Создай названия глав."
+        
         response = self._chat([
-            {"role": "system", "content": f"Ты профессиональный сценарист документальных YouTube видео. Стиль: {style}. Пишешь ДЛИННЫЕ, ДЕТАЛЬНЫЕ сценарии которые полностью раскрывают тему. Никогда не сокращаешь текст."},
+            {"role": "system", "content": system_msg},
             {"role": "user", "content": prompt}
-        ], temperature=0.8, max_tokens=8000)
+        ], temperature=0.7, max_tokens=500)
         
-        return response
+        # Парсим
+        chapters = []
+        for line in response.strip().split('\n'):
+            line = line.strip()
+            if line and len(line) > 3:
+                # Убираем номер в начале
+                import re
+                clean = re.sub(r'^[\d\.\)\-\:]+\s*', '', line).strip()
+                if clean:
+                    chapters.append(clean)
+        
+        # Если мало — добавляем дефолтные
+        while len(chapters) < num_chapters:
+            chapters.append(f"Part {len(chapters)+1}" if is_english else f"Часть {len(chapters)+1}")
+        
+        return chapters[:num_chapters]
+    
+    def _generate_single_chapter(self, topic: str, chapter_title: str, 
+                                  chapter_num: int, total_chapters: int,
+                                  target_chars: int, style: str,
+                                  is_english: bool, context: str) -> str:
+        """Генерация одной главы (~3500-4500 символов)"""
+        
+        # Рассчитываем max_tokens: ~4 символа на токен + запас
+        max_tokens = max(3000, (target_chars // 3) + 500)
+        
+        if is_english:
+            # Переводим тему на английский если она на русском
+            topic_instruction = f"""Topic: {topic}
+NOTE: If the topic above is in Russian, translate it to English and write about that topic."""
+            
+            prompt = f"""Write chapter "{chapter_title}" for a documentary.
+
+{topic_instruction}
+
+!!! CRITICAL LANGUAGE REQUIREMENT !!!
+YOU MUST WRITE ONLY IN ENGLISH!
+DO NOT WRITE IN RUSSIAN!
+DO NOT USE CYRILLIC CHARACTERS!
+EVERY SINGLE WORD MUST BE IN ENGLISH!
+
+Target length: {target_chars} characters. This is chapter {chapter_num} of {total_chapters}.
+
+Previous context: {context[:200]}...
+
+REQUIREMENTS:
+- Write MINIMUM {target_chars} characters IN ENGLISH ONLY
+- Include specific facts, dates, names, numbers
+- Detailed narrative with historical accuracy
+- Natural voiceover text (no stage directions)
+- NO greetings, start directly with content
+- Write ALL dates in WORDS: "nineteen forty-four" NOT "1944"
+
+Write the full chapter now IN ENGLISH (minimum {target_chars} characters):"""
+            system_msg = f"You are an English documentary scriptwriter. Style: {style}. CRITICAL: You MUST write ONLY in English. Never use Russian or Cyrillic. Write at least {target_chars} characters."
+        else:
+            prompt = f"""Напиши главу "{chapter_title}" для документального видео о: {topic}
+
+КРИТИЧЕСКИ ВАЖНО: Напиши РОВНО {target_chars} символов (не слов!). Это глава {chapter_num} из {total_chapters}.
+
+Предыдущий контекст: {context[:200]}...
+
+ТРЕБОВАНИЯ:
+- Напиши МИНИМУМ {target_chars} символов текста
+- Включи конкретные факты, даты, имена, числа
+- Детальное повествование с исторической точностью
+- Естественный текст для озвучки (без ремарок)
+- БЕЗ приветствий, сразу в тему
+- Продолжай писать пока не достигнешь {target_chars} символов
+- ВАЖНО: Пиши ВСЕ даты ПРОПИСЬЮ! Пример: "тысяча девятьсот сорок четвёртый год" НЕ "1944", "пятнадцатое октября" НЕ "15 октября"
+- Это помогает AI озвучке правильно произносить даты
+
+Напиши полную главу (минимум {target_chars} символов):"""
+            system_msg = f"Сценарист документальных видео. Стиль: {style}. Ты ОБЯЗАН написать минимум {target_chars} символов. Будь детальным и подробным. ВСЕГДА пиши даты прописью!"
+        
+        response = self._chat([
+            {"role": "system", "content": system_msg},
+            {"role": "user", "content": prompt}
+        ], temperature=0.8, max_tokens=max_tokens)
+        
+        return response.strip()
+    
+    # Оставляем старую функцию для совместимости
+    def _generate_chapter(self, topic: str, chapter_title: str, chapter_num: int,
+                          total_chapters: int, words_target: int, style: str,
+                          is_english: bool, previous_summary: str) -> str:
+        """Старая функция — перенаправляем на новую"""
+        return self._generate_single_chapter(
+            topic=topic,
+            chapter_title=chapter_title,
+            chapter_num=chapter_num,
+            total_chapters=total_chapters,
+            target_chars=words_target * 6,  # ~6 символов на слово
+            style=style,
+            is_english=is_english,
+            context=previous_summary
+        )
     
     def generate_preview_prompts(self, title: str, style_info: str) -> List[Dict]:
         """Генерация 3 промптов для превью"""
@@ -614,19 +892,72 @@ class GroqClient:
             return {"raw_analysis": response}
     
     def generate_seo(self, title: str, script: str, competitor_tags: List[str], 
-                     subniche: str = "", channel_keywords: List[str] = None) -> Dict[str, Any]:
+                     subniche: str = "", channel_keywords: List[str] = None,
+                     language: str = "Русский") -> Dict[str, Any]:
         """
         Генерация SEO: описание, теги, хештеги
-        
-        Расширенный анализ:
-        - Теги конкурентов
-        - Ключевые слова ниши
-        - Популярные поисковые запросы
-        - Хештеги с высоким охватом
+        С поддержкой языка!
         """
         keywords_str = ', '.join(channel_keywords[:20]) if channel_keywords else ''
+        is_english = language.lower() in ["english", "английский", "en"]
         
-        prompt = f"""Создай ПРОФЕССИОНАЛЬНУЮ SEO оптимизацию для YouTube видео.
+        if is_english:
+            prompt = f"""Create PROFESSIONAL SEO optimization for a YouTube video.
+
+TITLE: {title}
+
+CHANNEL SUBNICHE: {subniche}
+
+SCRIPT (beginning):
+{script[:3000]}
+
+COMPETITOR TAGS:
+{', '.join(competitor_tags[:30])}
+
+CHANNEL KEYWORDS:
+{keywords_str}
+
+=== TASKS ===
+
+1. DESCRIPTION (2000-3000 characters):
+   - First 150 characters are most important (visible in search)
+   - Keywords in first 2-3 sentences
+   - Timestamps for navigation
+   - Call to action (subscribe, like)
+   - Social media links (placeholders)
+
+2. TAGS (30 tags, STRATEGY):
+   - 5 high-volume (100K+ searches) — for reach
+   - 10 medium-volume (10K-100K) — balance
+   - 10 low-volume (1K-10K) — precise targeting
+   - 5 long-tail phrases — conversion
+
+3. HASHTAGS (5):
+   - Only popular with high reach
+   - Relevant to video topic
+   - Mix of general and niche
+
+4. ALTERNATIVE TITLES (3):
+   - Different triggers (question, number, intrigue)
+   - A/B test variants
+
+Reply in JSON:
+{{
+    "description": "full description with timestamps and calls to action",
+    "tags": ["tag1", "tag2", ...],
+    "tags_strategy": {{
+        "high_volume": ["high volume tags"],
+        "medium_volume": ["medium"],
+        "low_volume": ["low but precise"],
+        "long_tail": ["long phrases"]
+    }},
+    "hashtags": ["#hashtag1", ...],
+    "seo_title_alternatives": ["variant1", "variant2", "variant3"],
+    "first_comment": "text for pinned comment"
+}}"""
+            system_msg = "You are a YouTube SEO specialist with experience promoting million-subscriber channels. Reply only with valid JSON. Write in English."
+        else:
+            prompt = f"""Создай ПРОФЕССИОНАЛЬНУЮ SEO оптимизацию для YouTube видео.
 
 ЗАГОЛОВОК: {title}
 
@@ -679,9 +1010,10 @@ class GroqClient:
     "seo_title_alternatives": ["вариант1", "вариант2", "вариант3"],
     "first_comment": "текст для закреплённого комментария"
 }}"""
+            system_msg = "Ты SEO специалист YouTube с опытом продвижения каналов-миллионников. Отвечай только валидным JSON."
 
         response = self._chat([
-            {"role": "system", "content": "Ты SEO специалист YouTube с опытом продвижения каналов-миллионников. Отвечай только валидным JSON."},
+            {"role": "system", "content": system_msg},
             {"role": "user", "content": prompt}
         ])
         
@@ -702,13 +1034,14 @@ class GroqClient:
         Первые 5 минут: картинка каждые 10-15 сек
         После 5 минут: картинка каждые 30-40 сек
         """
+        # 45000 слов для 40-50 минут как просил пользователь
         duration_map = {
-            "10-20 минут": (2500, 15),
-            "20-30 минут": (4000, 25),
-            "30-40 минут": (5500, 35),
-            "40-50 минут": (7000, 45),
-            "50-60 минут": (9000, 55),
-            "60+ минут": (10000, 65)
+            "10-20 минут": (15000, 15),
+            "20-30 минут": (25000, 25),
+            "30-40 минут": (35000, 35),
+            "40-50 минут": (45000, 45),
+            "50-60 минут": (55000, 55),
+            "60+ минут": (65000, 65)
         }
         
         words, mins = duration_map.get(duration, (4000, 25))
@@ -1017,7 +1350,24 @@ class GroqClient:
                 ]
             }
         """
+        # Определяем военную тематику для Ч/Б стиля
+        topic_lower = topic.lower() if topic else ""
+        is_war_theme = any(w in topic_lower for w in ['война', 'военн', 'ww2', 'wwii', 'битва', 'сражен', 'war', 'battle', 'military', 'soldier', 'army'])
+        
+        style_instruction = ""
+        if is_war_theme:
+            style_instruction = """
+=== ВАЖНО: СТИЛЬ ДЛЯ ВОЕННОЙ ТЕМАТИКИ ===
+Все промпты ОБЯЗАТЕЛЬНО должны включать:
+- "black and white photograph" — Ч/Б стиль как у топовых военных каналов
+- "vintage 1940s documentary style" — аутентичность эпохи
+- "high contrast monochrome" — драматичность
+- "grainy film texture" — текстура плёнки
+Это стиль который работает у конкурентов с миллионами просмотров!
+"""
+        
         prompt = f"""Создай 3 ВИРУСНЫХ концепции для YouTube превью.
+{style_instruction}
 
 ТЕМА ВИДЕО: {topic}
 ЗАГОЛОВОК: {title}
@@ -1138,3 +1488,43 @@ class GroqClient:
                 "mood": "драматичное",
                 "prompt_style": "dramatic, cinematic, high contrast, vibrant colors"
             }
+
+
+# === ГЛОБАЛЬНЫЙ КЛИЕНТ С РОТАЦИЕЙ ===
+
+_groq_client: Optional[GroqClient] = None
+
+
+def get_groq_client() -> GroqClient:
+    """
+    Получение глобального GroqClient с автоматической ротацией ключей
+    
+    Использование:
+        from core.groq_client import get_groq_client
+        groq = get_groq_client()
+        result = groq.chat("Привет!")
+    """
+    global _groq_client
+    
+    if _groq_client is None:
+        from config import config
+        
+        # Используем все ключи для ротации
+        keys = config.api.groq_keys if config.api.groq_keys else [config.api.groq_key]
+        keys = [k for k in keys if k]  # Убираем пустые
+        
+        if not keys:
+            raise ValueError("Нет Groq API ключей! Добавьте GROQ_API_KEYS в .env")
+        
+        _groq_client = GroqClient(
+            api_keys=keys,
+            model=config.api.groq_model
+        )
+    
+    return _groq_client
+
+
+def reset_groq_client():
+    """Сброс клиента (для перезагрузки ключей)"""
+    global _groq_client
+    _groq_client = None

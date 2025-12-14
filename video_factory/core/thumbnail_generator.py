@@ -64,14 +64,14 @@ class ThumbnailGenerator:
             count: Количество вариантов
             save_prompts: Сохранять промпты в файл (для ручной генерации)
         """
-        from core.groq_client import GroqClient
+        from core.groq_client import GroqClient, get_groq_client
         from config import config
         import json
         
         if not config.api.groq_key:
             return []
         
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         # Генерируем промпты для превью
         prompts = self._generate_thumbnail_prompts(groq, title, style, count)
@@ -120,14 +120,14 @@ class ThumbnailGenerator:
         
         Для ручной генерации в Ideogram/Midjourney
         """
-        from core.groq_client import GroqClient
+        from core.groq_client import GroqClient, get_groq_client
         from config import config
         import json
         
         if not config.api.groq_key:
             return []
         
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         prompts = self._generate_thumbnail_prompts(groq, title, style, count)
         
         # Сохраняем в файл
@@ -265,14 +265,14 @@ class ABThumbnailTester:
                 "recommendation": "лучший вариант для данной темы"
             }
         """
-        from core.groq_client import GroqClient
+        from core.groq_client import GroqClient, get_groq_client
         from config import config
         import json
         
         if not config.api.groq_key:
             return {"error": "Groq API ключ не настроен"}
         
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         # Генерируем варианты через AI
         prompt = f"""Создай {count} РАЗНЫХ концепций превью для YouTube видео.
@@ -430,13 +430,13 @@ class TrendAnalyzer:
         - Google Trends
         - Новости по теме
         """
-        from core.groq_client import GroqClient
+        from core.groq_client import GroqClient, get_groq_client
         from config import config
         
         if not config.api.groq_key:
             return []
         
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         prompt = f"""Ты аналитик YouTube трендов. Предскажи какие темы в нише "{niche}" будут популярны в ближайшую неделю.
 
@@ -479,13 +479,13 @@ class TrendAnalyzer:
         
         Возвращает оценку и рекомендации
         """
-        from core.groq_client import GroqClient
+        from core.groq_client import GroqClient, get_groq_client
         from config import config
         
         if not config.api.groq_key:
             return {"score": 50, "recommendations": []}
         
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         prompt = f"""Оцени вирусный потенциал этого видео:
 

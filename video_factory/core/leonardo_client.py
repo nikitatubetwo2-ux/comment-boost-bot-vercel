@@ -254,7 +254,7 @@ class LeonardoClient:
                 "recommendation": "..."
             }
         """
-        from core.groq_client import GroqClient
+        from core.groq_client import GroqClient, get_groq_client
         from config import config
         
         if not config.api.groq_key:
@@ -263,7 +263,7 @@ class LeonardoClient:
         output_dir = output_dir or Path("output/thumbnails")
         output_dir.mkdir(parents=True, exist_ok=True)
         
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         # Генерируем промпты для разных концепций
         style_hint = ""

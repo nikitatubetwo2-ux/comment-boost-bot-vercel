@@ -13,7 +13,7 @@ import numpy as np
 from moviepy import (
     ImageClip, AudioFileClip, CompositeVideoClip, CompositeAudioClip,
     concatenate_videoclips, concatenate_audioclips, VideoFileClip,
-    TextClip, ColorClip
+    TextClip, ColorClip, VideoClip
 )
 from moviepy.video.fx import FadeIn, FadeOut, Resize
 from PIL import Image, ImageFilter, ImageEnhance
@@ -113,12 +113,13 @@ class VideoEditor:
             start_zoom = self.config.min_zoom if zoom_direction == "in" else self.config.max_zoom
             end_zoom = self.config.max_zoom if zoom_direction == "in" else self.config.min_zoom
             
-            def zoom_effect(get_frame, t):
+            # MoviePy 2.x: используем make_frame для Ken Burns эффекта
+            original_frame = clip.get_frame(0)
+            h, w = original_frame.shape[:2]
+            
+            def make_ken_burns_frame(t):
                 progress = t / duration
                 current_zoom = start_zoom + (end_zoom - start_zoom) * progress
-                
-                frame = get_frame(t)
-                h, w = frame.shape[:2]
                 
                 # Центрируем и обрезаем
                 new_w = int(target_w / current_zoom)
@@ -127,18 +128,28 @@ class VideoEditor:
                 x1 = (w - new_w) // 2
                 y1 = (h - new_h) // 2
                 
-                cropped = frame[y1:y1+new_h, x1:x1+new_w]
+                # Убеждаемся что не выходим за границы
+                x1 = max(0, min(x1, w - new_w))
+                y1 = max(0, min(y1, h - new_h))
                 
-                # Масштабируем до целевого разрешения
-                temp_clip = ImageClip(cropped).with_duration(0.1)
-                resized = temp_clip.with_effects([Resize(newsize=self.config.resolution)])
-                return resized.get_frame(0)
+                cropped = original_frame[y1:y1+new_h, x1:x1+new_w]
+                
+                # Масштабируем до целевого разрешения через PIL
+                pil_img = Image.fromarray(cropped)
+                pil_img = pil_img.resize(self.config.resolution, Image.Resampling.LANCZOS)
+                return np.array(pil_img)
             
-            clip = clip.fl(zoom_effect)
-        
-        # Удаляем временный файл
-        if temp_path.exists():
-            temp_path.unlink()
+            # Создаём новый клип с функцией make_frame
+            clip = VideoClip(make_ken_burns_frame, duration=duration)
+            
+            # Удаляем временный файл сразу после создания клипа
+            # (данные уже в памяти в original_frame)
+            if temp_path.exists():
+                temp_path.unlink()
+        else:
+            # Если зум отключен, удаляем временный файл после создания клипа
+            if temp_path.exists():
+                temp_path.unlink()
         
         return clip.with_duration(duration)
     
@@ -171,8 +182,17 @@ class VideoEditor:
         
         return [clip1, clip2]
     
-    def apply_color_grade(self, clip, grade: str = None) -> ImageClip:
-        """Применение цветокоррекции"""
+    def apply_color_grade(self, clip, grade: str = None):
+        """
+        Применение цветокоррекции (MoviePy 2.x совместимо)
+        
+        Поддерживаемые стили:
+        - cinematic: контраст + лёгкая десатурация
+        - cinematic_bw: Ч/Б с высоким контрастом (для военной тематики)
+        - dramatic: высокий контраст
+        - vintage: тёплые тона, низкий контраст
+        - warm/cold: цветовая температура
+        """
         
         grade = grade or self.config.color_grade
         
@@ -189,39 +209,112 @@ class VideoEditor:
                 enhancer = ImageEnhance.Color(img)
                 img = enhancer.enhance(0.9)
             
+            elif grade == "cinematic_bw":
+                # Ч/Б с высоким контрастом — стиль военных документалок
+                img = img.convert('L').convert('RGB')  # Ч/Б
+                enhancer = ImageEnhance.Contrast(img)
+                img = enhancer.enhance(1.3)  # Высокий контраст
+                enhancer = ImageEnhance.Brightness(img)
+                img = enhancer.enhance(1.05)  # Чуть светлее
+            
             elif grade == "warm":
                 enhancer = ImageEnhance.Color(img)
                 img = enhancer.enhance(1.1)
-                # Добавляем тёплый оттенок через RGB
                 
             elif grade == "cold":
                 enhancer = ImageEnhance.Color(img)
                 img = enhancer.enhance(0.9)
             
             elif grade == "vintage":
+                # Винтажный стиль — сепия + низкий контраст
                 enhancer = ImageEnhance.Contrast(img)
                 img = enhancer.enhance(0.9)
                 enhancer = ImageEnhance.Color(img)
-                img = enhancer.enhance(0.8)
+                img = enhancer.enhance(0.7)
+                # Добавляем тёплый оттенок
+                r, g, b = img.split()
+                r = r.point(lambda x: min(255, x + 20))
+                b = b.point(lambda x: max(0, x - 10))
+                img = Image.merge('RGB', (r, g, b))
             
             elif grade == "dramatic":
+                # Высокий контраст для драматичных сцен
                 enhancer = ImageEnhance.Contrast(img)
                 img = enhancer.enhance(1.4)
+                enhancer = ImageEnhance.Color(img)
+                img = enhancer.enhance(0.85)  # Слегка десатурация
             
             return np.array(img)
         
-        return clip.fl_image(color_filter)
+        # MoviePy 2.x: используем image_transform вместо fl_image
+        return clip.image_transform(color_filter)
     
-    def add_vignette(self, clip) -> ImageClip:
-        """Добавление виньетки"""
+    def add_vignette(self, clip):
+        """
+        Добавление виньетки — затемнение по краям кадра
+        Создаёт кинематографичный эффект фокуса на центре
+        """
         
         def vignette_filter(frame):
             img = Image.fromarray(frame)
-            # Создаём маску виньетки
-            # Упрощённая версия
-            return np.array(img)
+            width, height = img.size
+            
+            # Создаём радиальный градиент для виньетки
+            vignette = Image.new('L', (width, height), 255)
+            
+            # Центр и радиус
+            cx, cy = width // 2, height // 2
+            max_dist = ((width/2)**2 + (height/2)**2) ** 0.5
+            
+            # Создаём градиент попиксельно (оптимизированно)
+            for y in range(0, height, 2):  # Шаг 2 для скорости
+                for x in range(0, width, 2):
+                    dist = ((x - cx)**2 + (y - cy)**2) ** 0.5
+                    # Виньетка начинается с 60% от центра
+                    factor = max(0, (dist / max_dist - 0.6) / 0.4)
+                    darkness = int(255 * (1 - factor * 0.4))  # Максимум 40% затемнения
+                    vignette.putpixel((x, y), darkness)
+                    if x+1 < width:
+                        vignette.putpixel((x+1, y), darkness)
+                    if y+1 < height:
+                        vignette.putpixel((x, y+1), darkness)
+                        if x+1 < width:
+                            vignette.putpixel((x+1, y+1), darkness)
+            
+            # Применяем виньетку
+            vignette = vignette.filter(ImageFilter.GaussianBlur(radius=30))
+            
+            # Конвертируем в RGB и применяем
+            r, g, b = img.split()
+            r = Image.composite(r, Image.new('L', (width, height), 0), vignette)
+            g = Image.composite(g, Image.new('L', (width, height), 0), vignette)
+            b = Image.composite(b, Image.new('L', (width, height), 0), vignette)
+            
+            return np.array(Image.merge('RGB', (r, g, b)))
         
-        return clip.fl_image(vignette_filter)
+        return clip.image_transform(vignette_filter)
+    
+    def add_film_grain(self, clip, intensity: float = 0.05):
+        """
+        Добавление зернистости плёнки — аутентичный винтажный эффект
+        Особенно хорошо для военной/исторической тематики
+        """
+        
+        def grain_filter(frame):
+            img = Image.fromarray(frame)
+            width, height = img.size
+            
+            # Создаём шум
+            noise = np.random.normal(0, intensity * 255, (height, width, 3))
+            
+            # Добавляем шум к изображению
+            img_array = np.array(img).astype(np.float32)
+            noisy = img_array + noise
+            noisy = np.clip(noisy, 0, 255).astype(np.uint8)
+            
+            return noisy
+        
+        return clip.image_transform(grain_filter)
     
     def create_video(
         self,
@@ -259,6 +352,18 @@ class VideoEditor:
             video = CompositeVideoClip(final_clips)
         else:
             video = concatenate_videoclips(clips, method="compose")
+        
+        # Применяем цветокоррекцию
+        if self.config.color_grade and self.config.color_grade != "none":
+            video = self.apply_color_grade(video)
+        
+        # Применяем виньетку (затемнение по краям)
+        if self.config.add_vignette:
+            video = self.add_vignette(video)
+        
+        # Применяем зернистость плёнки (для винтажного эффекта)
+        if self.config.add_film_grain:
+            video = self.add_film_grain(video, intensity=0.03)
         
         # Загружаем аудио
         voice_audio = AudioFileClip(str(audio_path))

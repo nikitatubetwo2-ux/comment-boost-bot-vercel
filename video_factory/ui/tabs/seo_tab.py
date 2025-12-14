@@ -37,13 +37,13 @@ class SEOWorker(QThread):
             self.error.emit(str(e))
     
     def _generate_seo(self):
-        from core.groq_client import GroqClient
+        from core.groq_client import GroqClient, get_groq_client
         
         if not config.api.groq_key:
             self.error.emit("Groq API ключ не настроен!")
             return
         
-        groq = GroqClient(config.api.groq_key, config.api.groq_model)
+        groq = get_groq_client()
         
         self.progress.emit("Генерация SEO...")
         
